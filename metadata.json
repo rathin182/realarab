@@ -1,0 +1,6 @@
+{
+  "name": "Najm Estates KSA",
+  "description": "Premier luxury real estate brokerage in the Kingdom of Saudi Arabia, specializing in high-end residential, commercial, and off-market properties across Riyadh, Makkah, Madinah, and Jeddah.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
