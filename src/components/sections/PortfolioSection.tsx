@@ -182,7 +182,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
           <div className="mb-14 cursor-pointer group" onClick={() => onSelectProperty(marqueeProperty)}>
             <div className="relative aspect-[16/9] sm:aspect-[2.2/1] w-full overflow-hidden bg-neutral-100">
               <img
-                src="/src/assets/images/villa_yacht_pool_redsea_1791318096742.jpg"
+                src="/images/villa_yacht_pool_redsea.jpg"
                 alt={marqueeProperty.title}
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"

@@ -31,7 +31,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '10.8%',
     registration: 'REGA-W-99021',
     flags: ['FEATURED', 'OFF-PLAN'],
-    image: '/src/assets/images/hero_saudi_luxury_skyline_1791316717908.jpg',
+    image: '/images/hero_saudi_luxury_skyline_1791316717908.jpg',
   },
   {
     id: 'diriyah-gate-heritage-villas',
@@ -54,7 +54,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '9.4%',
     registration: 'REGA-W-10492',
     flags: ['FEATURED', 'OFF-PLAN'],
-    image: '/src/assets/images/property_diriyah_gate_1791316737367.jpg',
+    image: '/images/property_diriyah_gate_1791316737367.jpg',
   },
   {
     id: 'sindalah-island-mansions',
@@ -77,7 +77,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '12.2%',
     registration: 'REGA-W-55091',
     flags: ['FEATURED', 'OFF-PLAN'],
-    image: '/src/assets/images/property_redsea_coastal_1791316756584.jpg',
+    image: '/images/property_redsea_coastal_1791316756584.jpg',
   },
   {
     id: 'rua-al-madinah-pavilions',
@@ -100,7 +100,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '11.5%',
     registration: 'REGA-W-88102',
     flags: ['HOLY-CITY ELIGIBLE', 'FEATURED'],
-    image: '/src/assets/images/hero_saudi_luxury_skyline_1791316717908.jpg',
+    image: '/images/hero_saudi_luxury_skyline_1791316717908.jpg',
   },
   {
     id: 'thakher-makkah-residences',
@@ -123,7 +123,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '12.0%',
     registration: 'REGA-W-77401',
     flags: ['HOLY-CITY ELIGIBLE', 'FEATURED'],
-    image: '/src/assets/images/property_modern_penthouse_1791316772164.jpg',
+    image: '/images/property_modern_penthouse_1791316772164.jpg',
   },
   {
     id: 'kafd-tower-one-sky-villas',
@@ -146,7 +146,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '9.2%',
     registration: 'REGA-W-33108',
     flags: ['FEATURED'],
-    image: '/src/assets/images/property_modern_penthouse_1791316772164.jpg',
+    image: '/images/property_modern_penthouse_1791316772164.jpg',
   },
 
   // 02. CURATED COLLECTION
@@ -171,7 +171,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '8.5%',
     registration: 'REGA-L-1029481',
     flags: ['OFF-MARKET', 'FEATURED'],
-    image: '/src/assets/images/property_diriyah_gate_1791316737367.jpg',
+    image: '/images/property_diriyah_gate_1791316737367.jpg',
   },
   {
     id: 'abraj-royal-sanctuary',
@@ -194,7 +194,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '13.1%',
     registration: 'REGA-L-8849120',
     flags: ['HOLY-CITY ELIGIBLE', 'FEATURED'],
-    image: '/src/assets/images/hero_saudi_luxury_skyline_1791316717908.jpg',
+    image: '/images/hero_saudi_luxury_skyline_1791316717908.jpg',
   },
   {
     id: 'al-hada-diplomatic-villa',
@@ -217,7 +217,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '8.9%',
     registration: 'REGA-L-4590123',
     flags: ['FEATURED'],
-    image: '/src/assets/images/property_diriyah_gate_1791316737367.jpg',
+    image: '/images/property_diriyah_gate_1791316737367.jpg',
   },
   {
     id: 'red-sea-marina-villa',
@@ -240,7 +240,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '9.6%',
     registration: 'REGA-L-3049582',
     flags: ['FEATURED'],
-    image: '/src/assets/images/property_redsea_coastal_1791316756584.jpg',
+    image: '/images/property_redsea_coastal_1791316756584.jpg',
   },
   {
     id: 'madinah-peace-crown',
@@ -263,7 +263,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '10.8%',
     registration: 'REGA-L-7749102',
     flags: ['HOLY-CITY ELIGIBLE'],
-    image: '/src/assets/images/hero_saudi_luxury_skyline_1791316717908.jpg',
+    image: '/images/hero_saudi_luxury_skyline_1791316717908.jpg',
   },
   {
     id: 'trojena-alpine-sanctuary',
@@ -286,7 +286,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '12.5%',
     registration: 'REGA-L-9023812',
     flags: ['OFF-MARKET', 'FEATURED'],
-    image: '/src/assets/images/property_modern_penthouse_1791316772164.jpg',
+    image: '/images/property_modern_penthouse_1791316772164.jpg',
   },
   {
     id: 'sky-palace-kafd',
@@ -309,7 +309,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '8.8%',
     registration: 'REGA-L-6610294',
     flags: ['FEATURED'],
-    image: '/src/assets/images/property_modern_penthouse_1791316772164.jpg',
+    image: '/images/property_modern_penthouse_1791316772164.jpg',
   },
 
   // 03. INVESTMENT VAULT (Institutional & Off-Market)
@@ -334,7 +334,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '8.9%',
     registration: 'REGA-V-11094',
     flags: ['OFF-MARKET', 'FEATURED'],
-    image: '/src/assets/images/hero_saudi_luxury_skyline_1791316717908.jpg',
+    image: '/images/hero_saudi_luxury_skyline_1791316717908.jpg',
   },
   {
     id: 'obhur-creek-compound',
@@ -357,7 +357,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '9.8%',
     registration: 'REGA-V-22081',
     flags: ['OFF-MARKET', 'FEATURED'],
-    image: '/src/assets/images/property_redsea_coastal_1791316756584.jpg',
+    image: '/images/property_redsea_coastal_1791316756584.jpg',
   },
   {
     id: 'central-haram-usufruct-tranche',
@@ -380,7 +380,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '14.2%',
     registration: 'REGA-V-33072',
     flags: ['OFF-MARKET', 'HOLY-CITY ELIGIBLE', 'FEATURED'],
-    image: '/src/assets/images/hero_saudi_luxury_skyline_1791316717908.jpg',
+    image: '/images/hero_saudi_luxury_skyline_1791316717908.jpg',
   },
 
   // 04. PROJECT SYNDICATE
@@ -405,7 +405,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '22.4% IRR',
     registration: 'CMA-SPV-9901',
     flags: ['OFF-MARKET', 'FEATURED'],
-    image: '/src/assets/images/property_diriyah_gate_1791316737367.jpg',
+    image: '/images/property_diriyah_gate_1791316737367.jpg',
   },
   {
     id: 'neom-sindalah-residences-jv',
@@ -428,7 +428,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '24.8% IRR',
     registration: 'CMA-SPV-8802',
     flags: ['OFF-MARKET', 'FEATURED'],
-    image: '/src/assets/images/property_redsea_coastal_1791316756584.jpg',
+    image: '/images/property_redsea_coastal_1791316756584.jpg',
   },
   {
     id: 'makkah-clock-plaza-jv',
@@ -451,7 +451,7 @@ export const PROPERTIES: Property[] = [
     projectedYield: '18.6% IRR',
     registration: 'CMA-SPV-7703',
     flags: ['OFF-MARKET', 'HOLY-CITY ELIGIBLE', 'FEATURED'],
-    image: '/src/assets/images/hero_saudi_luxury_skyline_1791316717908.jpg',
+    image: '/images/hero_saudi_luxury_skyline_1791316717908.jpg',
   },
 ];
 
@@ -468,7 +468,7 @@ export const MEGA_PROJECTS: MegaProject[] = [
     descriptionAr: 'تطوير حضري وثقافي مهيب بطابع العمارة النجدية العريقة، يضم 38 فندقاً فاخراً ومطاعم ميشلان وقصوراً ملكية.',
     highlights: ['UNESCO World Heritage Buffer', 'Najdi Architecture Code', 'Luxury Branded Residences'],
     badge: 'HERITAGE & OPULENCE',
-    image: '/src/assets/images/property_diriyah_gate_1791316737367.jpg',
+    image: '/images/property_diriyah_gate_1791316737367.jpg',
   },
   {
     id: 'neom',
@@ -482,7 +482,7 @@ export const MEGA_PROJECTS: MegaProject[] = [
     descriptionAr: 'تضم ذا لاين، ومرتفعات تروجينا الثلجية، وجزيرة سندالة لليخوت، وأوكساجون الصناعية في منطقة سيادية رائدة.',
     highlights: ['Freehold International Ownership', 'Sub-Zero Alpine Winter Living', 'Red Sea Mega-Yacht Marina'],
     badge: 'FUTURISTIC VISION',
-    image: '/src/assets/images/property_modern_penthouse_1791316772164.jpg',
+    image: '/images/property_modern_penthouse_1791316772164.jpg',
   },
   {
     id: 'new-murabba',
@@ -496,7 +496,7 @@ export const MEGA_PROJECTS: MegaProject[] = [
     descriptionAr: 'تحول حضري لشمال غرب الرياض مع أيقونة المكعب بارتفاع 400 متر وتجارب افتراضية غامرة ومساكن فارهة.',
     highlights: ['19 Square Kilometers Masterplan', '104,000 Residential Units', '9,000 Luxury Hotel Keys'],
     badge: 'RIYADH REINVENTED',
-    image: '/src/assets/images/hero_saudi_luxury_skyline_1791316717908.jpg',
+    image: '/images/hero_saudi_luxury_skyline_1791316717908.jpg',
   },
   {
     id: 'red-sea-global',
@@ -510,7 +510,7 @@ export const MEGA_PROJECTS: MegaProject[] = [
     descriptionAr: 'أكثر من 90 جزيرة بكر مع حواجز مرجانية وبراكين خامدة وملاذات خاصة فائقة الفخامة.',
     highlights: ['100% Renewable Off-Grid Power', 'Private Overwater Residences', 'International Seaplane Access'],
     badge: 'UNTOUCHED COASTLINE',
-    image: '/src/assets/images/property_redsea_coastal_1791316756584.jpg',
+    image: '/images/property_redsea_coastal_1791316756584.jpg',
   },
 ];
 
@@ -732,7 +732,7 @@ export const TEAM: TeamMember[] = [
     license: 'FAL-1200034988-01',
     personalMessage: 'Every client who entrusts us with their capital deserves absolute transparency, unmatched sovereign market intelligence, and our undivided personal commitment.',
     personalMessageAr: 'كل مستثمر يضع ثقته في نجم العقارية يستحق شفافية مطلقة ورؤية سوقية سيادية لا تضاهى ورعاية شخصية دائمة.',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop',
+    image: '/images/team_najm_uddin.jpg',
     whatsapp: '966533258822',
     email: 'sohel@najmdevelopment.com',
   },
@@ -748,7 +748,7 @@ export const TEAM: TeamMember[] = [
     license: 'FAL-1200034988-02',
     personalMessage: 'We bridged the corridor between international institutional capital and Saudi Arabia’s golden era of Vision 2030 development with absolute discretion.',
     personalMessageAr: 'بنينا جسراً يربط كبار المستثمرين الدوليين برؤية المملكة 2030 الواعدة. نضع مصلحة العميل وشراكته في صدارة أولوياتنا دائماً.',
-    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop',
+    image: '/images/team_sohel_khan.jpg',
     whatsapp: '966533258822',
     email: 'sohel@najmdevelopment.com',
   },
@@ -764,7 +764,7 @@ export const TEAM: TeamMember[] = [
     license: 'FAL-1200034988-03',
     personalMessage: 'Every acquisition is structured with institutional rigor, ensuring our clients secure prime freehold and sovereign assets with fortified yield.',
     personalMessageAr: 'كل عملية استحواذ نصممها بعناية فائقة وتدقيق مؤسسي، لنضمن لعملائنا أفضل الأصول الاستثمارية والسكنية بعوائد محصنة.',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop',
+    image: '/images/team_azher_uddin.jpg',
     whatsapp: '966533258822',
     email: 'sohel@najmdevelopment.com',
   },
@@ -780,7 +780,7 @@ export const TEAM: TeamMember[] = [
     license: 'FAL-1200034988-04',
     personalMessage: 'We present Saudi Arabia’s architectural renaissance to sovereign and global private investors with the aesthetic dignity and precision it commands.',
     personalMessageAr: 'نقدم النهضة المعمارية والاستثمارية في المملكة إلى المستثمرين العالميين بأرقى المعايير الفنية والجمالية التي تليق بمكانتها.',
-    image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop',
+    image: '/images/team_riyaz_uddin.jpg',
     whatsapp: '966533258822',
     email: 'sohel@najmdevelopment.com',
   },

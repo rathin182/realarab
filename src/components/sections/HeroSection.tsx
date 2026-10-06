@@ -106,7 +106,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* Wide Panoramic Image */}
           <div className="relative aspect-[16/9] sm:aspect-[2.3/1] w-full overflow-hidden bg-neutral-100">
             <img
-              src="/src/assets/images/hero_diriyah_panoramic_1791318077026.jpg"
+              src="/images/hero_diriyah_panoramic.jpg"
               alt="Diriyah Architectural Perspective"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover object-center filter contrast-[1.03]"
