@@ -89,7 +89,7 @@ export const PropertyDetailClient: React.FC<PropertyDetailClientProps> = ({ prop
               className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-neutral-600 hover:text-[#0C3826] transition-colors"
             >
               <ArrowLeft className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
-              <span>{isAr ? 'العودة للمحفظة' : 'Back to Portfolio'}</span>
+              <span>{isAr ? 'العودة للمحفظة' : 'Back'}</span>
             </Link>
 
             <span className="hidden sm:inline-block text-neutral-300">|</span>
