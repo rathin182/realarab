@@ -1,4 +1,15 @@
 import { spawn } from 'child_process';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+
+const projectRoot = dirname(fileURLToPath(import.meta.url));
+const nextCli = resolve(projectRoot, 'node_modules', 'next', 'dist', 'bin', 'next');
+
+if (!existsSync(nextCli)) {
+  console.error('Next.js is not installed in this project. Run `bun install` and then `bun run dev`.');
+  process.exit(1);
+}
 
 const rawArgs = process.argv.slice(2);
 const nextArgs = ['dev'];
@@ -32,9 +43,9 @@ if (!hasHost) {
   nextArgs.push('-H', '0.0.0.0');
 }
 
-const child = spawn('npx', ['next', ...nextArgs], {
+const child = spawn(process.execPath, [nextCli, ...nextArgs], {
   stdio: 'inherit',
-  shell: true,
+  cwd: projectRoot,
   env: process.env,
 });
 

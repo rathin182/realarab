@@ -8,6 +8,23 @@
     --font-mono: 'JetBrains Mono', monospace;
   }
 
+  /* A restrained radius system keeps the editorial layout soft, not pill-shaped. */
+  button,
+  input,
+  select,
+  textarea,
+  summary {
+    border-radius: 0.375rem;
+  }
+
+  :where([class~="border"]) {
+    border-radius: 0.625rem;
+  }
+
+  img {
+    border-radius: 0.375rem;
+  }
+
   html.lenis, html.lenis body {
     height: auto;
   }

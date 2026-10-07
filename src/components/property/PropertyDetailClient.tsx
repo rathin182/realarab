@@ -85,7 +85,7 @@ export const PropertyDetailClient: React.FC<PropertyDetailClientProps> = ({ prop
           {/* Left: Back Link & Wordmark */}
           <div className="flex items-center gap-6">
             <Link
-              href="/#properties"
+              href="/"
               className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-neutral-600 hover:text-[#0C3826] transition-colors"
             >
               <ArrowLeft className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />

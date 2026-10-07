@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Currency, Language, Property, TeamMember, TransactionType } from './types';
+import { Currency, Language, Property, TransactionFilter } from './types';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { HeroSection } from './components/sections/HeroSection';
@@ -13,7 +13,6 @@ import { TeamSection } from './components/sections/TeamSection';
 import { PrivateOfficeSection } from './components/sections/PrivateOfficeSection';
 import { BuyerGuideModal } from './components/modals/BuyerGuideModal';
 import { PropertyDossierModal } from './components/modals/PropertyDossierModal';
-import { TeamDossierModal } from './components/modals/TeamDossierModal';
 
 export default function App() {
   const [currency, setCurrency] = useState<Currency>('SAR');
@@ -21,13 +20,12 @@ export default function App() {
 
   // Shared Filters
   const [selectedCity, setSelectedCity] = useState<string>('all');
-  const [selectedTransaction, setSelectedTransaction] = useState<TransactionType>('buy');
+  const [selectedTransaction, setSelectedTransaction] = useState<TransactionFilter>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Modals
   const [isBuyerGuideOpen, setIsBuyerGuideOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
-  const [selectedTeamMember, setSelectedTeamMember] = useState<TeamMember | null>(null);
 
   // Sync RTL and lang attribute
   useEffect(() => {
@@ -94,22 +92,19 @@ export default function App() {
           onOpenPrivateOffice={scrollToPrivateAdvisory}
         />
 
-        {/* Financial Atelier & Sharia Modeling (Reference Image 8) */}
-        <FinancialAtelierSection
-          currency={currency}
-          language={language}
-        />
-
         {/* Leadership & Sovereign Management (Reference Image 9) */}
-        <TeamSection
-          language={language}
-          onSelectMember={(member) => setSelectedTeamMember(member)}
-        />
+        <TeamSection language={language} />
 
         {/* Regulatory FAQ (Reference Image 10) */}
         <LegalFAQSection
           language={language}
           onOpenPrivateOffice={scrollToPrivateAdvisory}
+        />
+
+        {/* Financial Atelier & Sharia Modeling (Reference Image 8) */}
+        <FinancialAtelierSection
+          currency={currency}
+          language={language}
         />
 
         {/* Private Advisory Session (Reference Image 11) */}
@@ -122,6 +117,7 @@ export default function App() {
         onOpenPrivateOffice={scrollToPrivateAdvisory}
         onOpenBuyerGuide={() => setIsBuyerGuideOpen(true)}
       />
+      
 
       {/* Modals */}
       <BuyerGuideModal
@@ -138,11 +134,6 @@ export default function App() {
         language={language}
       />
 
-      <TeamDossierModal
-        member={selectedTeamMember}
-        onClose={() => setSelectedTeamMember(null)}
-        language={language}
-      />
     </div>
   );
 }

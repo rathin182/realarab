@@ -3,6 +3,7 @@ export type Currency = 'SAR' | 'USD' | 'EUR' | 'GBP' | 'AED';
 export type Language = 'en' | 'ar';
 
 export type TransactionType = 'buy' | 'rent' | 'off-plan' | 'commercial';
+export type TransactionFilter = TransactionType | 'all';
 
 export type PortfolioTier = 'featured' | 'curated' | 'vault' | 'syndicate';
 
