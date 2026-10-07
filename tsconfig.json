@@ -21,9 +21,6 @@
     "paths": {
       "@/*": [
         "./*"
-      ],
-      "next/link": [
-        "./src/shims/next-link.tsx"
       ]
     },
     "allowImportingTsExtensions": true,

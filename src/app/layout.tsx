@@ -32,14 +32,46 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                var _origFetch = window.fetch;
-                var _currentFetch = _origFetch;
-                Object.defineProperty(window, 'fetch', {
-                  configurable: true,
-                  enumerable: true,
-                  get: function() { return _currentFetch; },
-                  set: function(fn) { _currentFetch = fn; }
-                });
+                var _w = typeof window !== 'undefined' ? window : null;
+                if (_w) {
+                  var _proto = _w.Window ? _w.Window.prototype : Object.getPrototypeOf(_w);
+                  if (_proto) {
+                    var _pd = Object.getOwnPropertyDescriptor(_proto, 'fetch');
+                    if (_pd && !_pd.set) {
+                      Object.defineProperty(_proto, 'fetch', {
+                        get: _pd.get || function() { return _w._fetch; },
+                        set: function(v) {
+                          try {
+                            Object.defineProperty(this, 'fetch', {
+                              value: v,
+                              writable: true,
+                              configurable: true,
+                              enumerable: true
+                            });
+                          } catch(e) { this._fetch = v; }
+                        },
+                        configurable: true
+                      });
+                    }
+                  }
+                  var _wd = Object.getOwnPropertyDescriptor(_w, 'fetch');
+                  if (_wd && !_wd.set) {
+                    Object.defineProperty(_w, 'fetch', {
+                      get: _wd.get || function() { return _w._fetch; },
+                      set: function(v) {
+                        try {
+                          Object.defineProperty(_w, 'fetch', {
+                            value: v,
+                            writable: true,
+                            configurable: true,
+                            enumerable: true
+                          });
+                        } catch(e) { _w._fetch = v; }
+                      },
+                      configurable: true
+                    });
+                  }
+                }
               } catch(e) {}
             `,
           }}
