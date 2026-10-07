@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { Currency, Language, Property, TeamMember, TransactionType } from './types';
 import { Navbar } from './components/layout/Navbar';
