@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { Language } from '../../types';
 
 interface FooterProps {
@@ -16,31 +17,37 @@ export const Footer: React.FC<FooterProps> = ({ language, onOpenBuyerGuide }) =>
         <div className="flex flex-col sm:flex-row items-baseline justify-between gap-6">
           {/* Brand & Registration (Direct Match to Image 11) */}
           <div className="space-y-1">
-            <span className="font-serif text-lg tracking-[0.1em] font-normal text-[#0C3826] block">
+            <Link href="/" className="font-serif text-lg tracking-[0.1em] font-normal text-[#0C3826] block hover:text-[#A98950] transition-colors">
               NAJM ESTATES KSA
-            </span>
+            </Link>
             <span className="font-mono text-[10px] tracking-[0.2em] text-neutral-500 uppercase block">
               FAL BROKERAGE REGISTRATION #1200034988
             </span>
           </div>
 
           {/* Center Links */}
-          <div className="flex items-center gap-6 text-[11px] uppercase tracking-wider text-neutral-500">
+          <div className="flex flex-wrap items-center gap-6 text-[11px] uppercase tracking-wider text-neutral-500">
+            <Link href="/about" className="hover:text-neutral-900 transition-colors">
+              {isAr ? 'من نحن' : 'About'}
+            </Link>
+            <Link href="/#properties" className="hover:text-neutral-900 transition-colors">
+              {isAr ? 'المشاريع' : 'Portfolio'}
+            </Link>
+            <Link href="/contact" className="hover:text-neutral-900 transition-colors">
+              {isAr ? 'اتصل بنا' : 'Contact'}
+            </Link>
             <button
               onClick={onOpenBuyerGuide}
               className="hover:text-neutral-900 transition-colors cursor-pointer"
             >
               {isAr ? 'حقوق التملك' : 'Ownership Rights'}
             </button>
-            <a href="#properties" className="hover:text-neutral-900 transition-colors">
-              {isAr ? 'المشاريع' : 'Featured'}
-            </a>
-            <a href="#vision2030" className="hover:text-neutral-900 transition-colors">
+            <Link href="/#vision2030" className="hover:text-neutral-900 transition-colors">
               {isAr ? 'رؤية 2030' : 'Vision 2030'}
-            </a>
-            <a href="#faq" className="hover:text-neutral-900 transition-colors">
+            </Link>
+            <Link href="/#faq" className="hover:text-neutral-900 transition-colors">
               {isAr ? 'الأنظمة' : 'Legal & FAQ'}
-            </a>
+            </Link>
           </div>
 
           {/* Copyright (Direct Match to Image 11) */}

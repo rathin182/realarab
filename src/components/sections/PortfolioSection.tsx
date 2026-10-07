@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { Currency, Language, PortfolioTier, Property, TransactionType } from '../../types';
 import { PROPERTIES } from '../../data/websiteContent';
 import { formatPrice } from '../../lib/currency';
@@ -179,7 +180,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
 
         {/* Hero Marquee Image (From Image 6) */}
         {marqueeProperty && (
-          <div className="mb-14 cursor-pointer group" onClick={() => onSelectProperty(marqueeProperty)}>
+          <Link href={`/properties/${marqueeProperty.id}`} className="block mb-14 group">
             <div className="relative aspect-[16/9] sm:aspect-[2.2/1] w-full overflow-hidden bg-neutral-100">
               <img
                 src="/images/villa_yacht_pool_redsea.jpg"
@@ -206,7 +207,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                 </span>
               </div>
             </div>
-          </div>
+          </Link>
         )}
 
         {/* Property Grid: Clean White Cards with Subtle Hairlines */}
@@ -221,9 +222,9 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               className="bg-white border border-neutral-200 hover:border-neutral-400 transition-all duration-300 flex flex-col justify-between group overflow-hidden"
             >
               {/* Image */}
-              <div
-                className="relative aspect-[16/10] overflow-hidden bg-neutral-100 cursor-pointer"
-                onClick={() => onSelectProperty(property)}
+              <Link
+                href={`/properties/${property.id}`}
+                className="relative aspect-[16/10] overflow-hidden bg-neutral-100 block"
               >
                 <img
                   src={property.image}
@@ -234,7 +235,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                 <div className="absolute top-3 left-3 text-[10px] font-mono uppercase bg-white/95 px-2 py-0.5 border border-neutral-200 text-[#0C3826]">
                   {property.badge}
                 </div>
-              </div>
+              </Link>
 
               {/* Body */}
               <div className="p-6 flex-1 flex flex-col justify-between">
@@ -245,12 +246,11 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                     <span className="truncate">{property.type}</span>
                   </div>
 
-                  <h4
-                    onClick={() => onSelectProperty(property)}
-                    className="font-serif text-xl text-[#0C3826] font-normal leading-snug group-hover:text-[#A98950] transition-colors mb-3 cursor-pointer"
-                  >
-                    {isAr ? property.titleAr : property.title}
-                  </h4>
+                  <Link href={`/properties/${property.id}`}>
+                    <h4 className="font-serif text-xl text-[#0C3826] font-normal leading-snug group-hover:text-[#A98950] transition-colors mb-3">
+                      {isAr ? property.titleAr : property.title}
+                    </h4>
+                  </Link>
 
                   <p className="text-xs text-neutral-600 line-clamp-2 leading-relaxed mb-4 font-light">
                     {isAr ? property.descriptionAr : property.description}
@@ -270,13 +270,13 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                     {formatPrice(property.priceSAR, currency)}
                   </span>
 
-                  <button
-                    onClick={() => onSelectProperty(property)}
-                    className="text-xs uppercase tracking-[0.16em] text-[#0C3826] hover:text-[#A98950] font-semibold flex items-center gap-1 cursor-pointer"
+                  <Link
+                    href={`/properties/${property.id}`}
+                    className="text-xs uppercase tracking-[0.16em] text-[#0C3826] hover:text-[#A98950] font-semibold flex items-center gap-1"
                   >
                     <span>{isAr ? 'الملف' : 'Dossier'}</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
-                  </button>
+                  </Link>
                 </div>
               </div>
             </motion.div>

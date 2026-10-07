@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Lenis from 'lenis';
 import { Currency, Language, Property, TeamMember, TransactionType } from './types';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
@@ -27,29 +26,6 @@ export default function App() {
   const [isBuyerGuideOpen, setIsBuyerGuideOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [selectedTeamMember, setSelectedTeamMember] = useState<TeamMember | null>(null);
-
-  // Tuned Lenis Smooth Scroll (Graceful, slower, buttery luxurious momentum)
-  useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.8,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -8 * t)),
-      smoothWheel: true,
-      wheelMultiplier: 0.8,
-      touchMultiplier: 1.2,
-    });
-
-    let animationFrameId: number;
-    function raf(time: number) {
-      lenis.raf(time);
-      animationFrameId = requestAnimationFrame(raf);
-    }
-    animationFrameId = requestAnimationFrame(raf);
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      lenis.destroy();
-    };
-  }, []);
 
   // Sync RTL and lang attribute
   useEffect(() => {

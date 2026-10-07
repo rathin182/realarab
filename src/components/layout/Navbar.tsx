@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { Currency, Language } from '../../types';
 import { Globe, ChevronDown, Menu, X, ArrowUpRight } from 'lucide-react';
 import { CURRENCY_RATES } from '../../data/websiteContent';
@@ -24,18 +25,20 @@ export const Navbar: React.FC<NavbarProps> = ({
   const isAr = language === 'ar';
 
   const navLinks = [
-    { href: '#properties', label: isAr ? 'المشاريع' : 'FEATURED' },
-    { href: '#properties', label: isAr ? 'الصندوق' : 'THE VAULT' },
-    { href: '#properties', label: isAr ? 'النقابة' : 'SYNDICATE' },
-    { href: '#private-advisory', label: isAr ? 'الاستشارات الخاصة' : 'PRIVATE ADVISORY' },
+    { href: '/#properties', label: isAr ? 'المشاريع' : 'FEATURED' },
+    { href: '/#properties', label: isAr ? 'الصندوق' : 'THE VAULT' },
+    { href: '/#properties', label: isAr ? 'النقابة' : 'SYNDICATE' },
+    { href: '/#private-advisory', label: isAr ? 'الاستشارات الخاصة' : 'PRIVATE ADVISORY' },
+    { href: '/about', label: isAr ? 'من نحن' : 'ABOUT' },
+    { href: '/contact', label: isAr ? 'اتصل بنا' : 'CONTACT' },
   ];
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-200 transition-all duration-300 font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         {/* Zone 1: Clean Editorial Brand Mark */}
-        <a
-          href="#"
+        <Link
+          href="/"
           className="flex flex-col group focus:outline-none"
           aria-label="Najm Estates KSA"
         >
@@ -50,18 +53,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="text-[9px] tracking-[0.3em] text-neutral-500 uppercase mt-1">
             {isAr ? 'المملكة العربية السعودية' : 'KINGDOM OF SAUDI ARABIA'}
           </span>
-        </a>
+        </Link>
 
         {/* Zone 2: Minimalist Nav Links */}
         <nav className="hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-medium text-neutral-600">
           {navLinks.map((link, idx) => (
-            <a
+            <Link
               key={idx}
               href={link.href}
               className="hover:text-[#0C3826] transition-colors py-1 relative hover:after:w-full after:w-0 after:h-[1px] after:bg-[#0C3826] after:absolute after:bottom-0 after:left-0 after:transition-all"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -132,14 +135,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="lg:hidden bg-white border-b border-neutral-200 px-6 py-6 space-y-4">
           <nav className="flex flex-col gap-4 text-xs uppercase tracking-[0.2em] font-medium text-neutral-700">
             {navLinks.map((link, idx) => (
-              <a
+              <Link
                 key={idx}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
                 className="hover:text-[#0C3826] transition-colors py-1 border-b border-neutral-100"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
           <div className="pt-2">
