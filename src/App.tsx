@@ -93,7 +93,7 @@ export default function App() {
         />
 
         {/* Leadership & Sovereign Management (Reference Image 9) */}
-        <TeamSection language={language} />
+        {/* <TeamSection language={language} /> */}
 
         {/* Regulatory FAQ (Reference Image 10) */}
         <LegalFAQSection

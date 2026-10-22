@@ -22,7 +22,7 @@ export const PrivateOfficeSection: React.FC<PrivateOfficeProps> = ({ language })
 
   return (
     <section id="private-advisory" className="py-20 bg-white border-t border-neutral-200 font-sans">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[110rem] mx-auto px-4 sm:px-8 lg:px-10">
         {/* Main Advisory Box (Direct Match to Image 11) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-16">
           {/* Left Column: Direct Executive Contact */}

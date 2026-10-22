@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Language } from '../../types';
 import { MEGA_PROJECTS, SERVICES } from '../../data/websiteContent';
-import { ArrowUpRight, ChartNoAxesCombined, Check, KeyRound, ShieldCheck, UserRound } from 'lucide-react';
+import { ArrowUpRight, ChartNoAxesCombined, KeyRound, ShieldCheck, UserRound } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface Vision2030SectionProps {
@@ -21,7 +21,7 @@ export const Vision2030Section: React.FC<Vision2030SectionProps> = ({
 
   return (
     <section id="vision2030" className="py-20 bg-white border-t border-neutral-200 font-sans">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[110rem] mx-auto px-4 sm:px-8 lg:px-10">
         <div className="mb-10 max-w-4xl">
           <span className="mb-4 block text-[10px] font-mono uppercase tracking-[0.24em] text-[#A98950]">
             {isAr ? 'تجربة نجم العقارية' : 'THE NAJM ESTATES EXPERIENCE'}
@@ -31,15 +31,14 @@ export const Vision2030Section: React.FC<Vision2030SectionProps> = ({
           </h2>
           <p className="mt-5 max-w-3xl text-sm font-light leading-7 text-neutral-600 sm:text-base">
             {isAr
-              ? 'سواء كنت تبحث عن منزل مميز، أو تبني محفظة استثمارية، أو تقتني عقاراً بارزاً، نوفر لك وصولاً واضحاً إلى الفرص وبيانات موثوقة ومتابعة من مستشار خاص.'
-              : 'Whether you are acquiring a prime off-plan residence, building a high-yielding portfolio, or securing a landmark family home, we provide clear access to opportunities, verified market insight, and support from a dedicated advisor.'}
+              ? 'فرص منتقاة، ورؤية سوقية موثوقة، ومستشار خاص يرافقك في كل خطوة.'
+              : 'Curated opportunities, verified market insight, and a dedicated advisor at every step.'}
           </p>
         </div>
 
-        <div className="mb-16 grid grid-cols-1 gap-4 border-y border-neutral-200 py-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="relative mb-16 grid grid-cols-1 gap-3 border-y border-neutral-200 py-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0">
           {SERVICES.map((service, index) => {
             const ServiceIcon = serviceIcons[index] || ShieldCheck;
-            const deliverables = isAr ? service.deliverablesAr : service.deliverables;
             return (
               <motion.article
                 key={service.id}
@@ -47,36 +46,28 @@ export const Vision2030Section: React.FC<Vision2030SectionProps> = ({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.15 }}
                 transition={{ duration: 0.45, delay: index * 0.06 }}
-                className="flex h-full flex-col border border-[#E7E3DA] bg-[#FBFAF7] p-5 sm:p-6"
+                className={`group relative flex min-h-[15rem] flex-col justify-between overflow-hidden border border-[#E7E3DA] bg-[#FBFAF7] p-6 transition-colors hover:bg-[#F6F4EE] sm:p-7 lg:min-h-[17rem] ${index > 0 ? 'lg:border-s-0' : ''}`}
                 dir={isAr ? 'rtl' : 'ltr'}
               >
-                <div className="mb-6 flex items-center justify-between">
-                  <span className="font-mono text-xs tracking-[0.18em] text-[#A98950]">{service.index} / 04</span>
-                  <span className="flex h-10 w-10 items-center justify-center border border-[#DCD8CE] bg-white text-[#0C3826]">
-                    <ServiceIcon className="h-4 w-4" strokeWidth={1.5} />
+                <div className="flex items-start justify-between">
+                  <span className="font-mono text-[11px] tracking-[0.2em] text-[#A98950]">{service.index}<span className="text-neutral-300"> / 04</span></span>
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[#DCD8CE] bg-white text-[#0C3826] transition-transform duration-300 group-hover:scale-105">
+                    <ServiceIcon className="h-5 w-5" strokeWidth={1.4} />
                   </span>
                 </div>
-                <span className="mb-2 text-[9px] font-mono uppercase tracking-[0.18em] text-neutral-400">
-                  {isAr ? service.tagAr : service.tag}
-                </span>
-                <h3 className="min-h-[3.4rem] font-serif text-2xl leading-tight text-[#0C3826]">
-                  {isAr ? service.titleAr : service.title}
-                </h3>
-                <p className="mt-3 min-h-[5rem] text-xs leading-6 text-neutral-600">
-                  {isAr ? service.summaryAr : service.summary}
-                </p>
-                <div className="mt-5 border-t border-[#E7E3DA] pt-4">
-                  <span className="mb-3 block text-[9px] font-mono uppercase tracking-[0.16em] text-neutral-400">
-                    {isAr ? 'ما الذي ستحصل عليه' : 'WHAT THIS INCLUDES'}
+                <div className="mt-9">
+                  <span className="mb-2 block text-[9px] font-mono uppercase tracking-[0.18em] text-neutral-400">
+                    {isAr ? service.tagAr : service.tag}
                   </span>
-                  <ul className="space-y-2.5">
-                    {deliverables.slice(0, 3).map((item) => (
-                      <li key={item} className="flex items-start gap-2 text-[11px] leading-5 text-neutral-600">
-                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#A98950]" strokeWidth={1.8} />
-                        <span>{item}</span>
-                      </li>
+                  <h3 className="max-w-xs font-serif text-2xl leading-[1.05] text-[#0C3826] sm:text-[1.7rem]">
+                    {isAr ? service.titleAr : service.title}
+                  </h3>
+                  <div className="mt-5 flex items-center gap-1.5" aria-hidden="true">
+                    {[0, 1, 2, 3].map((step) => (
+                      <span key={step} className={`h-1 rounded-full transition-all ${step === index ? 'w-8 bg-[#A98950]' : 'w-3 bg-[#DCD8CE]'}`} />
                     ))}
-                  </ul>
+                    <span className="ms-1 font-mono text-[9px] tracking-[0.16em] text-neutral-400">{service.index}</span>
+                  </div>
                 </div>
               </motion.article>
             );

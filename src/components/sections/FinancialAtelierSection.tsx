@@ -38,7 +38,7 @@ export const FinancialAtelierSection: React.FC<FinancialAtelierProps> = ({ curre
 
   return (
     <section id="financial-atelier" className="py-20 bg-white border-t border-neutral-200 font-sans">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[110rem] mx-auto px-4 sm:px-8 lg:px-10">
         {/* Section Header */}
         <div className="flex items-baseline justify-between mb-12">
           <h2 className="font-serif text-4xl sm:text-5xl font-light text-[#0C3826]">

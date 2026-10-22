@@ -39,14 +39,14 @@ export default function AboutPage() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-medium text-neutral-600">
-            <Link href="/#properties" className="hover:text-[#0C3826] transition-colors">
-              FEATURED
+            <Link href="/" className="hover:text-[#0C3826] transition-colors">
+              Home Page
             </Link>
-            <Link href="/#properties" className="hover:text-[#0C3826] transition-colors">
-              THE VAULT
+            <Link href="/properties" className="hover:text-[#0C3826] transition-colors">
+              Properties
             </Link>
-            <Link href="/#properties" className="hover:text-[#0C3826] transition-colors">
-              SYNDICATE
+            <Link href="/about" className="hover:text-[#0C3826] transition-colors">
+              About Us
             </Link>
             <Link href="/#private-advisory" className="hover:text-[#0C3826] transition-colors">
               PRIVATE ADVISORY

@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Currency, Language, PortfolioTier, Property, TransactionFilter } from '../../types';
 import { PROPERTIES } from '../../data/websiteContent';
 import { formatPrice } from '../../lib/currency';
-import { ChevronDown, ArrowUpRight, Maximize, Percent } from 'lucide-react';
+import { ChevronDown, ArrowUpRight, MapPin, Maximize, Check } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface PortfolioSectionProps {
@@ -34,6 +34,8 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   const isAr = language === 'ar';
   const [activeTier, setActiveTier] = useState<PortfolioTier | 'all'>('featured');
   const [selectedType, setSelectedType] = useState('all');
+  const [openFilter, setOpenFilter] = useState<'market' | 'acquisition' | 'propertyType' | 'collection' | null>(null);
+  const filterRef = useRef<HTMLDivElement>(null);
 
   const tiers = [
     { id: 'featured', en: 'Featured Projects', ar: 'المشاريع الكبرى المميزة', count: '01 / 04' },
@@ -44,6 +46,25 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
 
   const currentTierObj = tiers.find((t) => t.id === activeTier) || tiers[0];
   const propertyTypes = [...new Set(PROPERTIES.map((property) => property.type))].sort();
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setOpenFilter(null);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpenFilter(null);
+      }
+    };
+    document.addEventListener('mousedown', closeOnOutsideClick);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('mousedown', closeOnOutsideClick);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, []);
 
   const cities = [
     { id: 'all', en: 'All cities', ar: 'كافة المدن' },
@@ -81,27 +102,12 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
     });
   }, [activeTier, selectedCity, selectedTransaction, selectedType, searchQuery]);
 
+  const visibleProperties = filteredProperties.slice(0, 6);
+
   return (
     <section id="properties" className="py-20 bg-white border-t border-neutral-200 font-sans">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Tier Tabs Strip */}
-        <div className="flex flex-wrap items-center gap-6 pb-6 mb-8 border-b border-neutral-200 text-xs uppercase tracking-[0.2em] font-medium text-neutral-500">
-          {tiers.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setActiveTier(t.id as PortfolioTier)}
-              className={`pb-2 transition-colors cursor-pointer relative ${
-                activeTier === t.id
-                  ? 'text-[#0C3826] font-semibold after:w-full after:h-[1.5px] after:bg-[#0C3826] after:absolute after:bottom-0 after:left-0'
-                  : 'hover:text-neutral-900'
-              }`}
-            >
-              {isAr ? t.ar : t.en}
-            </button>
-          ))}
-        </div>
-
-        {/* Section Header (Exact Match to Image 6) */}
+      <div className="max-w-[110rem] mx-auto px-4 sm:px-8 lg:px-10">
+        {/* Selected collection and count */}
         <div className="flex items-baseline justify-between mb-8">
           <h2 className="font-serif text-4xl sm:text-5xl font-light italic text-[#0C3826]">
             {isAr ? currentTierObj.ar : currentTierObj.en}
@@ -112,25 +118,20 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
         </div>
 
         {/* Clean Swiss Search & Filter Strip (Direct Reference from Image 6) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pb-8 mb-8 border-b border-neutral-200 text-xs">
+        <div ref={filterRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 pb-8 mb-8 border-b border-neutral-200 text-xs">
           {/* Market / City Filter */}
             <div className="space-y-1">
             <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-mono block">
               {isAr ? 'المدينة' : 'MARKET'}
             </label>
             <div className="relative">
-              <select
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-                className="w-full h-11 bg-white border border-neutral-200 px-3 pr-8 text-neutral-800 text-xs appearance-none focus:outline-none focus:border-neutral-400 cursor-pointer"
-              >
-                {cities.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {isAr ? c.ar : c.en}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-3.5 h-3.5 text-neutral-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <button type="button" aria-haspopup="listbox" aria-expanded={openFilter === 'market'} onClick={() => setOpenFilter(openFilter === 'market' ? null : 'market')} className={`flex h-11 w-full items-center justify-between border bg-white px-3 text-left text-xs text-neutral-800 transition-colors ${openFilter === 'market' ? 'border-[#0C3826]/50 ring-2 ring-[#0C3826]/[0.06]' : 'border-neutral-200 hover:border-neutral-300'} focus:outline-none`}>
+                <span>{isAr ? cities.find((city) => city.id === selectedCity)?.ar : cities.find((city) => city.id === selectedCity)?.en}</span>
+                <ChevronDown className={`h-3.5 w-3.5 text-neutral-400 transition-transform ${openFilter === 'market' ? 'rotate-180' : ''}`} />
+              </button>
+              {openFilter === 'market' && <div data-lenis-prevent onWheel={(event) => event.stopPropagation()} className="filter-dropdown-scroll absolute inset-x-0 top-[calc(100%+0.5rem)] z-30 max-h-64 overflow-y-auto overscroll-contain touch-pan-y rounded-xl border border-[#E7E3DA] bg-white p-1.5 shadow-[0_18px_45px_-20px_rgba(12,56,38,0.3)] ring-1 ring-black/[0.03]" role="listbox" aria-label={isAr ? 'المدينة' : 'Market'}>
+                {cities.map((city, index) => { const selected = city.id === selectedCity; return <button key={city.id} type="button" role="option" aria-selected={selected} onClick={() => { setSelectedCity(city.id); setOpenFilter(null); }} className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors ${selected ? 'bg-[#F5F4EF] text-[#0C3826]' : 'text-neutral-600 hover:bg-[#FAF9F6] hover:text-[#0C3826]'}`}><span className="w-8 shrink-0 font-mono text-[9px] tracking-[0.12em] text-[#A98950]">0{index + 1}</span><span className="flex-1 text-xs">{isAr ? city.ar : city.en}</span>{selected && <Check className="h-3.5 w-3.5 text-[#0C3826]" />}</button>; })}
+              </div>}
             </div>
           </div>
 
@@ -140,18 +141,13 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               {isAr ? 'نوع الفرصة' : 'ACQUISITION'}
             </label>
             <div className="relative">
-              <select
-                value={selectedTransaction}
-                onChange={(e) => setSelectedTransaction(e.target.value as TransactionFilter)}
-                className="w-full h-11 bg-white border border-neutral-200 px-3 pr-8 text-neutral-800 text-xs appearance-none focus:outline-none focus:border-neutral-400 cursor-pointer"
-              >
-                {transactionTypes.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {isAr ? t.ar : t.en}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-3.5 h-3.5 text-neutral-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <button type="button" aria-haspopup="listbox" aria-expanded={openFilter === 'acquisition'} onClick={() => setOpenFilter(openFilter === 'acquisition' ? null : 'acquisition')} className={`flex h-11 w-full items-center justify-between border bg-white px-3 text-left text-xs text-neutral-800 transition-colors ${openFilter === 'acquisition' ? 'border-[#0C3826]/50 ring-2 ring-[#0C3826]/[0.06]' : 'border-neutral-200 hover:border-neutral-300'} focus:outline-none`}>
+                <span>{isAr ? transactionTypes.find((type) => type.id === selectedTransaction)?.ar : transactionTypes.find((type) => type.id === selectedTransaction)?.en}</span>
+                <ChevronDown className={`h-3.5 w-3.5 text-neutral-400 transition-transform ${openFilter === 'acquisition' ? 'rotate-180' : ''}`} />
+              </button>
+              {openFilter === 'acquisition' && <div data-lenis-prevent onWheel={(event) => event.stopPropagation()} className="filter-dropdown-scroll absolute inset-x-0 top-[calc(100%+0.5rem)] z-30 max-h-64 overflow-y-auto overscroll-contain touch-pan-y rounded-xl border border-[#E7E3DA] bg-white p-1.5 shadow-[0_18px_45px_-20px_rgba(12,56,38,0.3)] ring-1 ring-black/[0.03]" role="listbox" aria-label={isAr ? 'نوع الفرصة' : 'Acquisition'}>
+                {transactionTypes.map((type, index) => { const selected = type.id === selectedTransaction; return <button key={type.id} type="button" role="option" aria-selected={selected} onClick={() => { setSelectedTransaction(type.id as TransactionFilter); setOpenFilter(null); }} className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors ${selected ? 'bg-[#F5F4EF] text-[#0C3826]' : 'text-neutral-600 hover:bg-[#FAF9F6] hover:text-[#0C3826]'}`}><span className="w-8 shrink-0 font-mono text-[9px] tracking-[0.12em] text-[#A98950]">0{index + 1}</span><span className="flex-1 text-xs">{isAr ? type.ar : type.en}</span>{selected && <Check className="h-3.5 w-3.5 text-[#0C3826]" />}</button>; })}
+              </div>}
             </div>
           </div>
 
@@ -160,15 +156,62 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               {isAr ? 'نوع العقار' : 'PROPERTY TYPE'}
             </label>
             <div className="relative">
-              <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-                className="w-full h-11 bg-white border border-neutral-200 px-3 pr-8 text-neutral-800 text-xs appearance-none focus:outline-none focus:border-neutral-400 cursor-pointer"
+              <button type="button" aria-haspopup="listbox" aria-expanded={openFilter === 'propertyType'} onClick={() => setOpenFilter(openFilter === 'propertyType' ? null : 'propertyType')} className={`flex h-11 w-full items-center justify-between border bg-white px-3 text-left text-xs text-neutral-800 transition-colors ${openFilter === 'propertyType' ? 'border-[#0C3826]/50 ring-2 ring-[#0C3826]/[0.06]' : 'border-neutral-200 hover:border-neutral-300'} focus:outline-none`}>
+                <span>{selectedType === 'all' ? (isAr ? 'جميع الأنواع' : 'All property types') : selectedType}</span>
+                <ChevronDown className={`h-3.5 w-3.5 text-neutral-400 transition-transform ${openFilter === 'propertyType' ? 'rotate-180' : ''}`} />
+              </button>
+              {openFilter === 'propertyType' && <div data-lenis-prevent onWheel={(event) => event.stopPropagation()} className="filter-dropdown-scroll absolute inset-x-0 top-[calc(100%+0.5rem)] z-30 max-h-64 overflow-y-auto overscroll-contain touch-pan-y rounded-xl border border-[#E7E3DA] bg-white p-1.5 shadow-[0_18px_45px_-20px_rgba(12,56,38,0.3)] ring-1 ring-black/[0.03]" role="listbox" aria-label={isAr ? 'نوع العقار' : 'Property type'}>
+                {[{ id: 'all', label: isAr ? 'جميع الأنواع' : 'All property types' }, ...propertyTypes.map((type) => ({ id: type, label: type }))].map((type, index) => { const selected = type.id === selectedType; return <button key={type.id} type="button" role="option" aria-selected={selected} onClick={() => { setSelectedType(type.id); setOpenFilter(null); }} className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors ${selected ? 'bg-[#F5F4EF] text-[#0C3826]' : 'text-neutral-600 hover:bg-[#FAF9F6] hover:text-[#0C3826]'}`}><span className="w-8 shrink-0 font-mono text-[9px] tracking-[0.12em] text-[#A98950]">{String(index + 1).padStart(2, '0')}</span><span className="flex-1 text-xs">{type.label}</span>{selected && <Check className="h-3.5 w-3.5 text-[#0C3826]" />}</button>; })}
+              </div>}
+            </div>
+          </div>
+
+          {/* Collection / Tier Filter */}
+          <div className="space-y-1">
+            <label className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-mono block">
+              {isAr ? 'المجموعة' : 'COLLECTION'}
+            </label>
+            <div className="relative">
+              <button
+                type="button"
+                aria-haspopup="listbox"
+                aria-expanded={openFilter === 'collection'}
+                onClick={() => setOpenFilter(openFilter === 'collection' ? null : 'collection')}
+                onKeyDown={(event) => {
+                  if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    setOpenFilter('collection');
+                  }
+                }}
+                className={`flex h-11 w-full items-center justify-between border bg-white px-3 text-left text-xs text-neutral-800 transition-colors ${openFilter === 'collection' ? 'border-[#0C3826]/50 ring-2 ring-[#0C3826]/[0.06]' : 'border-neutral-200 hover:border-neutral-300'} focus:outline-none`}
               >
-                <option value="all">{isAr ? 'جميع الأنواع' : 'All property types'}</option>
-                {propertyTypes.map((type) => <option key={type} value={type}>{type}</option>)}
-              </select>
-              <ChevronDown className="w-3.5 h-3.5 text-neutral-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <span>{isAr ? currentTierObj.ar : currentTierObj.en}</span>
+                <ChevronDown className={`h-3.5 w-3.5 text-neutral-400 transition-transform ${openFilter === 'collection' ? 'rotate-180' : ''}`} />
+              </button>
+              {openFilter === 'collection' && (
+                <div data-lenis-prevent onWheel={(event) => event.stopPropagation()} className="filter-dropdown-scroll absolute inset-x-0 top-[calc(100%+0.5rem)] z-30 max-h-64 overflow-y-auto overscroll-contain touch-pan-y rounded-xl border border-[#E7E3DA] bg-white p-1.5 shadow-[0_18px_45px_-20px_rgba(12,56,38,0.3)] ring-1 ring-black/[0.03]" role="listbox" aria-label={isAr ? 'المجموعة' : 'Collection'}>
+                  {tiers.map((tier, index) => {
+                    const selected = tier.id === activeTier;
+                    return (
+                      <button
+                        key={tier.id}
+                        type="button"
+                        role="option"
+                        aria-selected={selected}
+                        onClick={() => {
+                          setActiveTier(tier.id as PortfolioTier);
+                          setOpenFilter(null);
+                        }}
+                        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors ${selected ? 'bg-[#F5F4EF] text-[#0C3826]' : 'text-neutral-600 hover:bg-[#FAF9F6] hover:text-[#0C3826]'}`}
+                      >
+                        <span className="w-8 shrink-0 font-mono text-[9px] tracking-[0.12em] text-[#A98950]">0{index + 1}</span>
+                        <span className={`flex-1 text-xs ${selected ? 'font-medium' : 'font-normal'}`}>{isAr ? tier.ar : tier.en}</span>
+                        {selected && <Check className="h-3.5 w-3.5 text-[#0C3826]" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
 
@@ -194,84 +237,80 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
         </div>
 
         {/* Property Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProperties.map((property) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-10">
+          {visibleProperties.map((property) => (
             <motion.div
               key={property.id}
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="bg-white border border-neutral-200 hover:border-neutral-400 transition-all duration-300 flex flex-col justify-between group overflow-hidden"
+              className="group flex h-full flex-col"
             >
               {/* Image */}
               <Link
                 href={`/properties/${property.id}`}
-                className="relative aspect-[16/10] overflow-hidden bg-neutral-100 block"
+                className="relative block aspect-[4/3] overflow-hidden rounded-2xl bg-neutral-100"
               >
                 <img
                   src={property.image}
                   alt={property.title}
                   referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                 />
-                <div className="absolute top-3 left-3 text-[10px] font-mono uppercase bg-white/95 px-2 py-0.5 border border-neutral-200 text-[#0C3826]">
-                  {property.badge}
+                <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+                  <span className="rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-medium capitalize text-neutral-900 shadow-sm backdrop-blur">
+                    {property.transaction}
+                  </span>
+                  <span className="rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-medium capitalize text-neutral-900 shadow-sm backdrop-blur">
+                    {property.type}
+                  </span>
                 </div>
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <span className="absolute bottom-3 right-3 flex h-9 w-9 translate-y-2 items-center justify-center rounded-full bg-white text-neutral-900 opacity-0 shadow-md transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                  <ArrowUpRight className="h-4 w-4" />
+                </span>
               </Link>
 
               {/* Body */}
-              <div className="p-6 flex-1 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-2 text-[11px] text-neutral-500 uppercase tracking-wider mb-2 font-mono">
-                    <span>{property.city}</span>
-                    <span aria-hidden="true">·</span>
-                    <span className="truncate">{property.type}</span>
-                    <span aria-hidden="true">·</span>
-                    <span>{property.transaction}</span>
-                  </div>
-
-                  <Link href={`/properties/${property.id}`}>
-                    <h4 className="font-serif text-xl text-[#0C3826] font-normal leading-snug group-hover:text-[#A98950] transition-colors mb-3">
-                      {isAr ? property.titleAr : property.title}
-                    </h4>
-                  </Link>
-
-                  <p className="text-xs text-neutral-600 line-clamp-2 leading-relaxed mb-4 font-light">
-                    {isAr ? property.descriptionAr : property.description}
+              <div className="flex flex-1 flex-col px-1 pt-4">
+                <p className="text-lg tabular-nums tracking-tight text-neutral-900">
+                  {property.priceSAR > 0 ? formatPrice(property.priceSAR, currency) : (isAr ? 'حسب الطلب' : 'Price on request')}
+                </p>
+                <Link href={`/properties/${property.id}`}>
+                  <h4 className="mt-1 line-clamp-1 text-sm text-neutral-800 group-hover:underline group-hover:underline-offset-4">
+                    {isAr ? property.titleAr : property.title}
+                  </h4>
+                </Link>
+                <p className="mt-1 flex items-center gap-1.5 text-xs text-neutral-500">
+                  <MapPin className="h-3.5 w-3.5 shrink-0" />
+                  <span className="line-clamp-1">{isAr ? property.locationAr : property.location}</span>
+                </p>
+                <div className="min-h-3 flex-1" aria-hidden="true" />
+                <div className="flex items-end justify-between gap-3 border-t border-neutral-100 pt-3 text-xs text-neutral-600">
+                  <p className="flex flex-wrap items-center gap-x-2">
+                    {property.bedrooms > 0 && <span>{property.bedrooms} {isAr ? 'غرف' : 'bd'}</span>}
+                    {property.bathrooms > 0 && <span className="before:mr-2 before:text-neutral-300 before:content-['•']">{property.bathrooms} {isAr ? 'حمام' : 'ba'}</span>}
+                    {property.sizeSqm > 0 && <span className="before:mr-2 before:text-neutral-300 before:content-['•']"><Maximize className="mr-1 inline h-3 w-3" />{property.sizeSqm} m²</span>}
                   </p>
-
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500 font-mono pb-4 mb-4 border-b border-neutral-100">
-                    {property.bedrooms > 0 && <span>{property.bedrooms} Bed</span>}
-                    {property.bathrooms > 0 && <span>· {property.bathrooms} Bath</span>}
-                    {property.sizeSqm > 0 && <span><Maximize className="inline h-3 w-3" /> {property.sizeSqm} m²</span>}
-                    <span className="text-[#0C3826] font-semibold"><Percent className="inline h-3 w-3" /> {property.projectedYield} Yield</span>
-                  </div>
-                  <ul className="mb-4 grid grid-cols-2 gap-x-3 gap-y-1.5 text-[10px] leading-relaxed text-neutral-500">
-                    {property.keyFeatures.slice(0, 4).map((feature) => (
-                      <li key={feature} className="line-clamp-1">· {feature}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Price & Action */}
-                <div className="flex items-center justify-between pt-2">
-                  <span className="font-serif text-xl font-normal text-[#0C3826] tabular-nums">
-                    {property.priceSAR > 0 ? formatPrice(property.priceSAR, currency) : (isAr ? 'حسب الطلب' : 'Price on request')}
-                  </span>
-
-                  <Link
-                    href={`/properties/${property.id}`}
-                    className="text-xs uppercase tracking-[0.16em] text-[#0C3826] hover:text-[#A98950] font-semibold flex items-center gap-1"
-                  >
-                    <span>{isAr ? 'الملف' : 'Dossier'}</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </Link>
+                  <span className="shrink-0 text-[10px] text-neutral-400">{property.city}</span>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
+        {filteredProperties.length > 0 && (
+          <div className="mt-12 flex justify-center">
+            <Link
+              href="/properties"
+              className="group inline-flex min-h-12 items-center gap-5 border border-[#0C3826]/20 bg-white px-6 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#0C3826] transition-colors hover:border-[#0C3826] hover:bg-[#0C3826] hover:text-white"
+            >
+              <span>{isAr ? 'عرض جميع العقارات' : 'View all properties'}</span>
+              <span className="font-mono text-[9px] opacity-60">{filteredProperties.length.toString().padStart(2, '0')}</span>
+              <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </Link>
+          </div>
+        )}
         {filteredProperties.length === 0 && (
           <div className="border-y border-neutral-200 py-16 text-center">
             <p className="font-serif text-2xl text-[#0C3826]">{isAr ? 'لا توجد عقارات مطابقة' : 'No properties match these filters'}</p>

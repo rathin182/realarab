@@ -13,7 +13,7 @@ export const Footer: React.FC<FooterProps> = ({ language, onOpenBuyerGuide }) =>
 
   return (
     <footer className="bg-white border-t border-neutral-200 py-12 font-sans text-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[110rem] mx-auto px-4 sm:px-8 lg:px-10">
         <div className="flex flex-col sm:flex-row items-baseline justify-between gap-6">
           {/* Brand & Registration (Direct Match to Image 11) */}
           <div className="space-y-1">
