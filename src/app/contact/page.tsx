@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import {
   MapPin,
   Phone,
@@ -34,57 +33,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-white text-[#141A17] font-sans selection:bg-[#0C3826]/10 selection:text-[#0C3826]">
-      {/* Editorial Header */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-baseline gap-2 group">
-            <span className="font-serif text-xl sm:text-2xl tracking-[0.12em] font-normal text-[#0C3826]">
-              NAJM ESTATES
-            </span>
-            <span className="text-[10px] tracking-[0.2em] font-sans text-[#A98950] font-medium">
-              KSA
-            </span>
-          </Link>
-
-          <nav className="hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-medium text-neutral-600">
-            <Link href="/#properties" className="hover:text-[#0C3826] transition-colors">
-              FEATURED
-            </Link>
-            <Link href="/#properties" className="hover:text-[#0C3826] transition-colors">
-              THE VAULT
-            </Link>
-            <Link href="/#properties" className="hover:text-[#0C3826] transition-colors">
-              SYNDICATE
-            </Link>
-            <Link href="/#private-advisory" className="hover:text-[#0C3826] transition-colors">
-              PRIVATE ADVISORY
-            </Link>
-            <Link href="/about" className="hover:text-[#0C3826] transition-colors">
-              ABOUT
-            </Link>
-            <Link href="/contact" className="text-[#0C3826] font-semibold border-b border-[#0C3826] pb-0.5">
-              CONTACT
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[11px] font-mono tracking-wider text-neutral-800 border border-neutral-300">
-              <span>FAL #1200034988</span>
-            </div>
-            <a
-              href="https://wa.me/966500000000"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest bg-[#0C3826] hover:bg-[#08281B] text-white px-4 py-2 transition-colors"
-            >
-              <MessageSquare className="w-3.5 h-3.5" />
-              <span>WhatsApp Desk</span>
-            </a>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
+{/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {/* Header Kicker & Headline */}
         <div className="max-w-3xl mb-16">

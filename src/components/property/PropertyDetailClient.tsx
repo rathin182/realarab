@@ -3,10 +3,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Property, Currency, Language } from '../../types';
-import { PROPERTIES, CURRENCY_RATES } from '../../data/websiteContent';
+import { PROPERTIES } from '../../data/websiteContent';
 import { formatPrice } from '../../lib/currency';
 import {
-  ArrowLeft,
   Share2,
   ShieldCheck,
   MapPin,
@@ -79,95 +78,7 @@ export const PropertyDetailClient: React.FC<PropertyDetailClientProps> = ({ prop
 
   return (
     <div className={`min-h-screen bg-white text-[#141A17] font-sans ${isAr ? 'rtl' : 'ltr'}`}>
-      {/* Top Header / Bar */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          {/* Left: Back Link & Wordmark */}
-          <div className="flex items-center gap-6">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-neutral-600 hover:text-[#0C3826] transition-colors"
-            >
-              <ArrowLeft className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
-              <span>{isAr ? 'العودة للمحفظة' : 'Back'}</span>
-            </Link>
-
-            <span className="hidden sm:inline-block text-neutral-300">|</span>
-
-            <Link href="/" className="hidden sm:flex items-baseline gap-2 group">
-              <span className="font-serif text-xl tracking-[0.1em] text-[#0C3826]">
-                NAJM ESTATES
-              </span>
-              <span className="text-[10px] tracking-[0.2em] text-[#A98950] font-mono">
-                KSA
-              </span>
-            </Link>
-          </div>
-
-          {/* Center Links (desktop) */}
-          <nav className="hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-medium text-neutral-600">
-            <Link href="/#properties" className="hover:text-[#0C3826] transition-colors">
-              {isAr ? 'المشاريع' : 'FEATURED'}
-            </Link>
-            <Link href="/about" className="hover:text-[#0C3826] transition-colors">
-              {isAr ? 'من نحن' : 'ABOUT'}
-            </Link>
-            <Link href="/contact" className="hover:text-[#0C3826] transition-colors">
-              {isAr ? 'اتصل بنا' : 'CONTACT'}
-            </Link>
-            <Link href="/#private-advisory" className="hover:text-[#0C3826] transition-colors">
-              {isAr ? 'الاستشارات الخاصة' : 'PRIVATE ADVISORY'}
-            </Link>
-          </nav>
-
-          {/* Right: Currency, Language, FAL Box & Share */}
-          <div className="flex items-center gap-3">
-            {/* Currency Selector */}
-            <div className="flex items-center border border-neutral-200 divide-x divide-neutral-200 text-xs font-mono">
-              {(Object.keys(CURRENCY_RATES) as Currency[]).map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setCurrency(c)}
-                  className={`px-2 py-1 transition-colors ${
-                    currency === c
-                      ? 'bg-[#0C3826] text-white font-semibold'
-                      : 'hover:bg-neutral-100 text-neutral-600'
-                  }`}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
-
-            {/* Language Switcher */}
-            <button
-              onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}
-              className="px-2.5 py-1 text-xs text-neutral-700 hover:text-[#0C3826] transition-colors cursor-pointer font-serif"
-            >
-              {language === 'en' ? 'العربية' : 'EN'}
-            </button>
-
-            {/* FAL License Box Button */}
-            <Link
-              href="/contact"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-mono tracking-wider text-neutral-800 border border-neutral-300 hover:border-[#0C3826] hover:text-[#0C3826] transition-colors"
-            >
-              <span>FAL #1200034988</span>
-            </Link>
-
-            {/* Share button */}
-            <button
-              onClick={handleShare}
-              className="p-1.5 border border-neutral-200 hover:border-neutral-400 text-neutral-600 hover:text-[#0C3826] transition-colors"
-              title="Share Dossier"
-            >
-              <Share2 className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
+{/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
         {/* Breadcrumb Navigation */}
         <nav className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-neutral-400 mb-6">

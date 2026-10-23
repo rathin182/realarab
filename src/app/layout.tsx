@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { SmoothScroll } from '../components/providers/SmoothScroll';
+import { SiteShell } from '../components/layout/SiteShell';
 
 export const metadata: Metadata = {
   title: 'Najm Estates KSA - Luxury Saudi Real Estate',
@@ -87,7 +88,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className="bg-[#FFFFFF] text-[#141A17] antialiased selection:bg-[#0C3826]/15 selection:text-[#0C3826]"
       >
-        <SmoothScroll>{children}</SmoothScroll>
+        <SmoothScroll><SiteShell>{children}</SiteShell></SmoothScroll>
       </body>
     </html>
   );
