@@ -39,7 +39,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { href: '/', label: isAr ? 'الصفحة الرئيسية' : 'Home Page' },
     { href: '/properties', label: isAr ? 'ملكيات' : 'Properties' },
     { href: '/about', label: isAr ? 'معلومات عنا' : 'About Us' },
-    { href: '/about', label: isAr ? 'معرفة' : 'Knowledge' },
+    { href: '/Knowledge', label: isAr ? 'معرفة' : 'Knowledge' },
     // { href: '/#private-advisory', label: isAr ? 'الاستشارات الخاصة' : 'PRIVATE ADVISORY' },
     // { href: '/about', label: isAr ? 'من نحن' : 'ABOUT' },
     { href: '/contact', label: isAr ? 'اتصل بنا' : 'Contact Us' },

@@ -69,22 +69,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ language, onSearch }) 
           </button>
         </div> */}
 
-        <div className="flex flex-1 flex-col justify-center gap-12 py-16 sm:py-20 lg:gap-16">
+        <div className="flex flex-1 flex-col justify-center gap-8 py-12 sm:py-16 lg:-translate-y-40 lg:gap-16">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: 'easeOut' }}
-            className="w-full max-w-6xl"
+            className="w-full max-w-9xl text-center"
           >
             {/* <p className="mb-3 text-[9px] uppercase tracking-[0.3em] text-white/80 sm:text-[10px]">
               {isAr ? 'عقارات خاصة · المملكة العربية السعودية' : 'PRIVATE REAL ESTATE · SAUDI ARABIA'}
             </p> */}
-            <h1 className="max-w-6xl font-serif text-[clamp(3.25rem,8.4vw,8rem)] font-normal leading-[0.91] tracking-[-0.05em] text-[#fffdf7] drop-shadow-[0_3px_24px_rgba(0,0,0,0.22)]">
+            <h1 className="mx-auto max-w-9xl font-serif text-[clamp(3.25rem,8.4vw,8rem)] font-normal leading-[0.91] tracking-[-0.05em] text-[#fffdf7] drop-shadow-[0_3px_24px_rgba(0,0,0,0.22)]">
               Find Home. Invest Smart. Build Wealth.
             </h1>
+            {/* <p className="mx-auto mt-5 max-w-xl text-center font-sans text-xs font-light leading-6 tracking-[0.025em] text-white/85 sm:mt-6 sm:text-sm">
+              Exceptional homes and considered investments across Saudi Arabia.
+            </p> */}
           </motion.div>
 
-          <form ref={dropdownRef} onSubmit={submitSearch} className="mt-4 grid w-full grid-cols-1 gap-2 rounded-3xl border border-white/55 bg-white/20 p-3 text-[#20231F] shadow-[0_18px_55px_-24px_rgba(0,0,0,0.55)] backdrop-blur-md sm:grid-cols-2 lg:mt-8 lg:grid-cols-[repeat(3,minmax(0,1fr))_auto] lg:items-center lg:gap-2 lg:rounded-full lg:p-2">
+          <form ref={dropdownRef} onSubmit={submitSearch} className="mt-12 grid w-full grid-cols-1 gap-2 rounded-3xl border border-white/55 bg-white/20 p-3 text-[#20231F] shadow-[0_18px_55px_-24px_rgba(0,0,0,0.55)] backdrop-blur-md sm:grid-cols-2 lg:mt-20 lg:grid-cols-[repeat(3,minmax(0,1fr))_auto] lg:items-center lg:gap-2 lg:rounded-full lg:p-2">
             <div className="relative">
             <button type="button" aria-haspopup="listbox" aria-expanded={openDropdown === 'location'} onClick={() => setOpenDropdown(openDropdown === 'location' ? null : 'location')} className="flex min-h-14 w-full items-center gap-3 rounded-full px-4 text-left transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C3826]/30">
               <MapPin className="h-4 w-4 shrink-0 text-[#0C3826]" />
