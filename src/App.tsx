@@ -62,13 +62,6 @@ export default function App() {
         {/* Editorial Architectural Hero (Reference Image 5 & 14) */}
         <HeroSection
           language={language}
-          selectedCity={selectedCity}
-          setSelectedCity={setSelectedCity}
-          selectedTransaction={selectedTransaction}
-          setSelectedTransaction={setSelectedTransaction}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          onSearchSubmit={scrollToPortfolio}
           onOpenBuyerGuide={() => setIsBuyerGuideOpen(true)}
         />
 
