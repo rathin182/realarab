@@ -10,6 +10,10 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<Language>('en');
   const pathname = usePathname();
   const isHomePage = pathname === '/';
+  // /user/* renders its own dashboard shell (sidebar), so skip the marketing navbar.
+  const isUserArea = pathname?.startsWith('/user') ?? false;
+
+  if (isUserArea) return <>{children}</>;
 
   return (
     <>
