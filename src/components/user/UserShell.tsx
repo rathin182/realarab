@@ -53,7 +53,10 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
       <nav className="flex flex-col gap-1" aria-label="Buyer navigation">
         {NAV_ITEMS.map(({ href, label, icon: Icon, badge }) => {
-          const active = href !== '/' && pathname.startsWith(href);
+          const active =
+  href === '/user'
+    ? pathname === '/user'
+    : pathname === href || pathname.startsWith(`${href}/`);
           return (
             <Link
               key={label}

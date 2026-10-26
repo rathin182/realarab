@@ -87,3 +87,20 @@ export const enquiryStatusSchema = z.object({
     id: z.string().min(1),
     status: z.enum(["CONTACTED", "VISIT_SCHEDULED", "CLOSED", "NOT_INTERESTED"]),
 });
+
+
+export const buyerRegisterSchema = z.object({
+  name: z.string().trim().min(1, "Enter your name.").max(80),
+  email: z.string().trim().email("Enter a valid email."),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters.")
+    .max(72, "Password must be at most 72 characters."),
+  countryCode: z
+    .string()
+    .regex(/^\+\d{1,4}$/, "Select a valid country code."),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^\d{6,15}$/, "Enter a valid phone number using digits only."),
+});

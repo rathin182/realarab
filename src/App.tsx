@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
 import { Currency, Language, Property, TransactionFilter } from './types';
 import { Footer } from './components/layout/Footer';
@@ -8,10 +7,10 @@ import { PortfolioSection } from './components/sections/PortfolioSection';
 import { Vision2030Section } from './components/sections/Vision2030Section';
 import { FinancialAtelierSection } from './components/sections/FinancialAtelierSection';
 import { LegalFAQSection } from './components/sections/LegalFAQSection';
-import { TeamSection } from './components/sections/TeamSection';
 import { PrivateOfficeSection } from './components/sections/PrivateOfficeSection';
 import { BuyerGuideModal } from './components/modals/BuyerGuideModal';
 import { PropertyDossierModal } from './components/modals/PropertyDossierModal';
+
 
 export default function App() {
   const [currency, setCurrency] = useState<Currency>('SAR');
@@ -19,30 +18,29 @@ export default function App() {
 
   // Shared Filters
   const [selectedCity, setSelectedCity] = useState<string>('all');
-  const [selectedTransaction, setSelectedTransaction] = useState<TransactionFilter>('all');
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<TransactionFilter>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedPropertyType, setSelectedPropertyType] = useState<string>('all');
-  const [priceRange, setPriceRange] = useState<{ min: string; max: string }>({ min: '', max: '' });
+  const [selectedPropertyType, setSelectedPropertyType] =
+    useState<string>('all');
+  const [priceRange, setPriceRange] = useState<{
+    min: string;
+    max: string;
+  }>({ min: '', max: '' });
 
   // Modals
   const [isBuyerGuideOpen, setIsBuyerGuideOpen] = useState(false);
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [selectedProperty, setSelectedProperty] =
+    useState<Property | null>(null);
 
-  // Sync RTL and lang attribute
   useEffect(() => {
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = language;
   }, [language]);
 
-  const scrollToPortfolio = () => {
-    const el = document.getElementById('properties');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const scrollToPrivateAdvisory = () => {
     const el = document.getElementById('private-advisory');
+
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
@@ -51,7 +49,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col font-sans selection:bg-[#0C3826]/10 selection:text-[#0C3826]">
       <main className="flex-1">
-        {/* Editorial Architectural Hero (Reference Image 5 & 14) */}
+        {/* Editorial Architectural Hero */}
         <HeroSection
           language={language}
           onOpenBuyerGuide={() => setIsBuyerGuideOpen(true)}
@@ -59,11 +57,14 @@ export default function App() {
             setSelectedCity(city || 'all');
             setSelectedPropertyType(propertyType || 'all');
             setPriceRange({ min: minPrice, max: maxPrice });
-            document.getElementById('properties')?.scrollIntoView({ behavior: 'smooth' });
+
+            document
+              .getElementById('properties')
+              ?.scrollIntoView({ behavior: 'smooth' });
           }}
         />
 
-        {/* Featured Projects & Portfolio (Reference Image 6) */}
+        {/* Featured Projects & Portfolio */}
         <PortfolioSection
           currency={currency}
           language={language}
@@ -79,38 +80,34 @@ export default function App() {
           onInquireProperty={(prop) => setSelectedProperty(prop)}
         />
 
-        {/* Methodology + Sovereign Giga Projects (Reference Image 7) */}
+        {/* Methodology + Sovereign Giga Projects */}
         <Vision2030Section
           language={language}
           onOpenPrivateOffice={scrollToPrivateAdvisory}
         />
 
-        {/* Leadership & Sovereign Management (Reference Image 9) */}
-        {/* <TeamSection language={language} /> */}
-
-        {/* Regulatory FAQ (Reference Image 10) */}
+        {/* Regulatory FAQ */}
         <LegalFAQSection
           language={language}
           onOpenPrivateOffice={scrollToPrivateAdvisory}
         />
 
-        {/* Financial Atelier & Sharia Modeling (Reference Image 8) */}
+        {/* Financial Atelier & Sharia Modeling */}
         <FinancialAtelierSection
           currency={currency}
           language={language}
         />
 
-        {/* Private Advisory Session (Reference Image 11) */}
+        {/* Private Advisory Session */}
         <PrivateOfficeSection language={language} />
       </main>
 
-      {/* Sovereign Minimalist Footer (Reference Image 11) */}
+      {/* Footer */}
       <Footer
         language={language}
         onOpenPrivateOffice={scrollToPrivateAdvisory}
         onOpenBuyerGuide={() => setIsBuyerGuideOpen(true)}
       />
-      
 
       {/* Modals */}
       <BuyerGuideModal
@@ -126,7 +123,6 @@ export default function App() {
         currency={currency}
         language={language}
       />
-
     </div>
   );
 }

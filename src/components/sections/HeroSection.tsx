@@ -69,7 +69,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ language, onSearch }) 
           </button>
         </div> */}
 
-        <div className="flex flex-1 flex-col justify-center gap-8 py-12 sm:py-16 lg:-translate-y-40 lg:gap-16">
+        <div className="flex flex-1 flex-col justify-center gap-8 py-12 sm:py-16 lg:gap-16">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
