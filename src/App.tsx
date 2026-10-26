@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Currency, Language, Property, TransactionFilter } from './types';
-import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { HeroSection } from './components/sections/HeroSection';
 import { PortfolioSection } from './components/sections/PortfolioSection';
@@ -22,6 +21,8 @@ export default function App() {
   const [selectedCity, setSelectedCity] = useState<string>('all');
   const [selectedTransaction, setSelectedTransaction] = useState<TransactionFilter>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedPropertyType, setSelectedPropertyType] = useState<string>('all');
+  const [priceRange, setPriceRange] = useState<{ min: string; max: string }>({ min: '', max: '' });
 
   // Modals
   const [isBuyerGuideOpen, setIsBuyerGuideOpen] = useState(false);
@@ -49,20 +50,17 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col font-sans selection:bg-[#0C3826]/10 selection:text-[#0C3826]">
-      {/* 3-Zone Minimalist Navigation */}
-      <Navbar
-        currency={currency}
-        setCurrency={setCurrency}
-        language={language}
-        setLanguage={setLanguage}
-        onOpenPrivateOffice={scrollToPrivateAdvisory}
-      />
-
       <main className="flex-1">
         {/* Editorial Architectural Hero (Reference Image 5 & 14) */}
         <HeroSection
           language={language}
           onOpenBuyerGuide={() => setIsBuyerGuideOpen(true)}
+          onSearch={({ city, propertyType, minPrice, maxPrice }) => {
+            setSelectedCity(city || 'all');
+            setSelectedPropertyType(propertyType || 'all');
+            setPriceRange({ min: minPrice, max: maxPrice });
+            document.getElementById('properties')?.scrollIntoView({ behavior: 'smooth' });
+          }}
         />
 
         {/* Featured Projects & Portfolio (Reference Image 6) */}
@@ -75,6 +73,8 @@ export default function App() {
           setSelectedTransaction={setSelectedTransaction}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          selectedPropertyType={selectedPropertyType}
+          priceRange={priceRange}
           onSelectProperty={(prop) => setSelectedProperty(prop)}
           onInquireProperty={(prop) => setSelectedProperty(prop)}
         />

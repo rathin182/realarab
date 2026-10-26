@@ -15,6 +15,8 @@ interface PortfolioSectionProps {
   setSelectedTransaction: (t: TransactionFilter) => void;
   searchQuery: string;
   setSearchQuery: (q: string) => void;
+  selectedPropertyType: string;
+  priceRange: { min: string; max: string };
   onSelectProperty: (property: Property) => void;
   onInquireProperty: (property: Property) => void;
 }
@@ -28,6 +30,8 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   setSelectedTransaction,
   searchQuery,
   setSearchQuery,
+  selectedPropertyType: heroPropertyType,
+  priceRange,
   onSelectProperty,
   onInquireProperty,
 }) => {
@@ -88,7 +92,11 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
       if (activeTier !== 'all' && p.tier !== activeTier) return false;
       if (selectedCity !== 'all' && p.city !== selectedCity) return false;
       if ((selectedTransaction as string) !== 'all' && p.transaction !== selectedTransaction) return false;
-      if (selectedType !== 'all' && p.type !== selectedType) return false;
+      if ((heroPropertyType !== 'all' && p.type !== heroPropertyType) || (selectedType !== 'all' && p.type !== selectedType)) return false;
+      const minimumPrice = Number(priceRange.min.replace(/[^\d]/g, ''));
+      const maximumPrice = Number(priceRange.max.replace(/[^\d]/g, ''));
+      if (priceRange.min && p.priceSAR < minimumPrice) return false;
+      if (priceRange.max && p.priceSAR > maximumPrice) return false;
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
         const matchTitle = p.title.toLowerCase().includes(query) || p.titleAr.includes(query);
@@ -100,7 +108,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
       }
       return true;
     });
-  }, [activeTier, selectedCity, selectedTransaction, selectedType, searchQuery]);
+  }, [activeTier, selectedCity, selectedTransaction, selectedType, heroPropertyType, priceRange, searchQuery]);
 
   const visibleProperties = filteredProperties.slice(0, 6);
 

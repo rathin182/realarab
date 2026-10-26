@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Currency, Language } from '../../types';
 import { Globe, ChevronDown, Menu, X, ArrowUpRight } from 'lucide-react';
 import { CURRENCY_RATES } from '../../data/websiteContent';
@@ -21,6 +22,16 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [currencyDropdown, setCurrencyDropdown] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
+  const useTransparentStyle = pathname === '/' && !isScrolled;
+
+  useEffect(() => {
+    const updateScrollState = () => setIsScrolled(window.scrollY > 8);
+    updateScrollState();
+    window.addEventListener('scroll', updateScrollState, { passive: true });
+    return () => window.removeEventListener('scroll', updateScrollState);
+  }, []);
 
   const isAr = language === 'ar';
 
@@ -28,14 +39,14 @@ export const Navbar: React.FC<NavbarProps> = ({
     { href: '/', label: isAr ? 'الصفحة الرئيسية' : 'Home Page' },
     { href: '/properties', label: isAr ? 'ملكيات' : 'Properties' },
     { href: '/about', label: isAr ? 'معلومات عنا' : 'About Us' },
-    { href: '/about', label: isAr ? 'معرفة' : 'Knowledge' },
+    { href: '/Knowledge', label: isAr ? 'معرفة' : 'Knowledge' },
     // { href: '/#private-advisory', label: isAr ? 'الاستشارات الخاصة' : 'PRIVATE ADVISORY' },
     // { href: '/about', label: isAr ? 'من نحن' : 'ABOUT' },
     { href: '/contact', label: isAr ? 'اتصل بنا' : 'Contact Us' },
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-200 transition-all duration-300 font-sans">
+    <header className={`fixed inset-x-0 top-0 z-40 border-b transition-all duration-300 font-sans ${useTransparentStyle ? 'bg-transparent border-transparent' : 'bg-white/95 backdrop-blur-md border-neutral-200'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         {/* Zone 1: Clean Editorial Brand Mark */}
         <Link
@@ -44,20 +55,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           aria-label="Najm Estates KSA"
         >
           <div className="flex items-baseline gap-2">
-            <span className="font-serif text-xl sm:text-2xl tracking-[0.12em] font-normal text-[#0C3826] leading-none">
+            <span className={`font-serif text-xl sm:text-2xl tracking-[0.12em] font-normal leading-none ${useTransparentStyle ? 'text-white' : 'text-[#0C3826]'}`}>
               NAJM ESTATES
             </span>
             <span className="text-[10px] tracking-[0.2em] font-sans text-[#A98950] font-medium">
               KSA
             </span>
           </div>
-          <span className="text-[9px] tracking-[0.3em] text-neutral-500 uppercase mt-1">
+          <span className={`text-[9px] tracking-[0.3em] uppercase mt-1 ${useTransparentStyle ? 'text-white/80' : 'text-neutral-500'}`}>
             {isAr ? 'المملكة العربية السعودية' : 'KINGDOM OF SAUDI ARABIA'}
           </span>
         </Link>
 
         {/* Zone 2: Minimalist Nav Links */}
-        <nav className="hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-medium text-neutral-600">
+        <nav className={`hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-medium ${useTransparentStyle ? 'text-white' : 'text-neutral-600'}`}>
           {navLinks.map((link, idx) => (
             <Link
               key={idx}
@@ -70,7 +81,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Zone 3: Actions (Language, Currency, FAL License Box) */}
-        <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-3 ${useTransparentStyle ? '[&_button]:text-white [&_button]:border-white/60' : ''}`}>
           {/* Currency Dropdown */}
           <div className="relative">
             <button
@@ -113,12 +124,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           {/* FAL License Box Button */}
-          <button
+          {/* <button
             onClick={onOpenPrivateOffice}
             className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[11px] font-mono tracking-wider text-neutral-800 border border-neutral-300 hover:border-[#0C3826] hover:text-[#0C3826] transition-colors cursor-pointer"
           >
             <span>FAL #1200034988</span>
-          </button>
+          </button> */}
 
           {/* Mobile Menu Button */}
           <button

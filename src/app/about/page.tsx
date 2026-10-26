@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { Metadata } from 'next';
 import { TEAM, MEGA_PROJECTS } from '../../data/websiteContent';
 import {
@@ -16,6 +15,7 @@ import {
   Phone,
   ArrowUpRight,
 } from 'lucide-react';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'About Najm Estates KSA | Sovereign Real Estate & Advisory',
@@ -26,51 +26,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white text-[#141A17] font-sans selection:bg-[#0C3826]/10 selection:text-[#0C3826]">
-      {/* Editorial Header */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-baseline gap-2 group">
-            <span className="font-serif text-xl sm:text-2xl tracking-[0.12em] font-normal text-[#0C3826]">
-              NAJM ESTATES
-            </span>
-            <span className="text-[10px] tracking-[0.2em] font-sans text-[#A98950] font-medium">
-              KSA
-            </span>
-          </Link>
-
-          <nav className="hidden lg:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-medium text-neutral-600">
-            <Link href="/" className="hover:text-[#0C3826] transition-colors">
-              Home Page
-            </Link>
-            <Link href="/properties" className="hover:text-[#0C3826] transition-colors">
-              Properties
-            </Link>
-            <Link href="/about" className="hover:text-[#0C3826] transition-colors">
-              About Us
-            </Link>
-            <Link href="/#private-advisory" className="hover:text-[#0C3826] transition-colors">
-              PRIVATE ADVISORY
-            </Link>
-            <Link href="/about" className="text-[#0C3826] font-semibold border-b border-[#0C3826] pb-0.5">
-              ABOUT
-            </Link>
-            <Link href="/contact" className="hover:text-[#0C3826] transition-colors">
-              CONTACT
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-4">
-            <Link
-              href="/contact"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[11px] font-mono tracking-wider text-neutral-800 border border-neutral-300 hover:border-[#0C3826] hover:text-[#0C3826] transition-colors"
-            >
-              <span>FAL #1200034988</span>
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      {/* Hero Section */}
+{/* Hero Section */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {/* Kicker & Main Headline */}
         <div className="max-w-4xl mb-16">
