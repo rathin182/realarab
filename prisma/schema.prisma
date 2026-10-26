@@ -135,8 +135,9 @@ model Listing {
   latitude         Float?
   longitude        Float?
   reraNumber       String?
-  
-  tier             String?          // featured | curated | vault | syndicate
+
+  areaSqm          Int?             // the Saudi forms use sqm instead of areaSqft
+  tier             String?          // featured | curated | vault | syndicate (null = curated)
   isOffPlan        Boolean          @default(false)
   badge            String?
   flags            String[]         @default([])

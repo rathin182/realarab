@@ -29,60 +29,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                var _w = typeof window !== 'undefined' ? window : null;
-                if (_w) {
-                  var _proto = _w.Window ? _w.Window.prototype : Object.getPrototypeOf(_w);
-                  if (_proto) {
-                    var _pd = Object.getOwnPropertyDescriptor(_proto, 'fetch');
-                    if (_pd && !_pd.set) {
-                      Object.defineProperty(_proto, 'fetch', {
-                        get: _pd.get || function() { return _w._fetch; },
-                        set: function(v) {
-                          try {
-                            Object.defineProperty(this, 'fetch', {
-                              value: v,
-                              writable: true,
-                              configurable: true,
-                              enumerable: true
-                            });
-                          } catch(e) { this._fetch = v; }
-                        },
-                        configurable: true
-                      });
-                    }
-                  }
-                  var _wd = Object.getOwnPropertyDescriptor(_w, 'fetch');
-                  if (_wd && !_wd.set) {
-                    Object.defineProperty(_w, 'fetch', {
-                      get: _wd.get || function() { return _w._fetch; },
-                      set: function(v) {
-                        try {
-                          Object.defineProperty(_w, 'fetch', {
-                            value: v,
-                            writable: true,
-                            configurable: true,
-                            enumerable: true
-                          });
-                        } catch(e) { _w._fetch = v; }
-                      },
-                      configurable: true
-                    });
-                  }
-                }
-              } catch(e) {}
-            `,
-          }}
-        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous"/>
+        <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
       </head>
       <body
         suppressHydrationWarning

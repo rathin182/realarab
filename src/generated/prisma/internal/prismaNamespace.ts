@@ -1269,6 +1269,7 @@ export const ListingScalarFieldEnum = {
   latitude: 'latitude',
   longitude: 'longitude',
   reraNumber: 'reraNumber',
+  areaSqm: 'areaSqm',
   tier: 'tier',
   isOffPlan: 'isOffPlan',
   badge: 'badge',
