@@ -2,25 +2,9 @@
 
 import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
-import {
-  Camera,
-  Pencil,
-  Check,
-  X,
-  ShieldCheck,
-  Heart,
-  Clock,
-  Search,
-  MessageCircle,
-  Mail,
-  Phone,
-  MapPin,
-  ChevronRight,
-  BadgeCheck,
-  Lock,
-} from 'lucide-react';
-import { CURRENCY_RATES } from '../../data/websiteContent';
-import type { Currency } from '../../types';
+import { Camera, Pencil, Check, X, ShieldCheck, Heart, Clock, Search, MessageCircle, Mail, Phone, MapPin, ChevronRight, BadgeCheck, Lock,} from 'lucide-react';
+import { CURRENCY_RATES } from '@/src/data/websiteContent';
+import type { Currency } from '@/src/types';
 
 
 const INITIAL_PROFILE = {

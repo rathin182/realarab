@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { href: '/', label: 'Home', icon: Home },
+  { href: '/user', label: 'Home', icon: Home },
   { href: '/properties', label: 'Explore', icon: MapPin },
   { href: '/user/favorites', label: 'Favorites', icon: Heart },
   { href: '/user/messages', label: 'Messages', icon: MessageCircle, badge: 3 },
