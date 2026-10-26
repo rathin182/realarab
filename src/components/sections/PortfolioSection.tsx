@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Currency, Language, PortfolioTier, Property, TransactionFilter } from '../../types';
-import { PROPERTIES } from '../../data/websiteContent';
 import { formatPrice } from '../../lib/currency';
 import { ChevronDown, ArrowUpRight, MapPin, Maximize, Check } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -36,12 +35,15 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   onInquireProperty,
 }) => {
   const isAr = language === 'ar';
-  const [activeTier, setActiveTier] = useState<PortfolioTier | 'all'>('featured');
+  const [activeTier, setActiveTier] = useState<PortfolioTier | 'all'>('all');
   const [selectedType, setSelectedType] = useState('all');
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [openFilter, setOpenFilter] = useState<'market' | 'acquisition' | 'propertyType' | 'collection' | null>(null);
   const filterRef = useRef<HTMLDivElement>(null);
 
   const tiers = [
+    { id: 'all', en: 'All Properties', ar: 'كافة العقارات', count: 'ALL' },
     { id: 'featured', en: 'Featured Projects', ar: 'المشاريع الكبرى المميزة', count: '01 / 04' },
     { id: 'curated', en: 'Curated Collection', ar: 'المحفظة السكنية المختارة', count: '02 / 04' },
     { id: 'vault', en: 'Investment Vault', ar: 'صندوق الاستثمار الحصري', count: '03 / 04' },
@@ -49,7 +51,15 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   ];
 
   const currentTierObj = tiers.find((t) => t.id === activeTier) || tiers[0];
-  const propertyTypes = [...new Set(PROPERTIES.map((property) => property.type))].sort();
+  const propertyTypes = [...new Set(properties.map((property) => property.type))].sort();
+
+  useEffect(() => {
+    fetch('/api/listings')
+      .then((response) => response.ok ? response.json() as Promise<Property[]> : [])
+      .then(setProperties)
+      .catch(() => setProperties([]))
+      .finally(() => setIsLoading(false));
+  }, []);
 
   useEffect(() => {
     const closeOnOutsideClick = (event: MouseEvent) => {
@@ -88,7 +98,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   ];
 
   const filteredProperties = useMemo(() => {
-    return PROPERTIES.filter((p) => {
+    return properties.filter((p) => {
       if (activeTier !== 'all' && p.tier !== activeTier) return false;
       if (selectedCity !== 'all' && p.city !== selectedCity) return false;
       if ((selectedTransaction as string) !== 'all' && p.transaction !== selectedTransaction) return false;
@@ -108,7 +118,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
       }
       return true;
     });
-  }, [activeTier, selectedCity, selectedTransaction, selectedType, heroPropertyType, priceRange, searchQuery]);
+  }, [properties, activeTier, selectedCity, selectedTransaction, selectedType, heroPropertyType, priceRange, searchQuery]);
 
   const visibleProperties = filteredProperties.slice(0, 6);
 
@@ -207,7 +217,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                         role="option"
                         aria-selected={selected}
                         onClick={() => {
-                          setActiveTier(tier.id as PortfolioTier);
+                          setActiveTier(tier.id as PortfolioTier | 'all');
                           setOpenFilter(null);
                         }}
                         className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors ${selected ? 'bg-[#F5F4EF] text-[#0C3826]' : 'text-neutral-600 hover:bg-[#FAF9F6] hover:text-[#0C3826]'}`}
@@ -241,11 +251,11 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
 
         <div className="mb-5 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.16em] text-neutral-400">
           <span>{isAr ? 'العقارات المتاحة' : 'Available properties'}</span>
-          <span>{filteredProperties.length.toString().padStart(2, '0')} / {PROPERTIES.length.toString().padStart(2, '0')}</span>
+          <span>{filteredProperties.length.toString().padStart(2, '0')} / {properties.length.toString().padStart(2, '0')}</span>
         </div>
 
         {/* Property Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-10">
+        {isLoading ? <p className="py-12 text-center text-sm text-neutral-500">Loading properties...</p> : <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-10">
           {visibleProperties.map((property) => (
             <motion.div
               key={property.id}
@@ -306,7 +316,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               </div>
             </motion.div>
           ))}
-        </div>
+        </div>}
         {filteredProperties.length > 0 && (
           <div className="mt-12 flex justify-center">
             <Link
@@ -319,7 +329,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
             </Link>
           </div>
         )}
-        {filteredProperties.length === 0 && (
+        {!isLoading && filteredProperties.length === 0 && (
           <div className="border-y border-neutral-200 py-16 text-center">
             <p className="font-serif text-2xl text-[#0C3826]">{isAr ? 'لا توجد عقارات مطابقة' : 'No properties match these filters'}</p>
             <button onClick={() => { setSelectedCity('all'); setSelectedTransaction('all'); setSelectedType('all'); setSearchQuery(''); }} className="mt-4 text-xs uppercase tracking-widest text-[#A98950] hover:text-[#0C3826]">

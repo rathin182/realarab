@@ -1,17 +1,14 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { ArrowDownUp, ArrowUpRight, Bath, BedDouble, Check, ChevronDown, MapPin, Maximize2, Search, SlidersHorizontal, X } from 'lucide-react';
-import { CURRENCY_RATES, PROPERTIES } from '../../data/websiteContent';
+import { CURRENCY_RATES } from '../../data/websiteContent';
 import { Currency, Property, TransactionFilter } from '../../types';
 import { formatPrice } from '../../lib/currency';
 
 type SortOption = 'featured' | 'price-low' | 'price-high' | 'size-large' | 'yield-high' | 'name';
 
-const cities = [...new Set(PROPERTIES.map((property) => property.city))].sort();
-const propertyTypes = [...new Set(PROPERTIES.map((property) => property.type))].sort();
-const tiers = [...new Set(PROPERTIES.map((property) => property.tier))];
 const transactionTypes: { value: TransactionFilter; label: string }[] = [
   { value: 'all', label: 'All opportunities' },
   { value: 'buy', label: 'Buy / For sale' },
@@ -95,6 +92,8 @@ function PropertyCard({ property, currency }: { property: Property; currency: Cu
 }
 
 export default function PropertiesPage() {
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [currency, setCurrency] = useState<Currency>('SAR');
   const [query, setQuery] = useState('');
   const [city, setCity] = useState('all');
@@ -111,11 +110,23 @@ export default function PropertiesPage() {
   const [sort, setSort] = useState<SortOption>('featured');
   const [filtersOpen, setFiltersOpen] = useState(false);
 
+  useEffect(() => {
+    fetch('/api/listings')
+      .then((response) => response.ok ? response.json() as Promise<Property[]> : [])
+      .then(setProperties)
+      .catch(() => setProperties([]))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  const cities = [...new Set(properties.map((property) => property.city))].sort();
+  const propertyTypes = [...new Set(properties.map((property) => property.type))].sort();
+  const tiers = [...new Set(properties.map((property) => property.tier))];
+
   const filteredProperties = useMemo(() => {
     const currencyRate = CURRENCY_RATES[currency].rate;
     const minPriceSAR = minPrice ? Number(minPrice) / currencyRate : 0;
     const maxPriceSAR = maxPrice ? Number(maxPrice) / currencyRate : Infinity;
-    const results = PROPERTIES.filter((property) => {
+    const results = properties.filter((property) => {
       if (!matchesSearch(property, query.trim())) return false;
       if (city !== 'all' && property.city !== city) return false;
       if (type !== 'all' && property.type !== type) return false;
@@ -139,7 +150,7 @@ export default function PropertiesPage() {
       case 'name': return results.sort((a, b) => a.title.localeCompare(b.title));
       default: return results.sort((a, b) => tiers.indexOf(a.tier) - tiers.indexOf(b.tier));
     }
-  }, [query, city, type, transaction, tier, minPrice, maxPrice, minBeds, minBaths, minSize, maxSize, minYield, sort, currency]);
+  }, [properties, query, city, type, transaction, tier, minPrice, maxPrice, minBeds, minBaths, minSize, maxSize, minYield, sort, currency]);
 
   const activeFilterCount = [city !== 'all', type !== 'all', transaction !== 'all', tier !== 'all', !!minPrice, !!maxPrice, minBeds !== 'all', minBaths !== 'all', !!minSize, !!maxSize, !!minYield].filter(Boolean).length;
 
@@ -194,12 +205,12 @@ export default function PropertiesPage() {
             <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-500">Max size (m²)<input type="number" min="0" value={maxSize} onChange={(event) => setMaxSize(event.target.value)} placeholder="Any size" className={inputClass} /></label>
             <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-500">Min. projected yield (%)<input type="number" min="0" step="0.1" value={minYield} onChange={(event) => setMinYield(event.target.value)} placeholder="Any yield" className={inputClass} /></label>
           </div>
-          <div className="mt-5 flex items-center gap-2 border-t border-neutral-200 pt-4 text-xs text-neutral-500"><Check className="h-3.5 w-3.5 text-[#0C3826]" />Filters apply instantly to all {PROPERTIES.length} properties.</div>
+          <div className="mt-5 flex items-center gap-2 border-t border-neutral-200 pt-4 text-xs text-neutral-500"><Check className="h-3.5 w-3.5 text-[#0C3826]" />Filters apply instantly to all {properties.length} properties.</div>
         </div>}
 
-        <div className="mb-5 flex items-center justify-between border-b border-neutral-200 pb-3 text-[10px] font-mono uppercase tracking-[0.16em] text-neutral-400"><span>Showing {filteredProperties.length} of {PROPERTIES.length} properties</span><span>{sortLabels[sort]}</span></div>
+        <div className="mb-5 flex items-center justify-between border-b border-neutral-200 pb-3 text-[10px] font-mono uppercase tracking-[0.16em] text-neutral-400"><span>Showing {filteredProperties.length} of {properties.length} properties</span><span>{sortLabels[sort]}</span></div>
 
-        {filteredProperties.length > 0 ? <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 xl:grid-cols-4">{filteredProperties.map((property) => <PropertyCard key={property.id} property={property} currency={currency} />)}</div> : <div className="border-y border-neutral-200 py-20 text-center"><p className="font-serif text-3xl text-[#0C3826]">No properties match those filters.</p><p className="mt-2 text-sm text-neutral-500">Try changing a filter or clearing your search.</p><button type="button" onClick={resetFilters} className="mt-5 border border-[#0C3826] px-5 py-3 text-xs uppercase tracking-wider text-[#0C3826] transition-colors hover:bg-[#0C3826] hover:text-white">Reset filters</button></div>}
+        {isLoading ? <p className="border-y border-neutral-200 py-20 text-center text-sm text-neutral-500">Loading properties...</p> : filteredProperties.length > 0 ? <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 xl:grid-cols-4">{filteredProperties.map((property) => <PropertyCard key={property.id} property={property} currency={currency} />)}</div> : <div className="border-y border-neutral-200 py-20 text-center"><p className="font-serif text-3xl text-[#0C3826]">No properties match those filters.</p><p className="mt-2 text-sm text-neutral-500">Try changing a filter or clearing your search.</p><button type="button" onClick={resetFilters} className="mt-5 border border-[#0C3826] px-5 py-3 text-xs uppercase tracking-wider text-[#0C3826] transition-colors hover:bg-[#0C3826] hover:text-white">Reset filters</button></div>}
       </section>
     </main>
   );

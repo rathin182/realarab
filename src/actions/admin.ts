@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/permissions";
+import { redirect } from "next/navigation";
 
 export async function reviewAgentApplication(formData: FormData) {
     const session = await requireAdmin();
@@ -107,4 +108,121 @@ export async function resolveReport(formData: FormData) {
 
   revalidatePath("/admin");
   revalidatePath("/admin/review");
+}
+
+export async function createAdminListing(formData: FormData) {
+  const session = await requireAdmin();
+  const title = String(formData.get("title") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim();
+  const city = String(formData.get("city") ?? "").trim();
+  const state = String(formData.get("state") ?? "").trim();
+  const propertyType = String(formData.get("propertyType") ?? "").trim();
+  const imageUrl = String(formData.get("imageUrl") ?? "").trim();
+  const price = Number(formData.get("price"));
+  const areaSqm = Number(formData.get("areaSqm"));
+  const bedrooms = Number(formData.get("bedrooms"));
+  const bathrooms = Number(formData.get("bathrooms"));
+  const listingType = formData.get("listingType") === "RENT" ? "RENT" : "SALE";
+  const categoryValue = String(formData.get("category") ?? "RESIDENTIAL");
+  const category = ["RESIDENTIAL", "COMMERCIAL", "LAND"].includes(categoryValue)
+    ? categoryValue as "RESIDENTIAL" | "COMMERCIAL" | "LAND"
+    : "RESIDENTIAL";
+  const tierValue = String(formData.get("tier") ?? "curated");
+  const tier = ["featured", "curated", "vault", "syndicate"].includes(tierValue) ? tierValue : "curated";
+  let parsedImageUrl: URL | null = null;
+
+  try {
+    parsedImageUrl = imageUrl ? new URL(imageUrl) : null;
+  } catch {
+    redirect("/admin/properties/new?error=invalid");
+  }
+
+  if (
+    !title || title.length > 160 || !description || !city || !state || !propertyType || !parsedImageUrl ||
+    !Number.isSafeInteger(price) || price < 0 ||
+    (formData.get("areaSqm") && (!Number.isSafeInteger(areaSqm) || areaSqm < 0)) ||
+    (formData.get("bedrooms") && (!Number.isSafeInteger(bedrooms) || bedrooms < 0)) ||
+    (formData.get("bathrooms") && (!Number.isSafeInteger(bathrooms) || bathrooms < 0)) ||
+    (parsedImageUrl && !["http:", "https:"].includes(parsedImageUrl.protocol))
+  ) {
+    redirect("/admin/properties/new?error=invalid");
+  }
+
+  const slugBase = title.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80) || "property";
+  const slug = `${slugBase}-${crypto.randomUUID().slice(0, 8)}`;
+
+  const listing = await prisma.listing.create({
+    data: {
+      ownerId: session.user.id,
+      slug,
+      title,
+      description,
+      listingType,
+      category,
+      propertyType,
+      price: BigInt(price),
+      areaSqm: formData.get("areaSqm") ? areaSqm : null,
+      bedrooms: formData.get("bedrooms") ? bedrooms : null,
+      bathrooms: formData.get("bathrooms") ? bathrooms : null,
+      city,
+      state,
+      locality: String(formData.get("locality") ?? "").trim() || null,
+      tier,
+      status: "LIVE",
+      publishedAt: new Date(),
+      ...(parsedImageUrl ? {
+        media: {
+          create: {
+            kind: "IMAGE",
+            storageKey: parsedImageUrl.toString(),
+            isCover: true,
+            status: "READY",
+          },
+        },
+      } : {}),
+    },
+    select: { id: true, title: true },
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      actorId: session.user.id,
+      action: "listing.create",
+      entityType: "Listing",
+      entityId: listing.id,
+    },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/properties");
+  revalidatePath("/admin");
+  redirect("/admin?created=1");
+}
+
+export async function archiveAdminListing(formData: FormData) {
+  const session = await requireAdmin();
+  const id = String(formData.get("id") ?? "");
+  const listing = await prisma.listing.findUniqueOrThrow({ where: { id } });
+
+  await prisma.$transaction([
+    prisma.listing.update({
+      where: { id },
+      data: { status: "ARCHIVED" },
+    }),
+    prisma.auditLog.create({
+      data: {
+        actorId: session.user.id,
+        action: "listing.archive",
+        entityType: "Listing",
+        entityId: id,
+        details: { slug: listing.slug, title: listing.title },
+      },
+    }),
+  ]);
+
+  revalidatePath("/");
+  revalidatePath("/properties");
+  revalidatePath(`/properties/${listing.slug}`);
+  revalidatePath("/admin");
+  revalidatePath("/admin/properties");
 }

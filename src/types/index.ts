@@ -14,7 +14,7 @@ export interface Property {
   titleAr: string;
   location: string;
   locationAr: string;
-  city: 'Riyadh' | 'Makkah' | 'Madinah' | 'Jeddah' | 'NEOM';
+  city: string;
   priceSAR: number;
   type: string;
   transaction: TransactionType;

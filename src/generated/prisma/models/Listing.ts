@@ -33,6 +33,7 @@ export type ListingAvgAggregateOutputType = {
   areaSqft: number | null
   latitude: number | null
   longitude: number | null
+  areaSqm: number | null
   viewCount: number | null
 }
 
@@ -43,6 +44,7 @@ export type ListingSumAggregateOutputType = {
   areaSqft: number | null
   latitude: number | null
   longitude: number | null
+  areaSqm: number | null
   viewCount: number | null
 }
 
@@ -68,6 +70,7 @@ export type ListingMinAggregateOutputType = {
   latitude: number | null
   longitude: number | null
   reraNumber: string | null
+  areaSqm: number | null
   tier: string | null
   isOffPlan: boolean | null
   badge: string | null
@@ -106,6 +109,7 @@ export type ListingMaxAggregateOutputType = {
   latitude: number | null
   longitude: number | null
   reraNumber: string | null
+  areaSqm: number | null
   tier: string | null
   isOffPlan: boolean | null
   badge: string | null
@@ -144,6 +148,7 @@ export type ListingCountAggregateOutputType = {
   latitude: number
   longitude: number
   reraNumber: number
+  areaSqm: number
   tier: number
   isOffPlan: number
   badge: number
@@ -171,6 +176,7 @@ export type ListingAvgAggregateInputType = {
   areaSqft?: true
   latitude?: true
   longitude?: true
+  areaSqm?: true
   viewCount?: true
 }
 
@@ -181,6 +187,7 @@ export type ListingSumAggregateInputType = {
   areaSqft?: true
   latitude?: true
   longitude?: true
+  areaSqm?: true
   viewCount?: true
 }
 
@@ -206,6 +213,7 @@ export type ListingMinAggregateInputType = {
   latitude?: true
   longitude?: true
   reraNumber?: true
+  areaSqm?: true
   tier?: true
   isOffPlan?: true
   badge?: true
@@ -244,6 +252,7 @@ export type ListingMaxAggregateInputType = {
   latitude?: true
   longitude?: true
   reraNumber?: true
+  areaSqm?: true
   tier?: true
   isOffPlan?: true
   badge?: true
@@ -282,6 +291,7 @@ export type ListingCountAggregateInputType = {
   latitude?: true
   longitude?: true
   reraNumber?: true
+  areaSqm?: true
   tier?: true
   isOffPlan?: true
   badge?: true
@@ -409,6 +419,7 @@ export type ListingGroupByOutputType = {
   latitude: number | null
   longitude: number | null
   reraNumber: string | null
+  areaSqm: number | null
   tier: string | null
   isOffPlan: boolean
   badge: string | null
@@ -472,6 +483,7 @@ export type ListingWhereInput = {
   latitude?: Prisma.FloatNullableFilter<"Listing"> | number | null
   longitude?: Prisma.FloatNullableFilter<"Listing"> | number | null
   reraNumber?: Prisma.StringNullableFilter<"Listing"> | string | null
+  areaSqm?: Prisma.IntNullableFilter<"Listing"> | number | null
   tier?: Prisma.StringNullableFilter<"Listing"> | string | null
   isOffPlan?: Prisma.BoolFilter<"Listing"> | boolean
   badge?: Prisma.StringNullableFilter<"Listing"> | string | null
@@ -517,6 +529,7 @@ export type ListingOrderByWithRelationInput = {
   latitude?: Prisma.SortOrderInput | Prisma.SortOrder
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
   reraNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  areaSqm?: Prisma.SortOrderInput | Prisma.SortOrder
   tier?: Prisma.SortOrderInput | Prisma.SortOrder
   isOffPlan?: Prisma.SortOrder
   badge?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -565,6 +578,7 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
   latitude?: Prisma.FloatNullableFilter<"Listing"> | number | null
   longitude?: Prisma.FloatNullableFilter<"Listing"> | number | null
   reraNumber?: Prisma.StringNullableFilter<"Listing"> | string | null
+  areaSqm?: Prisma.IntNullableFilter<"Listing"> | number | null
   tier?: Prisma.StringNullableFilter<"Listing"> | string | null
   isOffPlan?: Prisma.BoolFilter<"Listing"> | boolean
   badge?: Prisma.StringNullableFilter<"Listing"> | string | null
@@ -610,6 +624,7 @@ export type ListingOrderByWithAggregationInput = {
   latitude?: Prisma.SortOrderInput | Prisma.SortOrder
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
   reraNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  areaSqm?: Prisma.SortOrderInput | Prisma.SortOrder
   tier?: Prisma.SortOrderInput | Prisma.SortOrder
   isOffPlan?: Prisma.SortOrder
   badge?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -658,6 +673,7 @@ export type ListingScalarWhereWithAggregatesInput = {
   latitude?: Prisma.FloatNullableWithAggregatesFilter<"Listing"> | number | null
   longitude?: Prisma.FloatNullableWithAggregatesFilter<"Listing"> | number | null
   reraNumber?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
+  areaSqm?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null
   tier?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
   isOffPlan?: Prisma.BoolWithAggregatesFilter<"Listing"> | boolean
   badge?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
@@ -697,6 +713,7 @@ export type ListingCreateInput = {
   latitude?: number | null
   longitude?: number | null
   reraNumber?: string | null
+  areaSqm?: number | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -742,6 +759,7 @@ export type ListingUncheckedCreateInput = {
   latitude?: number | null
   longitude?: number | null
   reraNumber?: string | null
+  areaSqm?: number | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -785,6 +803,7 @@ export type ListingUpdateInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -830,6 +849,7 @@ export type ListingUncheckedUpdateInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -874,6 +894,7 @@ export type ListingCreateManyInput = {
   latitude?: number | null
   longitude?: number | null
   reraNumber?: string | null
+  areaSqm?: number | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -913,6 +934,7 @@ export type ListingUpdateManyMutationInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -953,6 +975,7 @@ export type ListingUncheckedUpdateManyInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1011,6 +1034,7 @@ export type ListingCountOrderByAggregateInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   reraNumber?: Prisma.SortOrder
+  areaSqm?: Prisma.SortOrder
   tier?: Prisma.SortOrder
   isOffPlan?: Prisma.SortOrder
   badge?: Prisma.SortOrder
@@ -1036,6 +1060,7 @@ export type ListingAvgOrderByAggregateInput = {
   areaSqft?: Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
+  areaSqm?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
 }
 
@@ -1061,6 +1086,7 @@ export type ListingMaxOrderByAggregateInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   reraNumber?: Prisma.SortOrder
+  areaSqm?: Prisma.SortOrder
   tier?: Prisma.SortOrder
   isOffPlan?: Prisma.SortOrder
   badge?: Prisma.SortOrder
@@ -1099,6 +1125,7 @@ export type ListingMinOrderByAggregateInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   reraNumber?: Prisma.SortOrder
+  areaSqm?: Prisma.SortOrder
   tier?: Prisma.SortOrder
   isOffPlan?: Prisma.SortOrder
   badge?: Prisma.SortOrder
@@ -1122,6 +1149,7 @@ export type ListingSumOrderByAggregateInput = {
   areaSqft?: Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
+  areaSqm?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
 }
 
@@ -1307,6 +1335,7 @@ export type ListingCreateWithoutOwnerInput = {
   latitude?: number | null
   longitude?: number | null
   reraNumber?: string | null
+  areaSqm?: number | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1350,6 +1379,7 @@ export type ListingUncheckedCreateWithoutOwnerInput = {
   latitude?: number | null
   longitude?: number | null
   reraNumber?: string | null
+  areaSqm?: number | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1423,6 +1453,7 @@ export type ListingScalarWhereInput = {
   latitude?: Prisma.FloatNullableFilter<"Listing"> | number | null
   longitude?: Prisma.FloatNullableFilter<"Listing"> | number | null
   reraNumber?: Prisma.StringNullableFilter<"Listing"> | string | null
+  areaSqm?: Prisma.IntNullableFilter<"Listing"> | number | null
   tier?: Prisma.StringNullableFilter<"Listing"> | string | null
   isOffPlan?: Prisma.BoolFilter<"Listing"> | boolean
   badge?: Prisma.StringNullableFilter<"Listing"> | string | null
@@ -1462,6 +1493,7 @@ export type ListingCreateWithoutMediaInput = {
   latitude?: number | null
   longitude?: number | null
   reraNumber?: string | null
+  areaSqm?: number | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1506,6 +1538,7 @@ export type ListingUncheckedCreateWithoutMediaInput = {
   latitude?: number | null
   longitude?: number | null
   reraNumber?: string | null
+  areaSqm?: number | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1564,6 +1597,7 @@ export type ListingUpdateWithoutMediaInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1608,6 +1642,7 @@ export type ListingUncheckedUpdateWithoutMediaInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1650,6 +1685,7 @@ export type ListingCreateWithoutEnquiriesInput = {
   latitude?: number | null
   longitude?: number | null
   reraNumber?: string | null
+  areaSqm?: number | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1694,6 +1730,7 @@ export type ListingUncheckedCreateWithoutEnquiriesInput = {
   latitude?: number | null
   longitude?: number | null
   reraNumber?: string | null
+  areaSqm?: number | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1752,6 +1789,7 @@ export type ListingUpdateWithoutEnquiriesInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1796,6 +1834,7 @@ export type ListingUncheckedUpdateWithoutEnquiriesInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1838,6 +1877,7 @@ export type ListingCreateWithoutSavesInput = {
   latitude?: number | null
   longitude?: number | null
   reraNumber?: string | null
+  areaSqm?: number | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1882,6 +1922,7 @@ export type ListingUncheckedCreateWithoutSavesInput = {
   latitude?: number | null
   longitude?: number | null
   reraNumber?: string | null
+  areaSqm?: number | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1940,6 +1981,7 @@ export type ListingUpdateWithoutSavesInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1984,6 +2026,7 @@ export type ListingUncheckedUpdateWithoutSavesInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2026,6 +2069,7 @@ export type ListingCreateWithoutReportsInput = {
   latitude?: number | null
   longitude?: number | null
   reraNumber?: string | null
+  areaSqm?: number | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -2070,6 +2114,7 @@ export type ListingUncheckedCreateWithoutReportsInput = {
   latitude?: number | null
   longitude?: number | null
   reraNumber?: string | null
+  areaSqm?: number | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -2128,6 +2173,7 @@ export type ListingUpdateWithoutReportsInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2172,6 +2218,7 @@ export type ListingUncheckedUpdateWithoutReportsInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2214,6 +2261,7 @@ export type ListingCreateManyOwnerInput = {
   latitude?: number | null
   longitude?: number | null
   reraNumber?: string | null
+  areaSqm?: number | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -2253,6 +2301,7 @@ export type ListingUpdateWithoutOwnerInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2296,6 +2345,7 @@ export type ListingUncheckedUpdateWithoutOwnerInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2339,6 +2389,7 @@ export type ListingUncheckedUpdateManyWithoutOwnerInput = {
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2437,6 +2488,7 @@ export type ListingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   latitude?: boolean
   longitude?: boolean
   reraNumber?: boolean
+  areaSqm?: boolean
   tier?: boolean
   isOffPlan?: boolean
   badge?: boolean
@@ -2483,6 +2535,7 @@ export type ListingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   latitude?: boolean
   longitude?: boolean
   reraNumber?: boolean
+  areaSqm?: boolean
   tier?: boolean
   isOffPlan?: boolean
   badge?: boolean
@@ -2524,6 +2577,7 @@ export type ListingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   latitude?: boolean
   longitude?: boolean
   reraNumber?: boolean
+  areaSqm?: boolean
   tier?: boolean
   isOffPlan?: boolean
   badge?: boolean
@@ -2565,6 +2619,7 @@ export type ListingSelectScalar = {
   latitude?: boolean
   longitude?: boolean
   reraNumber?: boolean
+  areaSqm?: boolean
   tier?: boolean
   isOffPlan?: boolean
   badge?: boolean
@@ -2583,7 +2638,7 @@ export type ListingSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "slug" | "title" | "description" | "listingType" | "category" | "propertyType" | "price" | "priceNegotiable" | "bedrooms" | "bathrooms" | "areaSqft" | "addressLine" | "locality" | "city" | "state" | "pincode" | "latitude" | "longitude" | "reraNumber" | "tier" | "isOffPlan" | "badge" | "flags" | "keyFeatures" | "projectedYield" | "titleAr" | "descriptionAr" | "locationAr" | "status" | "rejectionReason" | "publishedAt" | "expiresAt" | "viewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
+export type ListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "slug" | "title" | "description" | "listingType" | "category" | "propertyType" | "price" | "priceNegotiable" | "bedrooms" | "bathrooms" | "areaSqft" | "addressLine" | "locality" | "city" | "state" | "pincode" | "latitude" | "longitude" | "reraNumber" | "areaSqm" | "tier" | "isOffPlan" | "badge" | "flags" | "keyFeatures" | "projectedYield" | "titleAr" | "descriptionAr" | "locationAr" | "status" | "rejectionReason" | "publishedAt" | "expiresAt" | "viewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
 export type ListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   media?: boolean | Prisma.Listing$mediaArgs<ExtArgs>
@@ -2630,6 +2685,7 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     latitude: number | null
     longitude: number | null
     reraNumber: string | null
+    areaSqm: number | null
     tier: string | null
     isOffPlan: boolean
     badge: string | null
@@ -3095,6 +3151,7 @@ export interface ListingFieldRefs {
   readonly latitude: Prisma.FieldRef<"Listing", 'Float'>
   readonly longitude: Prisma.FieldRef<"Listing", 'Float'>
   readonly reraNumber: Prisma.FieldRef<"Listing", 'String'>
+  readonly areaSqm: Prisma.FieldRef<"Listing", 'Int'>
   readonly tier: Prisma.FieldRef<"Listing", 'String'>
   readonly isOffPlan: Prisma.FieldRef<"Listing", 'Boolean'>
   readonly badge: Prisma.FieldRef<"Listing", 'String'>
