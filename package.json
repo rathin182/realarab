@@ -4,10 +4,15 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "node dev-server.mjs",
-    "build": "next build",
+    "postinstall": "node scripts/repair-zod-locale.mjs",
+    "prisma:generate": "prisma generate && node scripts/fix-prisma-generated-runtime.mjs",
+    "dev": "npm run prisma:generate && node dev-server.mjs",
+    "build": "npm run prisma:generate && next build",
     "start": "next start -p 3000",
     "lint": "tsc --noEmit"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
