@@ -3,6 +3,8 @@ import './globals.css';
 import { SmoothScroll } from '../components/providers/SmoothScroll';
 import { SiteShell } from '../components/layout/SiteShell';
 
+export const runtime = 'nodejs';
+
 export const metadata: Metadata = {
   title: 'Najm Estates KSA - Luxury Saudi Real Estate',
   description:

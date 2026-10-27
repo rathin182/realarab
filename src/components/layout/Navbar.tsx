@@ -164,9 +164,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           {/* Login/Register or signed-in dashboard */}
-          <div className="[&_a]:whitespace-nowrap [&_a]:rounded-md [&_a]:px-3 [&_a]:py-2 [&_a]:text-xs [&_a]:transition-colors sm:[&_a]:px-4 sm:[&_a]:py-2.5 sm:[&_a]:text-sm">
+          {/* <div className="[&_a]:whitespace-nowrap [&_a]:rounded-md [&_a]:px-3 [&_a]:py-2 [&_a]:text-xs [&_a]:transition-colors sm:[&_a]:px-4 sm:[&_a]:py-2.5 sm:[&_a]:text-sm">
             <AuthHomeButtons />
-          </div>
+          </div> */}
 
           {/* Mobile menu */}
           <button

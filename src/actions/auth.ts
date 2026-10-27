@@ -111,46 +111,22 @@ export async function registerAction(
     const passwordHash = await bcrypt.hash(password, 12);
 
     // Create the account and consume its verification proof together.
-    await prisma.$transaction(async (tx) => {
-      const currentVerification = await tx.verificationToken.findUnique({
-        where: {
-          identifier_token: {
-            identifier: email,
-            token: verification.token,
-          },
-        },
-      });
-
-      if (
-        !currentVerification ||
-        currentVerification.expires <= new Date()
-      ) {
-        throw new Error("EMAIL_VERIFICATION_EXPIRED");
-      }
-
-      const currentToken = Buffer.from(currentVerification.token, "hex");
-
-      if (
-        currentToken.length !== expectedToken.length ||
-        !timingSafeEqual(currentToken, expectedToken)
-      ) {
-        throw new Error("EMAIL_VERIFICATION_INVALID");
-      }
-
-      await tx.user.create({
-        data: {
-          name,
-          email,
-          phone,
-          passwordHash,
-          role: "BUYER",
-        },
-      });
-
-      await tx.verificationToken.deleteMany({
-        where: { identifier: email },
-      });
+    const currentVerification = await prisma.verificationToken.findFirst({
+      where: {
+        identifier: email,
+        token: verification.token,
+        expires: { gt: new Date() },
+      },
     });
+
+    if (!currentVerification) {
+      return "Email verification expired or is invalid. Please verify your email again.";
+    }
+
+    await prisma.user.create({
+      data: { name, email, phone, passwordHash, role: "BUYER" },
+    });
+    await prisma.verificationToken.deleteMany({ where: { identifier: email } });
   } catch (error) {
     if (
       error instanceof Error &&
