@@ -1,6 +1,7 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { Currency, Language, Property, TransactionFilter } from './types';
+import React, { useState } from 'react';
+import { Currency, Property, TransactionFilter } from './types';
+import { useSiteLanguage } from './components/providers/LanguageContext';
 import { Footer } from './components/layout/Footer';
 import { HeroSection } from './components/sections/HeroSection';
 import { PortfolioSection } from './components/sections/PortfolioSection';
@@ -14,7 +15,7 @@ import { PropertyDossierModal } from './components/modals/PropertyDossierModal';
 
 export default function App() {
   const [currency, setCurrency] = useState<Currency>('SAR');
-  const [language, setLanguage] = useState<Language>('en');
+  const { language } = useSiteLanguage();
 
   // Shared Filters
   const [selectedCity, setSelectedCity] = useState<string>('all');
@@ -32,11 +33,6 @@ export default function App() {
   const [isBuyerGuideOpen, setIsBuyerGuideOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] =
     useState<Property | null>(null);
-
-  useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-  }, [language]);
 
   const scrollToPrivateAdvisory = () => {
     const el = document.getElementById('private-advisory');

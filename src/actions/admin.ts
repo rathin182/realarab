@@ -118,6 +118,7 @@ export async function createAdminListing(formData: FormData) {
   const state = String(formData.get("state") ?? "").trim();
   const propertyType = String(formData.get("propertyType") ?? "").trim();
   const imageUrl = String(formData.get("imageUrl") ?? "").trim();
+  const isUploadedImage = /^\/uploads\/[0-9a-f-]+\.(?:jpg|png|webp)$/.test(imageUrl);
   const price = Number(formData.get("price"));
   const areaSqm = Number(formData.get("areaSqm"));
   const bedrooms = Number(formData.get("bedrooms"));
@@ -131,14 +132,16 @@ export async function createAdminListing(formData: FormData) {
   const tier = ["featured", "curated", "vault", "syndicate"].includes(tierValue) ? tierValue : "curated";
   let parsedImageUrl: URL | null = null;
 
-  try {
-    parsedImageUrl = imageUrl ? new URL(imageUrl) : null;
-  } catch {
-    redirect("/admin/properties/new?error=invalid");
+  if (imageUrl && !isUploadedImage) {
+    try {
+      parsedImageUrl = new URL(imageUrl);
+    } catch {
+      redirect("/admin/properties/new?error=invalid");
+    }
   }
 
   if (
-    !title || title.length > 160 || !description || !city || !state || !propertyType || !parsedImageUrl ||
+    !title || title.length > 160 || !description || !city || !state || !propertyType || (!parsedImageUrl && !isUploadedImage) ||
     !Number.isSafeInteger(price) || price < 0 ||
     (formData.get("areaSqm") && (!Number.isSafeInteger(areaSqm) || areaSqm < 0)) ||
     (formData.get("bedrooms") && (!Number.isSafeInteger(bedrooms) || bedrooms < 0)) ||
@@ -170,11 +173,11 @@ export async function createAdminListing(formData: FormData) {
       tier,
       status: "LIVE",
       publishedAt: new Date(),
-      ...(parsedImageUrl ? {
+      ...(imageUrl ? {
         media: {
           create: {
             kind: "IMAGE",
-            storageKey: parsedImageUrl.toString(),
+            storageKey: imageUrl,
             isCover: true,
             status: "READY",
           },
