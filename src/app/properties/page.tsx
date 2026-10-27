@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { ArrowDownUp, ArrowUpRight, Bath, BedDouble, Check, ChevronDown, MapPin, Maximize2, Search, SlidersHorizontal, X } from 'lucide-react';
 import { CURRENCY_RATES } from '../../data/websiteContent';
 import { Currency, Property, TransactionFilter } from '../../types';
@@ -9,12 +10,11 @@ import { formatPrice } from '../../lib/currency';
 
 type SortOption = 'featured' | 'price-low' | 'price-high' | 'size-large' | 'yield-high' | 'name';
 
-const transactionTypes: { value: TransactionFilter; label: string }[] = [
-  { value: 'all', label: 'All opportunities' },
-  { value: 'buy', label: 'Buy / For sale' },
-  { value: 'off-plan', label: 'Off-plan' },
-  { value: 'commercial', label: 'Commercial' },
-];
+const propertyTypeGroups = {
+  Residential: ['Apartment', 'Villa', 'Townhouse', 'Penthouse'],
+  Commercial: ['Office', 'Retail', 'Bulk Sale Unit', 'Warehouse'],
+  Land: ['Land'],
+};
 
 const presetPrices = Array.from({ length: 102 }, (_, index) => String(index * 10_000));
 
@@ -91,14 +91,16 @@ function PropertyCard({ property, currency }: { property: Property; currency: Cu
   );
 }
 
-export default function PropertiesPage() {
+function PropertiesContent() {
+  const searchParams = useSearchParams();
+  const filterBarRef = useRef<HTMLDivElement>(null);
   const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currency, setCurrency] = useState<Currency>('SAR');
-  const [query, setQuery] = useState('');
-  const [city, setCity] = useState('all');
+  const [query, setQuery] = useState(searchParams.get('q') ?? '');
+  const [city, setCity] = useState(searchParams.get('city') ?? 'all');
   const [type, setType] = useState('all');
-  const [transaction, setTransaction] = useState<TransactionFilter>('all');
+  const [transaction, setTransaction] = useState<TransactionFilter>((searchParams.get('transaction') as TransactionFilter) ?? 'all');
   const [tier, setTier] = useState('all');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
@@ -109,6 +111,18 @@ export default function PropertiesPage() {
   const [minYield, setMinYield] = useState('');
   const [sort, setSort] = useState<SortOption>('featured');
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [typeCategory, setTypeCategory] = useState<keyof typeof propertyTypeGroups>('Residential');
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (event.target instanceof Node && !filterBarRef.current?.contains(event.target)) setActiveDropdown(null);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') setActiveDropdown(null); };
+    document.addEventListener('pointerdown', closeOnOutsideClick);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => { document.removeEventListener('pointerdown', closeOnOutsideClick); document.removeEventListener('keydown', closeOnEscape); };
+  }, []);
 
   useEffect(() => {
     fetch('/api/listings')
@@ -121,13 +135,14 @@ export default function PropertiesPage() {
   const cities = [...new Set(properties.map((property) => property.city))].sort();
   const propertyTypes = [...new Set(properties.map((property) => property.type))].sort();
   const tiers = [...new Set(properties.map((property) => property.tier))];
+  const features = [...new Set(properties.flatMap((property) => [...property.keyFeatures, ...property.flags]).filter(Boolean))].sort();
 
   const filteredProperties = useMemo(() => {
     const currencyRate = CURRENCY_RATES[currency].rate;
     const minPriceSAR = minPrice ? Number(minPrice) / currencyRate : 0;
     const maxPriceSAR = maxPrice ? Number(maxPrice) / currencyRate : Infinity;
     const results = properties.filter((property) => {
-      if (!matchesSearch(property, query.trim())) return false;
+      if (query.trim() && !`${property.city} ${property.location}`.toLowerCase().includes(query.trim().toLowerCase()) && !matchesSearch(property, query.trim())) return false;
       if (city !== 'all' && property.city !== city) return false;
       if (type !== 'all' && property.type !== type) return false;
       if (transaction !== 'all' && property.transaction !== transaction) return false;
@@ -153,10 +168,25 @@ export default function PropertiesPage() {
   }, [properties, query, city, type, transaction, tier, minPrice, maxPrice, minBeds, minBaths, minSize, maxSize, minYield, sort, currency]);
 
   const activeFilterCount = [city !== 'all', type !== 'all', transaction !== 'all', tier !== 'all', !!minPrice, !!maxPrice, minBeds !== 'all', minBaths !== 'all', !!minSize, !!maxSize, !!minYield].filter(Boolean).length;
+  const locationMatches = (property: Property) => `${property.city} ${property.location}`.toLowerCase().includes(query.trim().toLowerCase());
+  const compactTypeLabel = type === 'all' ? 'Property type' : type;
+  const compactBedsLabel = minBeds === 'all' && minBaths === 'all' ? 'Beds & Baths' : `${minBeds === 'all' ? 'Any' : `${minBeds}+ beds`} · ${minBaths === 'all' ? 'Any' : `${minBaths}+ baths`}`;
+  const compactPriceLabel = minPrice || maxPrice ? `${minPrice || 'Any'} – ${maxPrice || 'Any'} ${currency}` : `Price (${currency})`;
+  const dropdownButton = (id: string, label: string, selected: boolean, width: string, content: React.ReactNode) => (
+    <div className={`relative shrink-0 ${width}`}>
+      <button type="button" onClick={() => setActiveDropdown((current) => current === id ? null : id)} aria-expanded={activeDropdown === id} aria-haspopup="dialog" className={`flex h-12 w-full items-center justify-between gap-3 rounded-lg border px-3.5 text-left text-xs transition-colors sm:px-4 ${selected || activeDropdown === id ? 'border-[#087985] text-[#00666D]' : 'border-neutral-200 text-neutral-700 hover:border-[#087985]'}`}>
+        <span className="truncate">{label}</span><ChevronDown className={`h-4 w-4 shrink-0 text-neutral-500 transition-transform ${activeDropdown === id ? 'rotate-180' : ''}`} />
+      </button>
+      {activeDropdown === id && <div role="dialog" className="absolute left-0 top-[calc(100%+0.55rem)] z-40 w-[min(21rem,calc(100vw-2rem))] rounded-xl border border-neutral-200 bg-white p-4 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.3)]">{content}</div>}
+    </div>
+  );
+  const doneButton = (onClick = () => setActiveDropdown(null)) => <button type="button" onClick={onClick} className="h-10 flex-1 rounded-lg bg-[#00666D] px-4 text-xs font-semibold text-white transition-colors hover:bg-[#00555B]">Done</button>;
+  const resetButton = (onClick: () => void) => <button type="button" onClick={onClick} className="h-10 flex-1 rounded-lg border border-[#087985] px-4 text-xs font-semibold text-[#00666D] transition-colors hover:bg-[#F0FAFA]">Reset</button>;
 
   const resetFilters = () => {
     setQuery(''); setCity('all'); setType('all'); setTransaction('all'); setTier('all');
     setMinPrice(''); setMaxPrice(''); setMinBeds('all'); setMinBaths('all'); setMinSize(''); setMaxSize(''); setMinYield(''); setSort('featured');
+    setActiveDropdown(null);
   };
 
   const selectClass = 'mt-1.5 h-11 w-full border border-neutral-200 bg-white px-3 text-sm text-neutral-800 outline-none transition focus:border-[#0C3826]';
@@ -178,16 +208,20 @@ export default function PropertiesPage() {
       </section>
 
       <section className="mx-auto max-w-[110rem] px-4 pt-8 sm:px-8 lg:px-10">
-        <div className="mb-6 flex flex-col gap-3 lg:flex-row">
-          <label className="relative min-w-0 flex-1"><Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by property, location, feature or registration…" className="h-12 w-full border border-neutral-200 bg-white pl-11 pr-4 text-sm outline-none focus:border-[#0C3826]" /></label>
-          <div className="flex gap-3">
-            <label className="flex min-w-36 flex-1 items-center gap-2 border border-neutral-200 bg-white px-3 text-neutral-500"><ArrowDownUp className="h-4 w-4 shrink-0" /><select value={sort} onChange={(event) => setSort(event.target.value as SortOption)} className="h-12 min-w-0 flex-1 bg-transparent text-xs text-neutral-700 outline-none">{Object.entries(sortLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-            <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} className="inline-flex h-12 items-center gap-2 border border-neutral-200 bg-white px-4 text-xs text-neutral-700 transition-colors hover:border-[#0C3826]"><SlidersHorizontal className="h-4 w-4" />Filters{activeFilterCount > 0 && <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#0C3826] px-1 text-[10px] text-white">{activeFilterCount}</span>}<ChevronDown className={`h-3.5 w-3.5 transition-transform ${filtersOpen ? 'rotate-180' : ''}`} /></button>
+        <div ref={filterBarRef} className="relative z-20 mb-7 rounded-2xl border border-neutral-200 bg-white p-3 shadow-[0_8px_28px_-24px_rgba(0,0,0,0.35)]">
+          <div className="flex flex-wrap items-center gap-2.5 xl:flex-nowrap">
+            <div className="relative shrink-0">
+              <button type="button" onClick={() => setActiveDropdown((current) => current === 'purpose' ? null : 'purpose')} aria-expanded={activeDropdown === 'purpose'} className={`flex h-12 min-w-[6.5rem] items-center justify-center gap-2 rounded-lg border px-4 text-xs ${transaction !== 'all' ? 'border-[#087985] text-[#00666D]' : 'border-neutral-200 text-neutral-700'}`}>{transaction === 'rent' ? 'Rent' : transaction === 'buy' ? 'Buy' : 'Purpose'}<ChevronDown className={`h-4 w-4 transition-transform ${activeDropdown === 'purpose' ? 'rotate-180' : ''}`} /></button>
+              {activeDropdown === 'purpose' && <div role="dialog" className="absolute left-0 top-[calc(100%+0.55rem)] z-40 w-64 rounded-xl border border-neutral-200 bg-white p-4 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.3)]"><p className="mb-3 text-xs font-semibold text-neutral-700">Purpose</p><div className="grid grid-cols-2 rounded-lg border border-neutral-200 p-1"><button type="button" onClick={() => setTransaction('buy')} className={`rounded-md py-2 text-xs ${transaction === 'buy' ? 'bg-emerald-50 font-semibold text-emerald-600' : 'text-neutral-600'}`}>Buy</button><button type="button" onClick={() => setTransaction('rent')} className={`rounded-md py-2 text-xs ${transaction === 'rent' ? 'bg-emerald-50 font-semibold text-emerald-600' : 'text-neutral-600'}`}>Rent</button></div><div className="mt-4 flex gap-2">{resetButton(() => setTransaction('all'))}{doneButton()}</div></div>}
+            </div>
+            <label className="relative flex h-12 min-w-[13rem] flex-1 items-center gap-2 rounded-lg border border-[#76B8BE] px-3.5 focus-within:border-[#087985] xl:max-w-[24rem]"><MapPin className="h-4 w-4 shrink-0 text-[#00666D]" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="City, community or building" aria-label="Search city, community or building" className="h-full min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-neutral-400" />{query && <button type="button" onClick={() => { setQuery(''); setCity('all'); }} aria-label="Clear location" className="text-neutral-400 hover:text-neutral-700"><X className="h-4 w-4" /></button>}</label>
+            {dropdownButton('type', compactTypeLabel, type !== 'all', 'w-[10rem]', <><div className="mb-3 grid grid-cols-3 border-b border-neutral-200 text-xs">{(Object.keys(propertyTypeGroups) as (keyof typeof propertyTypeGroups)[]).map((group) => <button key={group} type="button" onClick={() => setTypeCategory(group)} className={`border-b-2 py-2 ${typeCategory === group ? 'border-emerald-500 font-semibold text-emerald-600' : 'border-transparent text-neutral-500'}`}>{group}</button>)}</div><div className="grid grid-cols-2 gap-2">{propertyTypeGroups[typeCategory].map((item) => <button key={item} type="button" onClick={() => setType(type === item ? 'all' : item)} className={`rounded-full border px-2.5 py-2 text-xs ${type === item ? 'border-emerald-500 bg-emerald-50 font-medium text-emerald-600' : 'border-neutral-200 text-neutral-600 hover:border-neutral-400'}`}>{type === item && <Check className="mr-1 inline h-3 w-3" />}{item}</button>)}</div><div className="mt-4 flex gap-2">{resetButton(() => setType('all'))}{doneButton()}</div></>)}
+            {dropdownButton('beds', compactBedsLabel, minBeds !== 'all' || minBaths !== 'all', 'w-[11.5rem]', <><p className="mb-2 text-xs font-semibold text-neutral-700">Bedrooms</p><div className="mb-4 flex flex-wrap gap-1.5">{['Studio', '1', '2', '3', '4', '5', '6', '7', '8+'].map((value) => <button key={value} type="button" onClick={() => setMinBeds(value === 'Studio' ? '0' : value === '8+' ? '8' : value)} className={`min-w-10 rounded-full border px-3 py-1.5 text-xs ${minBeds === (value === 'Studio' ? '0' : value === '8+' ? '8' : value) ? 'border-[#087985] bg-[#EAF6F6] text-[#00666D]' : 'border-neutral-200 text-neutral-600'}`}>{value}</button>)}</div><p className="mb-2 text-xs font-semibold text-neutral-700">Bathrooms</p><div className="flex flex-wrap gap-1.5">{['1', '2', '3', '4', '5', '6+'].map((value) => <button key={value} type="button" onClick={() => setMinBaths(value === '6+' ? '6' : value)} className={`min-w-10 rounded-full border px-3 py-1.5 text-xs ${minBaths === (value === '6+' ? '6' : value) ? 'border-[#087985] bg-[#EAF6F6] text-[#00666D]' : 'border-neutral-200 text-neutral-600'}`}>{value}</button>)}</div><div className="mt-4 flex gap-2">{resetButton(() => { setMinBeds('all'); setMinBaths('all'); })}{doneButton()}</div></>)}
+            {dropdownButton('price', compactPriceLabel, !!minPrice || !!maxPrice, 'w-[11.5rem]', <><div className="grid grid-cols-2 gap-2"><PriceBoundField label="Minimum" value={minPrice} currency={currency} onChange={setMinPrice} /><PriceBoundField label="Maximum" value={maxPrice} currency={currency} onChange={setMaxPrice} /></div><label className="mt-3 block text-xs text-neutral-500">Currency<select value={currency} onChange={(event) => setCurrency(event.target.value as Currency)} className="mt-1.5 h-10 w-full rounded-lg border border-neutral-200 bg-white px-3 text-sm text-neutral-800 outline-none focus:border-[#087985]"><option>SAR</option><option>AED</option><option>USD</option><option>EUR</option><option>GBP</option></select></label><div className="mt-4 flex gap-2">{resetButton(() => { setMinPrice(''); setMaxPrice(''); })}{doneButton()}</div></>)}
+            {dropdownButton('more', `More filters${activeFilterCount > 0 ? ` · ${activeFilterCount}` : ''}`, filtersOpen, 'w-[9.5rem]', <><div className="max-h-[65vh] space-y-4 overflow-y-auto pr-1"><label className="block text-xs font-semibold text-neutral-700">Collection<select value={tier} onChange={(event) => setTier(event.target.value)} className="mt-1.5 h-10 w-full rounded-lg border border-neutral-200 bg-white px-3 text-sm font-normal text-neutral-700"><option value="all">All collections</option>{tiers.map((item) => <option key={item} value={item}>{item[0].toUpperCase() + item.slice(1)}</option>)}</select></label><label className="block text-xs font-semibold text-neutral-700">Area (m²)<span className="mt-1.5 grid grid-cols-2 gap-2"><input type="number" min="0" value={minSize} onChange={(event) => setMinSize(event.target.value)} placeholder="Minimum" className="h-10 min-w-0 rounded-lg border border-neutral-200 px-3 text-sm font-normal outline-none focus:border-[#087985]" /><input type="number" min="0" value={maxSize} onChange={(event) => setMaxSize(event.target.value)} placeholder="Maximum" className="h-10 min-w-0 rounded-lg border border-neutral-200 px-3 text-sm font-normal outline-none focus:border-[#087985]" /></span></label><label className="block text-xs font-semibold text-neutral-700">Minimum projected yield (%)<input type="number" min="0" step="0.1" value={minYield} onChange={(event) => setMinYield(event.target.value)} placeholder="Any" className="mt-1.5 h-10 w-full rounded-lg border border-neutral-200 px-3 text-sm font-normal outline-none focus:border-[#087985]" /></label><div><p className="mb-2 text-xs font-semibold text-neutral-700">Features</p><div className="flex max-h-32 flex-wrap gap-1.5 overflow-y-auto">{features.slice(0, 24).map((feature) => <span key={feature} className="rounded-full border border-neutral-200 px-2.5 py-1.5 text-[11px] text-neutral-500">{feature}</span>)}</div>{features.length === 0 && <p className="text-xs text-neutral-400">Features will appear when listings include them.</p>}</div><label className="block text-xs font-semibold text-neutral-700">Sort results<select value={sort} onChange={(event) => setSort(event.target.value as SortOption)} className="mt-1.5 h-10 w-full rounded-lg border border-neutral-200 bg-white px-3 text-sm font-normal text-neutral-700">{Object.entries(sortLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label></div><div className="mt-4 flex gap-2 border-t border-neutral-100 pt-3">{resetButton(resetFilters)}{doneButton(() => { setFiltersOpen(false); setActiveDropdown(null); })}</div></>)}
+            <label className="flex h-12 min-w-40 flex-1 items-center gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-neutral-500 xl:min-w-36 xl:flex-none"><ArrowDownUp className="h-4 w-4 shrink-0" /><select value={sort} onChange={(event) => setSort(event.target.value as SortOption)} aria-label="Sort properties" className="h-full min-w-0 flex-1 bg-transparent text-xs text-neutral-700 outline-none">{Object.entries(sortLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
           </div>
-        </div>
-
-        <div className="mb-6 flex flex-wrap gap-2">
-          {transactionTypes.map((option) => <button key={option.value} type="button" onClick={() => setTransaction(option.value)} className={`border px-3.5 py-2 text-[10px] font-mono uppercase tracking-wider transition-colors ${transaction === option.value ? 'border-[#0C3826] bg-[#0C3826] text-white' : 'border-neutral-200 text-neutral-500 hover:border-neutral-400 hover:text-neutral-800'}`}>{option.label}</button>)}
+          <div className="mt-3 flex items-center justify-between border-t border-neutral-100 pt-3 text-xs text-neutral-500"><span>{filteredProperties.length} properties match your search</span><button type="button" onClick={resetFilters} className="font-medium text-[#00666D] hover:underline">Clear filters</button></div>
         </div>
 
         {filtersOpen && <div className="mb-8 border border-neutral-200 bg-[#FAFAF8] p-5 sm:p-6">
@@ -214,4 +248,8 @@ export default function PropertiesPage() {
       </section>
     </main>
   );
+}
+
+export default function PropertiesPage() {
+  return <Suspense fallback={<main className="min-h-screen bg-white px-6 py-24 text-center text-sm text-neutral-500">Loading property search…</main>}><PropertiesContent /></Suspense>;
 }
