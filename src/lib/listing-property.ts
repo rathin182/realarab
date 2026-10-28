@@ -23,14 +23,15 @@ export interface ListingForProperty {
   reraNumber: string | null;
   flags: string[];
   keyFeatures: string[];
-  media: { storageKey: string | null; isCover: boolean; position: number }[];
+  media: { kind: "IMAGE" | "VIDEO_LINK" | "VIDEO_UPLOAD"; storageKey: string | null; isCover: boolean; position: number }[];
 }
 
 export function listingToProperty(listing: ListingForProperty): Property {
   const tier = ["featured", "curated", "vault", "syndicate"].includes(listing.tier ?? "")
     ? listing.tier as Property["tier"]
     : "curated";
-  const cover = listing.media.find((media) => media.isCover) ?? listing.media[0];
+  const images = listing.media.filter((media) => media.kind === "IMAGE");
+  const cover = images.find((media) => media.isCover) ?? images[0];
   const transaction = listing.category === "COMMERCIAL"
     ? "commercial"
     : listing.listingType === "RENT"

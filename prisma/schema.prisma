@@ -84,6 +84,7 @@ enum ListingStatus {
 enum MediaKind {
   IMAGE
   VIDEO_LINK
+  VIDEO_UPLOAD
 }
 
 enum MediaStatus {
@@ -125,8 +126,11 @@ model Listing {
   propertyType     String?          // "apartment", "villa", "shop", "plot"... free text so we can add types without a migration
   price            BigInt           // whole rupees
   priceNegotiable  Boolean          @default(false)
+  featured         Boolean          @default(false)
   bedrooms         Int?
   bathrooms        Int?
+  floors           Int?
+  yearBuilt        Int?
   areaSqft         Int?
   addressLine      String?
   locality         String?
@@ -138,6 +142,12 @@ model Listing {
   reraNumber       String?
 
   areaSqm          Int?             // the Saudi forms use sqm instead of areaSqft
+  availableFrom    DateTime?
+  availabilityNotes String?
+  zoning           String?
+  frontageMeters   Float?
+  depthMeters      Float?
+  propertyUse      String?
   tier             String?          // featured | curated | vault | syndicate (null = curated)
   isOffPlan        Boolean          @default(false)
   badge            String?

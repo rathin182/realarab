@@ -51,7 +51,8 @@ export type ListingStatus = (typeof ListingStatus)[keyof typeof ListingStatus]
 
 export const MediaKind = {
   IMAGE: 'IMAGE',
-  VIDEO_LINK: 'VIDEO_LINK'
+  VIDEO_LINK: 'VIDEO_LINK',
+  VIDEO_UPLOAD: 'VIDEO_UPLOAD'
 } as const
 
 export type MediaKind = (typeof MediaKind)[keyof typeof MediaKind]

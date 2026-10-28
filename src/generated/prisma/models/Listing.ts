@@ -30,10 +30,14 @@ export type ListingAvgAggregateOutputType = {
   price: number | null
   bedrooms: number | null
   bathrooms: number | null
+  floors: number | null
+  yearBuilt: number | null
   areaSqft: number | null
   latitude: number | null
   longitude: number | null
   areaSqm: number | null
+  frontageMeters: number | null
+  depthMeters: number | null
   viewCount: number | null
 }
 
@@ -41,10 +45,14 @@ export type ListingSumAggregateOutputType = {
   price: bigint | null
   bedrooms: number | null
   bathrooms: number | null
+  floors: number | null
+  yearBuilt: number | null
   areaSqft: number | null
   latitude: number | null
   longitude: number | null
   areaSqm: number | null
+  frontageMeters: number | null
+  depthMeters: number | null
   viewCount: number | null
 }
 
@@ -59,8 +67,11 @@ export type ListingMinAggregateOutputType = {
   propertyType: string | null
   price: bigint | null
   priceNegotiable: boolean | null
+  featured: boolean | null
   bedrooms: number | null
   bathrooms: number | null
+  floors: number | null
+  yearBuilt: number | null
   areaSqft: number | null
   addressLine: string | null
   locality: string | null
@@ -71,6 +82,12 @@ export type ListingMinAggregateOutputType = {
   longitude: number | null
   reraNumber: string | null
   areaSqm: number | null
+  availableFrom: Date | null
+  availabilityNotes: string | null
+  zoning: string | null
+  frontageMeters: number | null
+  depthMeters: number | null
+  propertyUse: string | null
   tier: string | null
   isOffPlan: boolean | null
   badge: string | null
@@ -98,8 +115,11 @@ export type ListingMaxAggregateOutputType = {
   propertyType: string | null
   price: bigint | null
   priceNegotiable: boolean | null
+  featured: boolean | null
   bedrooms: number | null
   bathrooms: number | null
+  floors: number | null
+  yearBuilt: number | null
   areaSqft: number | null
   addressLine: string | null
   locality: string | null
@@ -110,6 +130,12 @@ export type ListingMaxAggregateOutputType = {
   longitude: number | null
   reraNumber: string | null
   areaSqm: number | null
+  availableFrom: Date | null
+  availabilityNotes: string | null
+  zoning: string | null
+  frontageMeters: number | null
+  depthMeters: number | null
+  propertyUse: string | null
   tier: string | null
   isOffPlan: boolean | null
   badge: string | null
@@ -137,8 +163,11 @@ export type ListingCountAggregateOutputType = {
   propertyType: number
   price: number
   priceNegotiable: number
+  featured: number
   bedrooms: number
   bathrooms: number
+  floors: number
+  yearBuilt: number
   areaSqft: number
   addressLine: number
   locality: number
@@ -149,6 +178,12 @@ export type ListingCountAggregateOutputType = {
   longitude: number
   reraNumber: number
   areaSqm: number
+  availableFrom: number
+  availabilityNotes: number
+  zoning: number
+  frontageMeters: number
+  depthMeters: number
+  propertyUse: number
   tier: number
   isOffPlan: number
   badge: number
@@ -173,10 +208,14 @@ export type ListingAvgAggregateInputType = {
   price?: true
   bedrooms?: true
   bathrooms?: true
+  floors?: true
+  yearBuilt?: true
   areaSqft?: true
   latitude?: true
   longitude?: true
   areaSqm?: true
+  frontageMeters?: true
+  depthMeters?: true
   viewCount?: true
 }
 
@@ -184,10 +223,14 @@ export type ListingSumAggregateInputType = {
   price?: true
   bedrooms?: true
   bathrooms?: true
+  floors?: true
+  yearBuilt?: true
   areaSqft?: true
   latitude?: true
   longitude?: true
   areaSqm?: true
+  frontageMeters?: true
+  depthMeters?: true
   viewCount?: true
 }
 
@@ -202,8 +245,11 @@ export type ListingMinAggregateInputType = {
   propertyType?: true
   price?: true
   priceNegotiable?: true
+  featured?: true
   bedrooms?: true
   bathrooms?: true
+  floors?: true
+  yearBuilt?: true
   areaSqft?: true
   addressLine?: true
   locality?: true
@@ -214,6 +260,12 @@ export type ListingMinAggregateInputType = {
   longitude?: true
   reraNumber?: true
   areaSqm?: true
+  availableFrom?: true
+  availabilityNotes?: true
+  zoning?: true
+  frontageMeters?: true
+  depthMeters?: true
+  propertyUse?: true
   tier?: true
   isOffPlan?: true
   badge?: true
@@ -241,8 +293,11 @@ export type ListingMaxAggregateInputType = {
   propertyType?: true
   price?: true
   priceNegotiable?: true
+  featured?: true
   bedrooms?: true
   bathrooms?: true
+  floors?: true
+  yearBuilt?: true
   areaSqft?: true
   addressLine?: true
   locality?: true
@@ -253,6 +308,12 @@ export type ListingMaxAggregateInputType = {
   longitude?: true
   reraNumber?: true
   areaSqm?: true
+  availableFrom?: true
+  availabilityNotes?: true
+  zoning?: true
+  frontageMeters?: true
+  depthMeters?: true
+  propertyUse?: true
   tier?: true
   isOffPlan?: true
   badge?: true
@@ -280,8 +341,11 @@ export type ListingCountAggregateInputType = {
   propertyType?: true
   price?: true
   priceNegotiable?: true
+  featured?: true
   bedrooms?: true
   bathrooms?: true
+  floors?: true
+  yearBuilt?: true
   areaSqft?: true
   addressLine?: true
   locality?: true
@@ -292,6 +356,12 @@ export type ListingCountAggregateInputType = {
   longitude?: true
   reraNumber?: true
   areaSqm?: true
+  availableFrom?: true
+  availabilityNotes?: true
+  zoning?: true
+  frontageMeters?: true
+  depthMeters?: true
+  propertyUse?: true
   tier?: true
   isOffPlan?: true
   badge?: true
@@ -408,8 +478,11 @@ export type ListingGroupByOutputType = {
   propertyType: string | null
   price: bigint
   priceNegotiable: boolean
+  featured: boolean
   bedrooms: number | null
   bathrooms: number | null
+  floors: number | null
+  yearBuilt: number | null
   areaSqft: number | null
   addressLine: string | null
   locality: string | null
@@ -420,6 +493,12 @@ export type ListingGroupByOutputType = {
   longitude: number | null
   reraNumber: string | null
   areaSqm: number | null
+  availableFrom: Date | null
+  availabilityNotes: string | null
+  zoning: string | null
+  frontageMeters: number | null
+  depthMeters: number | null
+  propertyUse: string | null
   tier: string | null
   isOffPlan: boolean
   badge: string | null
@@ -472,8 +551,11 @@ export type ListingWhereInput = {
   propertyType?: Prisma.StringNullableFilter<"Listing"> | string | null
   price?: Prisma.BigIntFilter<"Listing"> | bigint | number
   priceNegotiable?: Prisma.BoolFilter<"Listing"> | boolean
+  featured?: Prisma.BoolFilter<"Listing"> | boolean
   bedrooms?: Prisma.IntNullableFilter<"Listing"> | number | null
   bathrooms?: Prisma.IntNullableFilter<"Listing"> | number | null
+  floors?: Prisma.IntNullableFilter<"Listing"> | number | null
+  yearBuilt?: Prisma.IntNullableFilter<"Listing"> | number | null
   areaSqft?: Prisma.IntNullableFilter<"Listing"> | number | null
   addressLine?: Prisma.StringNullableFilter<"Listing"> | string | null
   locality?: Prisma.StringNullableFilter<"Listing"> | string | null
@@ -484,6 +566,12 @@ export type ListingWhereInput = {
   longitude?: Prisma.FloatNullableFilter<"Listing"> | number | null
   reraNumber?: Prisma.StringNullableFilter<"Listing"> | string | null
   areaSqm?: Prisma.IntNullableFilter<"Listing"> | number | null
+  availableFrom?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
+  availabilityNotes?: Prisma.StringNullableFilter<"Listing"> | string | null
+  zoning?: Prisma.StringNullableFilter<"Listing"> | string | null
+  frontageMeters?: Prisma.FloatNullableFilter<"Listing"> | number | null
+  depthMeters?: Prisma.FloatNullableFilter<"Listing"> | number | null
+  propertyUse?: Prisma.StringNullableFilter<"Listing"> | string | null
   tier?: Prisma.StringNullableFilter<"Listing"> | string | null
   isOffPlan?: Prisma.BoolFilter<"Listing"> | boolean
   badge?: Prisma.StringNullableFilter<"Listing"> | string | null
@@ -518,8 +606,11 @@ export type ListingOrderByWithRelationInput = {
   propertyType?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   priceNegotiable?: Prisma.SortOrder
+  featured?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrderInput | Prisma.SortOrder
   bathrooms?: Prisma.SortOrderInput | Prisma.SortOrder
+  floors?: Prisma.SortOrderInput | Prisma.SortOrder
+  yearBuilt?: Prisma.SortOrderInput | Prisma.SortOrder
   areaSqft?: Prisma.SortOrderInput | Prisma.SortOrder
   addressLine?: Prisma.SortOrderInput | Prisma.SortOrder
   locality?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -530,6 +621,12 @@ export type ListingOrderByWithRelationInput = {
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
   reraNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   areaSqm?: Prisma.SortOrderInput | Prisma.SortOrder
+  availableFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  availabilityNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  zoning?: Prisma.SortOrderInput | Prisma.SortOrder
+  frontageMeters?: Prisma.SortOrderInput | Prisma.SortOrder
+  depthMeters?: Prisma.SortOrderInput | Prisma.SortOrder
+  propertyUse?: Prisma.SortOrderInput | Prisma.SortOrder
   tier?: Prisma.SortOrderInput | Prisma.SortOrder
   isOffPlan?: Prisma.SortOrder
   badge?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -567,8 +664,11 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
   propertyType?: Prisma.StringNullableFilter<"Listing"> | string | null
   price?: Prisma.BigIntFilter<"Listing"> | bigint | number
   priceNegotiable?: Prisma.BoolFilter<"Listing"> | boolean
+  featured?: Prisma.BoolFilter<"Listing"> | boolean
   bedrooms?: Prisma.IntNullableFilter<"Listing"> | number | null
   bathrooms?: Prisma.IntNullableFilter<"Listing"> | number | null
+  floors?: Prisma.IntNullableFilter<"Listing"> | number | null
+  yearBuilt?: Prisma.IntNullableFilter<"Listing"> | number | null
   areaSqft?: Prisma.IntNullableFilter<"Listing"> | number | null
   addressLine?: Prisma.StringNullableFilter<"Listing"> | string | null
   locality?: Prisma.StringNullableFilter<"Listing"> | string | null
@@ -579,6 +679,12 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
   longitude?: Prisma.FloatNullableFilter<"Listing"> | number | null
   reraNumber?: Prisma.StringNullableFilter<"Listing"> | string | null
   areaSqm?: Prisma.IntNullableFilter<"Listing"> | number | null
+  availableFrom?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
+  availabilityNotes?: Prisma.StringNullableFilter<"Listing"> | string | null
+  zoning?: Prisma.StringNullableFilter<"Listing"> | string | null
+  frontageMeters?: Prisma.FloatNullableFilter<"Listing"> | number | null
+  depthMeters?: Prisma.FloatNullableFilter<"Listing"> | number | null
+  propertyUse?: Prisma.StringNullableFilter<"Listing"> | string | null
   tier?: Prisma.StringNullableFilter<"Listing"> | string | null
   isOffPlan?: Prisma.BoolFilter<"Listing"> | boolean
   badge?: Prisma.StringNullableFilter<"Listing"> | string | null
@@ -613,8 +719,11 @@ export type ListingOrderByWithAggregationInput = {
   propertyType?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   priceNegotiable?: Prisma.SortOrder
+  featured?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrderInput | Prisma.SortOrder
   bathrooms?: Prisma.SortOrderInput | Prisma.SortOrder
+  floors?: Prisma.SortOrderInput | Prisma.SortOrder
+  yearBuilt?: Prisma.SortOrderInput | Prisma.SortOrder
   areaSqft?: Prisma.SortOrderInput | Prisma.SortOrder
   addressLine?: Prisma.SortOrderInput | Prisma.SortOrder
   locality?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -625,6 +734,12 @@ export type ListingOrderByWithAggregationInput = {
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
   reraNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   areaSqm?: Prisma.SortOrderInput | Prisma.SortOrder
+  availableFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  availabilityNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  zoning?: Prisma.SortOrderInput | Prisma.SortOrder
+  frontageMeters?: Prisma.SortOrderInput | Prisma.SortOrder
+  depthMeters?: Prisma.SortOrderInput | Prisma.SortOrder
+  propertyUse?: Prisma.SortOrderInput | Prisma.SortOrder
   tier?: Prisma.SortOrderInput | Prisma.SortOrder
   isOffPlan?: Prisma.SortOrder
   badge?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -662,8 +777,11 @@ export type ListingScalarWhereWithAggregatesInput = {
   propertyType?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
   price?: Prisma.BigIntWithAggregatesFilter<"Listing"> | bigint | number
   priceNegotiable?: Prisma.BoolWithAggregatesFilter<"Listing"> | boolean
+  featured?: Prisma.BoolWithAggregatesFilter<"Listing"> | boolean
   bedrooms?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null
   bathrooms?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null
+  floors?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null
+  yearBuilt?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null
   areaSqft?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null
   addressLine?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
   locality?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
@@ -674,6 +792,12 @@ export type ListingScalarWhereWithAggregatesInput = {
   longitude?: Prisma.FloatNullableWithAggregatesFilter<"Listing"> | number | null
   reraNumber?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
   areaSqm?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null
+  availableFrom?: Prisma.DateTimeNullableWithAggregatesFilter<"Listing"> | Date | string | null
+  availabilityNotes?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
+  zoning?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
+  frontageMeters?: Prisma.FloatNullableWithAggregatesFilter<"Listing"> | number | null
+  depthMeters?: Prisma.FloatNullableWithAggregatesFilter<"Listing"> | number | null
+  propertyUse?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
   tier?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
   isOffPlan?: Prisma.BoolWithAggregatesFilter<"Listing"> | boolean
   badge?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
@@ -702,8 +826,11 @@ export type ListingCreateInput = {
   propertyType?: string | null
   price: bigint | number
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  floors?: number | null
+  yearBuilt?: number | null
   areaSqft?: number | null
   addressLine?: string | null
   locality?: string | null
@@ -714,6 +841,12 @@ export type ListingCreateInput = {
   longitude?: number | null
   reraNumber?: string | null
   areaSqm?: number | null
+  availableFrom?: Date | string | null
+  availabilityNotes?: string | null
+  zoning?: string | null
+  frontageMeters?: number | null
+  depthMeters?: number | null
+  propertyUse?: string | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -748,8 +881,11 @@ export type ListingUncheckedCreateInput = {
   propertyType?: string | null
   price: bigint | number
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  floors?: number | null
+  yearBuilt?: number | null
   areaSqft?: number | null
   addressLine?: string | null
   locality?: string | null
@@ -760,6 +896,12 @@ export type ListingUncheckedCreateInput = {
   longitude?: number | null
   reraNumber?: string | null
   areaSqm?: number | null
+  availableFrom?: Date | string | null
+  availabilityNotes?: string | null
+  zoning?: string | null
+  frontageMeters?: number | null
+  depthMeters?: number | null
+  propertyUse?: string | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -792,8 +934,11 @@ export type ListingUpdateInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -804,6 +949,12 @@ export type ListingUpdateInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -838,8 +989,11 @@ export type ListingUncheckedUpdateInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -850,6 +1004,12 @@ export type ListingUncheckedUpdateInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -883,8 +1043,11 @@ export type ListingCreateManyInput = {
   propertyType?: string | null
   price: bigint | number
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  floors?: number | null
+  yearBuilt?: number | null
   areaSqft?: number | null
   addressLine?: string | null
   locality?: string | null
@@ -895,6 +1058,12 @@ export type ListingCreateManyInput = {
   longitude?: number | null
   reraNumber?: string | null
   areaSqm?: number | null
+  availableFrom?: Date | string | null
+  availabilityNotes?: string | null
+  zoning?: string | null
+  frontageMeters?: number | null
+  depthMeters?: number | null
+  propertyUse?: string | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -923,8 +1092,11 @@ export type ListingUpdateManyMutationInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -935,6 +1107,12 @@ export type ListingUpdateManyMutationInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -964,8 +1142,11 @@ export type ListingUncheckedUpdateManyInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -976,6 +1157,12 @@ export type ListingUncheckedUpdateManyInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1023,8 +1210,11 @@ export type ListingCountOrderByAggregateInput = {
   propertyType?: Prisma.SortOrder
   price?: Prisma.SortOrder
   priceNegotiable?: Prisma.SortOrder
+  featured?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
+  floors?: Prisma.SortOrder
+  yearBuilt?: Prisma.SortOrder
   areaSqft?: Prisma.SortOrder
   addressLine?: Prisma.SortOrder
   locality?: Prisma.SortOrder
@@ -1035,6 +1225,12 @@ export type ListingCountOrderByAggregateInput = {
   longitude?: Prisma.SortOrder
   reraNumber?: Prisma.SortOrder
   areaSqm?: Prisma.SortOrder
+  availableFrom?: Prisma.SortOrder
+  availabilityNotes?: Prisma.SortOrder
+  zoning?: Prisma.SortOrder
+  frontageMeters?: Prisma.SortOrder
+  depthMeters?: Prisma.SortOrder
+  propertyUse?: Prisma.SortOrder
   tier?: Prisma.SortOrder
   isOffPlan?: Prisma.SortOrder
   badge?: Prisma.SortOrder
@@ -1057,10 +1253,14 @@ export type ListingAvgOrderByAggregateInput = {
   price?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
+  floors?: Prisma.SortOrder
+  yearBuilt?: Prisma.SortOrder
   areaSqft?: Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   areaSqm?: Prisma.SortOrder
+  frontageMeters?: Prisma.SortOrder
+  depthMeters?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
 }
 
@@ -1075,8 +1275,11 @@ export type ListingMaxOrderByAggregateInput = {
   propertyType?: Prisma.SortOrder
   price?: Prisma.SortOrder
   priceNegotiable?: Prisma.SortOrder
+  featured?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
+  floors?: Prisma.SortOrder
+  yearBuilt?: Prisma.SortOrder
   areaSqft?: Prisma.SortOrder
   addressLine?: Prisma.SortOrder
   locality?: Prisma.SortOrder
@@ -1087,6 +1290,12 @@ export type ListingMaxOrderByAggregateInput = {
   longitude?: Prisma.SortOrder
   reraNumber?: Prisma.SortOrder
   areaSqm?: Prisma.SortOrder
+  availableFrom?: Prisma.SortOrder
+  availabilityNotes?: Prisma.SortOrder
+  zoning?: Prisma.SortOrder
+  frontageMeters?: Prisma.SortOrder
+  depthMeters?: Prisma.SortOrder
+  propertyUse?: Prisma.SortOrder
   tier?: Prisma.SortOrder
   isOffPlan?: Prisma.SortOrder
   badge?: Prisma.SortOrder
@@ -1114,8 +1323,11 @@ export type ListingMinOrderByAggregateInput = {
   propertyType?: Prisma.SortOrder
   price?: Prisma.SortOrder
   priceNegotiable?: Prisma.SortOrder
+  featured?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
+  floors?: Prisma.SortOrder
+  yearBuilt?: Prisma.SortOrder
   areaSqft?: Prisma.SortOrder
   addressLine?: Prisma.SortOrder
   locality?: Prisma.SortOrder
@@ -1126,6 +1338,12 @@ export type ListingMinOrderByAggregateInput = {
   longitude?: Prisma.SortOrder
   reraNumber?: Prisma.SortOrder
   areaSqm?: Prisma.SortOrder
+  availableFrom?: Prisma.SortOrder
+  availabilityNotes?: Prisma.SortOrder
+  zoning?: Prisma.SortOrder
+  frontageMeters?: Prisma.SortOrder
+  depthMeters?: Prisma.SortOrder
+  propertyUse?: Prisma.SortOrder
   tier?: Prisma.SortOrder
   isOffPlan?: Prisma.SortOrder
   badge?: Prisma.SortOrder
@@ -1146,10 +1364,14 @@ export type ListingSumOrderByAggregateInput = {
   price?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
+  floors?: Prisma.SortOrder
+  yearBuilt?: Prisma.SortOrder
   areaSqft?: Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   areaSqm?: Prisma.SortOrder
+  frontageMeters?: Prisma.SortOrder
+  depthMeters?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
 }
 
@@ -1324,8 +1546,11 @@ export type ListingCreateWithoutOwnerInput = {
   propertyType?: string | null
   price: bigint | number
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  floors?: number | null
+  yearBuilt?: number | null
   areaSqft?: number | null
   addressLine?: string | null
   locality?: string | null
@@ -1336,6 +1561,12 @@ export type ListingCreateWithoutOwnerInput = {
   longitude?: number | null
   reraNumber?: string | null
   areaSqm?: number | null
+  availableFrom?: Date | string | null
+  availabilityNotes?: string | null
+  zoning?: string | null
+  frontageMeters?: number | null
+  depthMeters?: number | null
+  propertyUse?: string | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1368,8 +1599,11 @@ export type ListingUncheckedCreateWithoutOwnerInput = {
   propertyType?: string | null
   price: bigint | number
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  floors?: number | null
+  yearBuilt?: number | null
   areaSqft?: number | null
   addressLine?: string | null
   locality?: string | null
@@ -1380,6 +1614,12 @@ export type ListingUncheckedCreateWithoutOwnerInput = {
   longitude?: number | null
   reraNumber?: string | null
   areaSqm?: number | null
+  availableFrom?: Date | string | null
+  availabilityNotes?: string | null
+  zoning?: string | null
+  frontageMeters?: number | null
+  depthMeters?: number | null
+  propertyUse?: string | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1442,8 +1682,11 @@ export type ListingScalarWhereInput = {
   propertyType?: Prisma.StringNullableFilter<"Listing"> | string | null
   price?: Prisma.BigIntFilter<"Listing"> | bigint | number
   priceNegotiable?: Prisma.BoolFilter<"Listing"> | boolean
+  featured?: Prisma.BoolFilter<"Listing"> | boolean
   bedrooms?: Prisma.IntNullableFilter<"Listing"> | number | null
   bathrooms?: Prisma.IntNullableFilter<"Listing"> | number | null
+  floors?: Prisma.IntNullableFilter<"Listing"> | number | null
+  yearBuilt?: Prisma.IntNullableFilter<"Listing"> | number | null
   areaSqft?: Prisma.IntNullableFilter<"Listing"> | number | null
   addressLine?: Prisma.StringNullableFilter<"Listing"> | string | null
   locality?: Prisma.StringNullableFilter<"Listing"> | string | null
@@ -1454,6 +1697,12 @@ export type ListingScalarWhereInput = {
   longitude?: Prisma.FloatNullableFilter<"Listing"> | number | null
   reraNumber?: Prisma.StringNullableFilter<"Listing"> | string | null
   areaSqm?: Prisma.IntNullableFilter<"Listing"> | number | null
+  availableFrom?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
+  availabilityNotes?: Prisma.StringNullableFilter<"Listing"> | string | null
+  zoning?: Prisma.StringNullableFilter<"Listing"> | string | null
+  frontageMeters?: Prisma.FloatNullableFilter<"Listing"> | number | null
+  depthMeters?: Prisma.FloatNullableFilter<"Listing"> | number | null
+  propertyUse?: Prisma.StringNullableFilter<"Listing"> | string | null
   tier?: Prisma.StringNullableFilter<"Listing"> | string | null
   isOffPlan?: Prisma.BoolFilter<"Listing"> | boolean
   badge?: Prisma.StringNullableFilter<"Listing"> | string | null
@@ -1482,8 +1731,11 @@ export type ListingCreateWithoutMediaInput = {
   propertyType?: string | null
   price: bigint | number
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  floors?: number | null
+  yearBuilt?: number | null
   areaSqft?: number | null
   addressLine?: string | null
   locality?: string | null
@@ -1494,6 +1746,12 @@ export type ListingCreateWithoutMediaInput = {
   longitude?: number | null
   reraNumber?: string | null
   areaSqm?: number | null
+  availableFrom?: Date | string | null
+  availabilityNotes?: string | null
+  zoning?: string | null
+  frontageMeters?: number | null
+  depthMeters?: number | null
+  propertyUse?: string | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1527,8 +1785,11 @@ export type ListingUncheckedCreateWithoutMediaInput = {
   propertyType?: string | null
   price: bigint | number
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  floors?: number | null
+  yearBuilt?: number | null
   areaSqft?: number | null
   addressLine?: string | null
   locality?: string | null
@@ -1539,6 +1800,12 @@ export type ListingUncheckedCreateWithoutMediaInput = {
   longitude?: number | null
   reraNumber?: string | null
   areaSqm?: number | null
+  availableFrom?: Date | string | null
+  availabilityNotes?: string | null
+  zoning?: string | null
+  frontageMeters?: number | null
+  depthMeters?: number | null
+  propertyUse?: string | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1586,8 +1853,11 @@ export type ListingUpdateWithoutMediaInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1598,6 +1868,12 @@ export type ListingUpdateWithoutMediaInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1631,8 +1907,11 @@ export type ListingUncheckedUpdateWithoutMediaInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1643,6 +1922,12 @@ export type ListingUncheckedUpdateWithoutMediaInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1674,8 +1959,11 @@ export type ListingCreateWithoutEnquiriesInput = {
   propertyType?: string | null
   price: bigint | number
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  floors?: number | null
+  yearBuilt?: number | null
   areaSqft?: number | null
   addressLine?: string | null
   locality?: string | null
@@ -1686,6 +1974,12 @@ export type ListingCreateWithoutEnquiriesInput = {
   longitude?: number | null
   reraNumber?: string | null
   areaSqm?: number | null
+  availableFrom?: Date | string | null
+  availabilityNotes?: string | null
+  zoning?: string | null
+  frontageMeters?: number | null
+  depthMeters?: number | null
+  propertyUse?: string | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1719,8 +2013,11 @@ export type ListingUncheckedCreateWithoutEnquiriesInput = {
   propertyType?: string | null
   price: bigint | number
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  floors?: number | null
+  yearBuilt?: number | null
   areaSqft?: number | null
   addressLine?: string | null
   locality?: string | null
@@ -1731,6 +2028,12 @@ export type ListingUncheckedCreateWithoutEnquiriesInput = {
   longitude?: number | null
   reraNumber?: string | null
   areaSqm?: number | null
+  availableFrom?: Date | string | null
+  availabilityNotes?: string | null
+  zoning?: string | null
+  frontageMeters?: number | null
+  depthMeters?: number | null
+  propertyUse?: string | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1778,8 +2081,11 @@ export type ListingUpdateWithoutEnquiriesInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1790,6 +2096,12 @@ export type ListingUpdateWithoutEnquiriesInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1823,8 +2135,11 @@ export type ListingUncheckedUpdateWithoutEnquiriesInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1835,6 +2150,12 @@ export type ListingUncheckedUpdateWithoutEnquiriesInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1866,8 +2187,11 @@ export type ListingCreateWithoutSavesInput = {
   propertyType?: string | null
   price: bigint | number
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  floors?: number | null
+  yearBuilt?: number | null
   areaSqft?: number | null
   addressLine?: string | null
   locality?: string | null
@@ -1878,6 +2202,12 @@ export type ListingCreateWithoutSavesInput = {
   longitude?: number | null
   reraNumber?: string | null
   areaSqm?: number | null
+  availableFrom?: Date | string | null
+  availabilityNotes?: string | null
+  zoning?: string | null
+  frontageMeters?: number | null
+  depthMeters?: number | null
+  propertyUse?: string | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1911,8 +2241,11 @@ export type ListingUncheckedCreateWithoutSavesInput = {
   propertyType?: string | null
   price: bigint | number
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  floors?: number | null
+  yearBuilt?: number | null
   areaSqft?: number | null
   addressLine?: string | null
   locality?: string | null
@@ -1923,6 +2256,12 @@ export type ListingUncheckedCreateWithoutSavesInput = {
   longitude?: number | null
   reraNumber?: string | null
   areaSqm?: number | null
+  availableFrom?: Date | string | null
+  availabilityNotes?: string | null
+  zoning?: string | null
+  frontageMeters?: number | null
+  depthMeters?: number | null
+  propertyUse?: string | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -1970,8 +2309,11 @@ export type ListingUpdateWithoutSavesInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1982,6 +2324,12 @@ export type ListingUpdateWithoutSavesInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2015,8 +2363,11 @@ export type ListingUncheckedUpdateWithoutSavesInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2027,6 +2378,12 @@ export type ListingUncheckedUpdateWithoutSavesInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2058,8 +2415,11 @@ export type ListingCreateWithoutReportsInput = {
   propertyType?: string | null
   price: bigint | number
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  floors?: number | null
+  yearBuilt?: number | null
   areaSqft?: number | null
   addressLine?: string | null
   locality?: string | null
@@ -2070,6 +2430,12 @@ export type ListingCreateWithoutReportsInput = {
   longitude?: number | null
   reraNumber?: string | null
   areaSqm?: number | null
+  availableFrom?: Date | string | null
+  availabilityNotes?: string | null
+  zoning?: string | null
+  frontageMeters?: number | null
+  depthMeters?: number | null
+  propertyUse?: string | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -2103,8 +2469,11 @@ export type ListingUncheckedCreateWithoutReportsInput = {
   propertyType?: string | null
   price: bigint | number
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  floors?: number | null
+  yearBuilt?: number | null
   areaSqft?: number | null
   addressLine?: string | null
   locality?: string | null
@@ -2115,6 +2484,12 @@ export type ListingUncheckedCreateWithoutReportsInput = {
   longitude?: number | null
   reraNumber?: string | null
   areaSqm?: number | null
+  availableFrom?: Date | string | null
+  availabilityNotes?: string | null
+  zoning?: string | null
+  frontageMeters?: number | null
+  depthMeters?: number | null
+  propertyUse?: string | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -2162,8 +2537,11 @@ export type ListingUpdateWithoutReportsInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2174,6 +2552,12 @@ export type ListingUpdateWithoutReportsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2207,8 +2591,11 @@ export type ListingUncheckedUpdateWithoutReportsInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2219,6 +2606,12 @@ export type ListingUncheckedUpdateWithoutReportsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2250,8 +2643,11 @@ export type ListingCreateManyOwnerInput = {
   propertyType?: string | null
   price: bigint | number
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  floors?: number | null
+  yearBuilt?: number | null
   areaSqft?: number | null
   addressLine?: string | null
   locality?: string | null
@@ -2262,6 +2658,12 @@ export type ListingCreateManyOwnerInput = {
   longitude?: number | null
   reraNumber?: string | null
   areaSqm?: number | null
+  availableFrom?: Date | string | null
+  availabilityNotes?: string | null
+  zoning?: string | null
+  frontageMeters?: number | null
+  depthMeters?: number | null
+  propertyUse?: string | null
   tier?: string | null
   isOffPlan?: boolean
   badge?: string | null
@@ -2290,8 +2692,11 @@ export type ListingUpdateWithoutOwnerInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2302,6 +2707,12 @@ export type ListingUpdateWithoutOwnerInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2334,8 +2745,11 @@ export type ListingUncheckedUpdateWithoutOwnerInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2346,6 +2760,12 @@ export type ListingUncheckedUpdateWithoutOwnerInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2378,8 +2798,11 @@ export type ListingUncheckedUpdateManyWithoutOwnerInput = {
   propertyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   priceNegotiable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   addressLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2390,6 +2813,12 @@ export type ListingUncheckedUpdateManyWithoutOwnerInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reraNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   areaSqm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoning?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  frontageMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  depthMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  propertyUse?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2477,8 +2906,11 @@ export type ListingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   propertyType?: boolean
   price?: boolean
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
+  floors?: boolean
+  yearBuilt?: boolean
   areaSqft?: boolean
   addressLine?: boolean
   locality?: boolean
@@ -2489,6 +2921,12 @@ export type ListingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   longitude?: boolean
   reraNumber?: boolean
   areaSqm?: boolean
+  availableFrom?: boolean
+  availabilityNotes?: boolean
+  zoning?: boolean
+  frontageMeters?: boolean
+  depthMeters?: boolean
+  propertyUse?: boolean
   tier?: boolean
   isOffPlan?: boolean
   badge?: boolean
@@ -2524,8 +2962,11 @@ export type ListingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   propertyType?: boolean
   price?: boolean
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
+  floors?: boolean
+  yearBuilt?: boolean
   areaSqft?: boolean
   addressLine?: boolean
   locality?: boolean
@@ -2536,6 +2977,12 @@ export type ListingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   longitude?: boolean
   reraNumber?: boolean
   areaSqm?: boolean
+  availableFrom?: boolean
+  availabilityNotes?: boolean
+  zoning?: boolean
+  frontageMeters?: boolean
+  depthMeters?: boolean
+  propertyUse?: boolean
   tier?: boolean
   isOffPlan?: boolean
   badge?: boolean
@@ -2566,8 +3013,11 @@ export type ListingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   propertyType?: boolean
   price?: boolean
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
+  floors?: boolean
+  yearBuilt?: boolean
   areaSqft?: boolean
   addressLine?: boolean
   locality?: boolean
@@ -2578,6 +3028,12 @@ export type ListingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   longitude?: boolean
   reraNumber?: boolean
   areaSqm?: boolean
+  availableFrom?: boolean
+  availabilityNotes?: boolean
+  zoning?: boolean
+  frontageMeters?: boolean
+  depthMeters?: boolean
+  propertyUse?: boolean
   tier?: boolean
   isOffPlan?: boolean
   badge?: boolean
@@ -2608,8 +3064,11 @@ export type ListingSelectScalar = {
   propertyType?: boolean
   price?: boolean
   priceNegotiable?: boolean
+  featured?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
+  floors?: boolean
+  yearBuilt?: boolean
   areaSqft?: boolean
   addressLine?: boolean
   locality?: boolean
@@ -2620,6 +3079,12 @@ export type ListingSelectScalar = {
   longitude?: boolean
   reraNumber?: boolean
   areaSqm?: boolean
+  availableFrom?: boolean
+  availabilityNotes?: boolean
+  zoning?: boolean
+  frontageMeters?: boolean
+  depthMeters?: boolean
+  propertyUse?: boolean
   tier?: boolean
   isOffPlan?: boolean
   badge?: boolean
@@ -2638,7 +3103,7 @@ export type ListingSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "slug" | "title" | "description" | "listingType" | "category" | "propertyType" | "price" | "priceNegotiable" | "bedrooms" | "bathrooms" | "areaSqft" | "addressLine" | "locality" | "city" | "state" | "pincode" | "latitude" | "longitude" | "reraNumber" | "areaSqm" | "tier" | "isOffPlan" | "badge" | "flags" | "keyFeatures" | "projectedYield" | "titleAr" | "descriptionAr" | "locationAr" | "status" | "rejectionReason" | "publishedAt" | "expiresAt" | "viewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
+export type ListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "slug" | "title" | "description" | "listingType" | "category" | "propertyType" | "price" | "priceNegotiable" | "featured" | "bedrooms" | "bathrooms" | "floors" | "yearBuilt" | "areaSqft" | "addressLine" | "locality" | "city" | "state" | "pincode" | "latitude" | "longitude" | "reraNumber" | "areaSqm" | "availableFrom" | "availabilityNotes" | "zoning" | "frontageMeters" | "depthMeters" | "propertyUse" | "tier" | "isOffPlan" | "badge" | "flags" | "keyFeatures" | "projectedYield" | "titleAr" | "descriptionAr" | "locationAr" | "status" | "rejectionReason" | "publishedAt" | "expiresAt" | "viewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
 export type ListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   media?: boolean | Prisma.Listing$mediaArgs<ExtArgs>
@@ -2674,8 +3139,11 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     propertyType: string | null
     price: bigint
     priceNegotiable: boolean
+    featured: boolean
     bedrooms: number | null
     bathrooms: number | null
+    floors: number | null
+    yearBuilt: number | null
     areaSqft: number | null
     addressLine: string | null
     locality: string | null
@@ -2686,6 +3154,12 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     longitude: number | null
     reraNumber: string | null
     areaSqm: number | null
+    availableFrom: Date | null
+    availabilityNotes: string | null
+    zoning: string | null
+    frontageMeters: number | null
+    depthMeters: number | null
+    propertyUse: string | null
     tier: string | null
     isOffPlan: boolean
     badge: string | null
@@ -3140,8 +3614,11 @@ export interface ListingFieldRefs {
   readonly propertyType: Prisma.FieldRef<"Listing", 'String'>
   readonly price: Prisma.FieldRef<"Listing", 'BigInt'>
   readonly priceNegotiable: Prisma.FieldRef<"Listing", 'Boolean'>
+  readonly featured: Prisma.FieldRef<"Listing", 'Boolean'>
   readonly bedrooms: Prisma.FieldRef<"Listing", 'Int'>
   readonly bathrooms: Prisma.FieldRef<"Listing", 'Int'>
+  readonly floors: Prisma.FieldRef<"Listing", 'Int'>
+  readonly yearBuilt: Prisma.FieldRef<"Listing", 'Int'>
   readonly areaSqft: Prisma.FieldRef<"Listing", 'Int'>
   readonly addressLine: Prisma.FieldRef<"Listing", 'String'>
   readonly locality: Prisma.FieldRef<"Listing", 'String'>
@@ -3152,6 +3629,12 @@ export interface ListingFieldRefs {
   readonly longitude: Prisma.FieldRef<"Listing", 'Float'>
   readonly reraNumber: Prisma.FieldRef<"Listing", 'String'>
   readonly areaSqm: Prisma.FieldRef<"Listing", 'Int'>
+  readonly availableFrom: Prisma.FieldRef<"Listing", 'DateTime'>
+  readonly availabilityNotes: Prisma.FieldRef<"Listing", 'String'>
+  readonly zoning: Prisma.FieldRef<"Listing", 'String'>
+  readonly frontageMeters: Prisma.FieldRef<"Listing", 'Float'>
+  readonly depthMeters: Prisma.FieldRef<"Listing", 'Float'>
+  readonly propertyUse: Prisma.FieldRef<"Listing", 'String'>
   readonly tier: Prisma.FieldRef<"Listing", 'String'>
   readonly isOffPlan: Prisma.FieldRef<"Listing", 'Boolean'>
   readonly badge: Prisma.FieldRef<"Listing", 'String'>
