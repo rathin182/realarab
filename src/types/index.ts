@@ -18,6 +18,7 @@ export interface Property {
   priceSAR: number;
   type: string;
   transaction: TransactionType;
+  isOffPlan?: boolean;
   sizeSqm: number;
   bedrooms: number;
   bathrooms: number;
