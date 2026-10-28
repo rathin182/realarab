@@ -113,37 +113,82 @@ export async function resolveReport(formData: FormData) {
 export async function createAdminListing(formData: FormData) {
   const session = await requireAdmin();
   const title = String(formData.get("title") ?? "").trim();
-  const description = String(formData.get("description") ?? "").trim();
+  const descriptionAr = String(formData.get("descriptionAr") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim() || descriptionAr;
   const city = String(formData.get("city") ?? "").trim();
   const state = String(formData.get("state") ?? "").trim();
   const propertyType = String(formData.get("propertyType") ?? "").trim();
   const imageUrl = String(formData.get("imageUrl") ?? "").trim();
+  const isUploadedImage = /^\/uploads\/[0-9a-f-]+\.(?:jpg|png|webp)$/.test(imageUrl);
+  const galleryImageUrls = String(formData.get("galleryImageUrls") ?? "").split(/\r?\n/).map((url) => url.trim()).filter(Boolean);
+  const videoUploadUrl = String(formData.get("videoUploadUrl") ?? "").trim();
   const price = Number(formData.get("price"));
   const areaSqm = Number(formData.get("areaSqm"));
   const bedrooms = Number(formData.get("bedrooms"));
   const bathrooms = Number(formData.get("bathrooms"));
+  const floors = Number(formData.get("floors"));
+  const yearBuilt = Number(formData.get("yearBuilt"));
+  const frontageMeters = Number(formData.get("frontageMeters"));
+  const depthMeters = Number(formData.get("depthMeters"));
+  const latitudeValue = String(formData.get("latitude") ?? "").trim();
+  const longitudeValue = String(formData.get("longitude") ?? "").trim();
+  const latitude = latitudeValue ? Number(latitudeValue) : null;
+  const longitude = longitudeValue ? Number(longitudeValue) : null;
+  const availableFromValue = String(formData.get("availableFrom") ?? "").trim();
+  const availableFrom = availableFromValue ? new Date(`${availableFromValue}T00:00:00.000Z`) : null;
   const listingType = formData.get("listingType") === "RENT" ? "RENT" : "SALE";
+  const statusValue = String(formData.get("status") ?? "DRAFT");
+  const status = ["LIVE", "DRAFT", "SOLD_OR_RENTED"].includes(statusValue)
+    ? statusValue as "LIVE" | "DRAFT" | "SOLD_OR_RENTED"
+    : "DRAFT";
   const categoryValue = String(formData.get("category") ?? "RESIDENTIAL");
   const category = ["RESIDENTIAL", "COMMERCIAL", "LAND"].includes(categoryValue)
     ? categoryValue as "RESIDENTIAL" | "COMMERCIAL" | "LAND"
     : "RESIDENTIAL";
   const tierValue = String(formData.get("tier") ?? "curated");
   const tier = ["featured", "curated", "vault", "syndicate"].includes(tierValue) ? tierValue : "curated";
+  const keyFeatures = [...formData.getAll("amenities"), ...formData.getAll("keyFeatures")]
+    .map(String)
+    .flatMap((feature) => feature.split(","))
+    .map((feature) => feature.trim())
+    .filter(Boolean);
+  const flags = String(formData.get("flags") ?? "").split(",").map((flag) => flag.trim()).filter(Boolean);
   let parsedImageUrl: URL | null = null;
+  const isUploadedVideo = /^\/uploads\/[0-9a-f-]+\.(?:mp4|mov|webm|ogv)$/.test(videoUploadUrl);
 
-  try {
-    parsedImageUrl = imageUrl ? new URL(imageUrl) : null;
-  } catch {
-    redirect("/admin/properties/new?error=invalid");
+  if (imageUrl && !isUploadedImage) {
+    try {
+      parsedImageUrl = new URL(imageUrl);
+    } catch {
+      redirect("/admin/properties/new?error=invalid");
+    }
+  }
+
+  for (const galleryUrl of galleryImageUrls) {
+    if (/^\/uploads\/[0-9a-f-]+\.(?:jpg|png|webp)$/.test(galleryUrl)) continue;
+    try {
+      const parsed = new URL(galleryUrl);
+      if (!["http:", "https:"].includes(parsed.protocol)) throw new Error("Invalid image URL");
+    } catch {
+      redirect("/admin/properties/new?error=invalid");
+    }
   }
 
   if (
-    !title || title.length > 160 || !description || !city || !state || !propertyType || !parsedImageUrl ||
+    !title || title.length > 160 || !descriptionAr || !description || !city || !state || !["VILLA", "APARTMENT", "TOWNHOUSE", "LAND", "COMMERCIAL"].includes(propertyType) ||
     !Number.isSafeInteger(price) || price < 0 ||
     (formData.get("areaSqm") && (!Number.isSafeInteger(areaSqm) || areaSqm < 0)) ||
-    (formData.get("bedrooms") && (!Number.isSafeInteger(bedrooms) || bedrooms < 0)) ||
-    (formData.get("bathrooms") && (!Number.isSafeInteger(bathrooms) || bathrooms < 0)) ||
-    (parsedImageUrl && !["http:", "https:"].includes(parsedImageUrl.protocol))
+    (propertyType !== "LAND" && formData.get("bedrooms") && (!Number.isSafeInteger(bedrooms) || bedrooms < 0)) ||
+    (propertyType !== "LAND" && formData.get("bathrooms") && (!Number.isSafeInteger(bathrooms) || bathrooms < 0)) ||
+    (formData.get("floors") && (!Number.isSafeInteger(floors) || floors < 1)) ||
+    (formData.get("yearBuilt") && (!Number.isSafeInteger(yearBuilt) || yearBuilt < 1800 || yearBuilt > 2100)) ||
+    (formData.get("frontageMeters") && (!Number.isFinite(frontageMeters) || frontageMeters < 0)) ||
+    (formData.get("depthMeters") && (!Number.isFinite(depthMeters) || depthMeters < 0)) ||
+    (parsedImageUrl && !["http:", "https:"].includes(parsedImageUrl.protocol)) ||
+    (latitude !== null && (!Number.isFinite(latitude) || latitude < -90 || latitude > 90)) ||
+    (longitude !== null && (!Number.isFinite(longitude) || longitude < -180 || longitude > 180)) ||
+    (availableFrom && Number.isNaN(availableFrom.getTime())) ||
+    (videoUploadUrl && !isUploadedVideo)
   ) {
     redirect("/admin/properties/new?error=invalid");
   }
@@ -158,28 +203,69 @@ export async function createAdminListing(formData: FormData) {
       title,
       description,
       listingType,
-      category,
+      category: propertyType === "LAND" ? "LAND" : propertyType === "COMMERCIAL" ? "COMMERCIAL" : category,
       propertyType,
       price: BigInt(price),
+      priceNegotiable: formData.get("priceNegotiable") === "true",
+      featured: formData.get("featured") === "on",
       areaSqm: formData.get("areaSqm") ? areaSqm : null,
-      bedrooms: formData.get("bedrooms") ? bedrooms : null,
-      bathrooms: formData.get("bathrooms") ? bathrooms : null,
+      bedrooms: propertyType !== "LAND" && formData.get("bedrooms") ? bedrooms : null,
+      bathrooms: propertyType !== "LAND" && formData.get("bathrooms") ? bathrooms : null,
+      floors: formData.get("floors") ? floors : null,
+      yearBuilt: formData.get("yearBuilt") ? yearBuilt : null,
+      zoning: String(formData.get("zoning") ?? "").trim() || null,
+      frontageMeters: formData.get("frontageMeters") ? frontageMeters : null,
+      depthMeters: formData.get("depthMeters") ? depthMeters : null,
+      propertyUse: String(formData.get("propertyUse") ?? "").trim() || null,
+      availableFrom,
+      availabilityNotes: String(formData.get("availabilityNotes") ?? "").trim() || null,
       city,
       state,
       locality: String(formData.get("locality") ?? "").trim() || null,
+      latitude,
+      longitude,
       tier,
-      status: "LIVE",
-      publishedAt: new Date(),
-      ...(parsedImageUrl ? {
-        media: {
-          create: {
-            kind: "IMAGE",
-            storageKey: parsedImageUrl.toString(),
+      status,
+      publishedAt: status === "LIVE" ? new Date() : null,
+      descriptionAr: descriptionAr || null,
+      reraNumber: String(formData.get("reraNumber") ?? "").trim() || null,
+      projectedYield: String(formData.get("projectedYield") ?? "").trim() || null,
+      badge: String(formData.get("badge") ?? "").trim() || null,
+      flags,
+      keyFeatures,
+      isOffPlan: formData.get("isOffPlan") === "true",
+      ...(imageUrl || galleryImageUrls.length || videoUploadUrl ? { media: {
+        create: [
+          ...(imageUrl ? [{
+            kind: "IMAGE" as const,
+            storageKey: imageUrl,
             isCover: true,
-            status: "READY",
-          },
-        },
-      } : {}),
+            position: 0,
+            status: "READY" as const,
+          }] : []),
+          ...(!imageUrl && galleryImageUrls.length ? [{
+            kind: "IMAGE" as const,
+            storageKey: galleryImageUrls[0],
+            isCover: true,
+            position: 0,
+            status: "READY" as const,
+          }] : []),
+          ...galleryImageUrls.filter((url) => url !== (!imageUrl ? galleryImageUrls[0] : "")).map((url, index) => ({
+            kind: "IMAGE" as const,
+            storageKey: url,
+            isCover: false,
+            position: index + 1,
+            status: "READY" as const,
+          })),
+          ...(videoUploadUrl ? [{
+            kind: "VIDEO_UPLOAD" as const,
+            storageKey: videoUploadUrl,
+            isCover: false,
+            position: galleryImageUrls.length + 1,
+            status: "READY" as const,
+          }] : []),
+        ],
+      } } : {}),
     },
     select: { id: true, title: true },
   });
