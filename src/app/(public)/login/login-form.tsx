@@ -6,13 +6,9 @@ import { loginAction } from "@/actions/auth";
 
 interface LoginFormProps {
   callbackUrl?: string;
-  onSwitchToRegister?: () => void;
 }
 
-export function LoginForm({
-  callbackUrl,
-  onSwitchToRegister,
-}: LoginFormProps) {
+export function LoginForm({ callbackUrl }: LoginFormProps) {
   const [error, formAction, pending] = useActionState(
     loginAction,
     undefined
@@ -72,16 +68,6 @@ export function LoginForm({
         </button>
       </form>
 
-      <p className="text-center text-sm text-neutral-600">
-        Don&apos;t have an account?{" "}
-        <button
-          type="button"
-          onClick={onSwitchToRegister}
-          className="font-medium text-[#A98950] underline underline-offset-4"
-        >
-          Create an account
-        </button>
-      </p>
     </div>
   );
 }

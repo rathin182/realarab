@@ -9,8 +9,8 @@ export default auth((req) => {
   if (path === "/login" && isAdmin) {
     return NextResponse.redirect(new URL("/admin", nextUrl));
   }
-  if (path === "/register") {
-    return NextResponse.next();
+  if (path === "/register" || path.startsWith("/register/")) {
+    return new NextResponse(null, { status: 404 });
   }
   if (path.startsWith("/admin") && !isAdmin) {
     const loginUrl = new URL("/login", nextUrl);
@@ -23,5 +23,5 @@ export default auth((req) => {
   return NextResponse.next();
 });
 export const config = {
-  matcher: ["/admin/:path*", "/login", "/register"],
+  matcher: ["/admin/:path*", "/login", "/register/:path*"],
 };

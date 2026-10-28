@@ -5,13 +5,11 @@ import { useEffect, useState } from "react";
 import AuthModal from "@/components/modals/AuthModal";
 
 type UserRole = "BUYER" | "ADMIN" | "OWNER" | "AGENT";
-type AuthTab = "login" | "register";
 
 export default function AuthHomeButtons() {
   const [role, setRole] = useState<UserRole | null>(null);
   const [checked, setChecked] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [initialTab, setInitialTab] = useState<AuthTab>("login");
 
   useEffect(() => {
     let active = true;
@@ -74,30 +72,16 @@ export default function AuthHomeButtons() {
       <div className="flex items-center gap-3">
         <button
           type="button"
-          onClick={() => {
-            setInitialTab("login");
-            setIsAuthOpen(true);
-          }}
+          onClick={() => setIsAuthOpen(true)}
           className="rounded-lg border border-neutral-300 px-5 py-3"
         >
           Login
         </button>
 
-        <button
-          type="button"
-          onClick={() => {
-            setInitialTab("register");
-            setIsAuthOpen(true);
-          }}
-          className="rounded-lg bg-[#0C3826] px-5 py-3 text-white"
-        >
-          Register
-        </button>
       </div>
 
       <AuthModal
         isOpen={isAuthOpen}
-        initialTab={initialTab}
         onClose={() => setIsAuthOpen(false)}
       />
     </>

@@ -3,26 +3,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { LoginForm } from "@/app/(public)/login/login-form";
-import RegisterForm from "@/app/(public)/register/register-form";
 
 interface AuthModalProps {
   isOpen: boolean;
-  initialTab: "login" | "register";
   onClose: () => void;
 }
 
 export default function AuthModal({
   isOpen,
-  initialTab,
   onClose,
 }: AuthModalProps) {
-  const [activeTab, setActiveTab] = useState<"login" | "register">(initialTab);
-
-  useEffect(() => {
-    if (isOpen) {
-      setActiveTab(initialTab);
-    }
-  }, [isOpen, initialTab]);
 
   const closeModal = useCallback(() => {
     onClose();
@@ -46,13 +36,6 @@ export default function AuthModal({
   }, [isOpen, closeModal]);
 
   if (!isOpen) return null;
-
-  const tabClass = (isActive: boolean) =>
-    `w-full border-b-2 !bg-transparent px-3 py-4 text-sm transition-colors ${
-      isActive
-        ? "!border-[#A98950] !font-semibold !text-[#0C3826]"
-        : "!border-transparent !text-neutral-500 hover:!text-[#0C3826]"
-    }`;
 
   return (
     <div className="fixed inset-0 z-[100] flex">
@@ -86,42 +69,15 @@ export default function AuthModal({
         <div className="flex flex-1 items-center justify-center px-6 py-16 sm:px-12 lg:px-16">
           <div className="w-full max-w-md xl:max-w-lg">
             <h1 className="font-serif text-4xl text-neutral-950 sm:text-[42px]">
-              {activeTab === "login" ? "Welcome Back" : "Create Account"}
+              Welcome Back
             </h1>
 
             <p className="mt-2 text-sm text-neutral-500 sm:text-base">
-              {activeTab === "login"
-                ? "Sign in to your Najm Estates account"
-                : "Create your Najm Estates account"}
+              Sign in to your Najm Estates account
             </p>
 
-            {/* Tabs */}
-            <div className="mt-10 grid grid-cols-2 border-b border-neutral-200">
-              <button
-                type="button"
-                onClick={() => setActiveTab("login")}
-                aria-pressed={activeTab === "login"}
-                className={tabClass(activeTab === "login")}
-              >
-                Sign In
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab("register")}
-                aria-pressed={activeTab === "register"}
-                className={tabClass(activeTab === "register")}
-              >
-                Create Account
-              </button>
-            </div>
-
-            <div className="mt-8">
-              {activeTab === "login" ? (
-                <LoginForm onSwitchToRegister={() => setActiveTab("register")} />
-              ) : (
-                <RegisterForm />
-              )}
+            <div className="mt-10">
+              <LoginForm />
             </div>
           </div>
         </div>
