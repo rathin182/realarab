@@ -79,7 +79,6 @@ export async function GET(request: Request) {
       { title: { contains: query, mode: "insensitive" } },
       { titleAr: { contains: query, mode: "insensitive" } },
       { description: { contains: query, mode: "insensitive" } },
-      { descriptionAr: { contains: query, mode: "insensitive" } },
       { city: { contains: query, mode: "insensitive" } },
       { locality: { contains: query, mode: "insensitive" } },
       { propertyType: { contains: query, mode: "insensitive" } },

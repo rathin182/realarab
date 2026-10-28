@@ -93,7 +93,6 @@ export type ListingMinAggregateOutputType = {
   badge: string | null
   projectedYield: string | null
   titleAr: string | null
-  descriptionAr: string | null
   locationAr: string | null
   status: $Enums.ListingStatus | null
   rejectionReason: string | null
@@ -141,7 +140,6 @@ export type ListingMaxAggregateOutputType = {
   badge: string | null
   projectedYield: string | null
   titleAr: string | null
-  descriptionAr: string | null
   locationAr: string | null
   status: $Enums.ListingStatus | null
   rejectionReason: string | null
@@ -188,10 +186,10 @@ export type ListingCountAggregateOutputType = {
   isOffPlan: number
   badge: number
   flags: number
+  amenities: number
   keyFeatures: number
   projectedYield: number
   titleAr: number
-  descriptionAr: number
   locationAr: number
   status: number
   rejectionReason: number
@@ -271,7 +269,6 @@ export type ListingMinAggregateInputType = {
   badge?: true
   projectedYield?: true
   titleAr?: true
-  descriptionAr?: true
   locationAr?: true
   status?: true
   rejectionReason?: true
@@ -319,7 +316,6 @@ export type ListingMaxAggregateInputType = {
   badge?: true
   projectedYield?: true
   titleAr?: true
-  descriptionAr?: true
   locationAr?: true
   status?: true
   rejectionReason?: true
@@ -366,10 +362,10 @@ export type ListingCountAggregateInputType = {
   isOffPlan?: true
   badge?: true
   flags?: true
+  amenities?: true
   keyFeatures?: true
   projectedYield?: true
   titleAr?: true
-  descriptionAr?: true
   locationAr?: true
   status?: true
   rejectionReason?: true
@@ -503,10 +499,10 @@ export type ListingGroupByOutputType = {
   isOffPlan: boolean
   badge: string | null
   flags: string[]
+  amenities: string[]
   keyFeatures: string[]
   projectedYield: string | null
   titleAr: string | null
-  descriptionAr: string | null
   locationAr: string | null
   status: $Enums.ListingStatus
   rejectionReason: string | null
@@ -576,10 +572,10 @@ export type ListingWhereInput = {
   isOffPlan?: Prisma.BoolFilter<"Listing"> | boolean
   badge?: Prisma.StringNullableFilter<"Listing"> | string | null
   flags?: Prisma.StringNullableListFilter<"Listing">
+  amenities?: Prisma.StringNullableListFilter<"Listing">
   keyFeatures?: Prisma.StringNullableListFilter<"Listing">
   projectedYield?: Prisma.StringNullableFilter<"Listing"> | string | null
   titleAr?: Prisma.StringNullableFilter<"Listing"> | string | null
-  descriptionAr?: Prisma.StringNullableFilter<"Listing"> | string | null
   locationAr?: Prisma.StringNullableFilter<"Listing"> | string | null
   status?: Prisma.EnumListingStatusFilter<"Listing"> | $Enums.ListingStatus
   rejectionReason?: Prisma.StringNullableFilter<"Listing"> | string | null
@@ -631,10 +627,10 @@ export type ListingOrderByWithRelationInput = {
   isOffPlan?: Prisma.SortOrder
   badge?: Prisma.SortOrderInput | Prisma.SortOrder
   flags?: Prisma.SortOrder
+  amenities?: Prisma.SortOrder
   keyFeatures?: Prisma.SortOrder
   projectedYield?: Prisma.SortOrderInput | Prisma.SortOrder
   titleAr?: Prisma.SortOrderInput | Prisma.SortOrder
-  descriptionAr?: Prisma.SortOrderInput | Prisma.SortOrder
   locationAr?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -689,10 +685,10 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
   isOffPlan?: Prisma.BoolFilter<"Listing"> | boolean
   badge?: Prisma.StringNullableFilter<"Listing"> | string | null
   flags?: Prisma.StringNullableListFilter<"Listing">
+  amenities?: Prisma.StringNullableListFilter<"Listing">
   keyFeatures?: Prisma.StringNullableListFilter<"Listing">
   projectedYield?: Prisma.StringNullableFilter<"Listing"> | string | null
   titleAr?: Prisma.StringNullableFilter<"Listing"> | string | null
-  descriptionAr?: Prisma.StringNullableFilter<"Listing"> | string | null
   locationAr?: Prisma.StringNullableFilter<"Listing"> | string | null
   status?: Prisma.EnumListingStatusFilter<"Listing"> | $Enums.ListingStatus
   rejectionReason?: Prisma.StringNullableFilter<"Listing"> | string | null
@@ -744,10 +740,10 @@ export type ListingOrderByWithAggregationInput = {
   isOffPlan?: Prisma.SortOrder
   badge?: Prisma.SortOrderInput | Prisma.SortOrder
   flags?: Prisma.SortOrder
+  amenities?: Prisma.SortOrder
   keyFeatures?: Prisma.SortOrder
   projectedYield?: Prisma.SortOrderInput | Prisma.SortOrder
   titleAr?: Prisma.SortOrderInput | Prisma.SortOrder
-  descriptionAr?: Prisma.SortOrderInput | Prisma.SortOrder
   locationAr?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -802,10 +798,10 @@ export type ListingScalarWhereWithAggregatesInput = {
   isOffPlan?: Prisma.BoolWithAggregatesFilter<"Listing"> | boolean
   badge?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
   flags?: Prisma.StringNullableListFilter<"Listing">
+  amenities?: Prisma.StringNullableListFilter<"Listing">
   keyFeatures?: Prisma.StringNullableListFilter<"Listing">
   projectedYield?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
   titleAr?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
-  descriptionAr?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
   locationAr?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
   status?: Prisma.EnumListingStatusWithAggregatesFilter<"Listing"> | $Enums.ListingStatus
   rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
@@ -851,10 +847,10 @@ export type ListingCreateInput = {
   isOffPlan?: boolean
   badge?: string | null
   flags?: Prisma.ListingCreateflagsInput | string[]
+  amenities?: Prisma.ListingCreateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingCreatekeyFeaturesInput | string[]
   projectedYield?: string | null
   titleAr?: string | null
-  descriptionAr?: string | null
   locationAr?: string | null
   status?: $Enums.ListingStatus
   rejectionReason?: string | null
@@ -906,10 +902,10 @@ export type ListingUncheckedCreateInput = {
   isOffPlan?: boolean
   badge?: string | null
   flags?: Prisma.ListingCreateflagsInput | string[]
+  amenities?: Prisma.ListingCreateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingCreatekeyFeaturesInput | string[]
   projectedYield?: string | null
   titleAr?: string | null
-  descriptionAr?: string | null
   locationAr?: string | null
   status?: $Enums.ListingStatus
   rejectionReason?: string | null
@@ -959,10 +955,10 @@ export type ListingUpdateInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1014,10 +1010,10 @@ export type ListingUncheckedUpdateInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1068,10 +1064,10 @@ export type ListingCreateManyInput = {
   isOffPlan?: boolean
   badge?: string | null
   flags?: Prisma.ListingCreateflagsInput | string[]
+  amenities?: Prisma.ListingCreateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingCreatekeyFeaturesInput | string[]
   projectedYield?: string | null
   titleAr?: string | null
-  descriptionAr?: string | null
   locationAr?: string | null
   status?: $Enums.ListingStatus
   rejectionReason?: string | null
@@ -1117,10 +1113,10 @@ export type ListingUpdateManyMutationInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1167,10 +1163,10 @@ export type ListingUncheckedUpdateManyInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1235,10 +1231,10 @@ export type ListingCountOrderByAggregateInput = {
   isOffPlan?: Prisma.SortOrder
   badge?: Prisma.SortOrder
   flags?: Prisma.SortOrder
+  amenities?: Prisma.SortOrder
   keyFeatures?: Prisma.SortOrder
   projectedYield?: Prisma.SortOrder
   titleAr?: Prisma.SortOrder
-  descriptionAr?: Prisma.SortOrder
   locationAr?: Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
@@ -1301,7 +1297,6 @@ export type ListingMaxOrderByAggregateInput = {
   badge?: Prisma.SortOrder
   projectedYield?: Prisma.SortOrder
   titleAr?: Prisma.SortOrder
-  descriptionAr?: Prisma.SortOrder
   locationAr?: Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
@@ -1349,7 +1344,6 @@ export type ListingMinOrderByAggregateInput = {
   badge?: Prisma.SortOrder
   projectedYield?: Prisma.SortOrder
   titleAr?: Prisma.SortOrder
-  descriptionAr?: Prisma.SortOrder
   locationAr?: Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
@@ -1426,6 +1420,10 @@ export type ListingCreateflagsInput = {
   set: string[]
 }
 
+export type ListingCreateamenitiesInput = {
+  set: string[]
+}
+
 export type ListingCreatekeyFeaturesInput = {
   set: string[]
 }
@@ -1459,6 +1457,11 @@ export type NullableFloatFieldUpdateOperationsInput = {
 }
 
 export type ListingUpdateflagsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type ListingUpdateamenitiesInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -1571,10 +1574,10 @@ export type ListingCreateWithoutOwnerInput = {
   isOffPlan?: boolean
   badge?: string | null
   flags?: Prisma.ListingCreateflagsInput | string[]
+  amenities?: Prisma.ListingCreateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingCreatekeyFeaturesInput | string[]
   projectedYield?: string | null
   titleAr?: string | null
-  descriptionAr?: string | null
   locationAr?: string | null
   status?: $Enums.ListingStatus
   rejectionReason?: string | null
@@ -1624,10 +1627,10 @@ export type ListingUncheckedCreateWithoutOwnerInput = {
   isOffPlan?: boolean
   badge?: string | null
   flags?: Prisma.ListingCreateflagsInput | string[]
+  amenities?: Prisma.ListingCreateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingCreatekeyFeaturesInput | string[]
   projectedYield?: string | null
   titleAr?: string | null
-  descriptionAr?: string | null
   locationAr?: string | null
   status?: $Enums.ListingStatus
   rejectionReason?: string | null
@@ -1707,10 +1710,10 @@ export type ListingScalarWhereInput = {
   isOffPlan?: Prisma.BoolFilter<"Listing"> | boolean
   badge?: Prisma.StringNullableFilter<"Listing"> | string | null
   flags?: Prisma.StringNullableListFilter<"Listing">
+  amenities?: Prisma.StringNullableListFilter<"Listing">
   keyFeatures?: Prisma.StringNullableListFilter<"Listing">
   projectedYield?: Prisma.StringNullableFilter<"Listing"> | string | null
   titleAr?: Prisma.StringNullableFilter<"Listing"> | string | null
-  descriptionAr?: Prisma.StringNullableFilter<"Listing"> | string | null
   locationAr?: Prisma.StringNullableFilter<"Listing"> | string | null
   status?: Prisma.EnumListingStatusFilter<"Listing"> | $Enums.ListingStatus
   rejectionReason?: Prisma.StringNullableFilter<"Listing"> | string | null
@@ -1756,10 +1759,10 @@ export type ListingCreateWithoutMediaInput = {
   isOffPlan?: boolean
   badge?: string | null
   flags?: Prisma.ListingCreateflagsInput | string[]
+  amenities?: Prisma.ListingCreateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingCreatekeyFeaturesInput | string[]
   projectedYield?: string | null
   titleAr?: string | null
-  descriptionAr?: string | null
   locationAr?: string | null
   status?: $Enums.ListingStatus
   rejectionReason?: string | null
@@ -1810,10 +1813,10 @@ export type ListingUncheckedCreateWithoutMediaInput = {
   isOffPlan?: boolean
   badge?: string | null
   flags?: Prisma.ListingCreateflagsInput | string[]
+  amenities?: Prisma.ListingCreateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingCreatekeyFeaturesInput | string[]
   projectedYield?: string | null
   titleAr?: string | null
-  descriptionAr?: string | null
   locationAr?: string | null
   status?: $Enums.ListingStatus
   rejectionReason?: string | null
@@ -1878,10 +1881,10 @@ export type ListingUpdateWithoutMediaInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1932,10 +1935,10 @@ export type ListingUncheckedUpdateWithoutMediaInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1984,10 +1987,10 @@ export type ListingCreateWithoutEnquiriesInput = {
   isOffPlan?: boolean
   badge?: string | null
   flags?: Prisma.ListingCreateflagsInput | string[]
+  amenities?: Prisma.ListingCreateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingCreatekeyFeaturesInput | string[]
   projectedYield?: string | null
   titleAr?: string | null
-  descriptionAr?: string | null
   locationAr?: string | null
   status?: $Enums.ListingStatus
   rejectionReason?: string | null
@@ -2038,10 +2041,10 @@ export type ListingUncheckedCreateWithoutEnquiriesInput = {
   isOffPlan?: boolean
   badge?: string | null
   flags?: Prisma.ListingCreateflagsInput | string[]
+  amenities?: Prisma.ListingCreateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingCreatekeyFeaturesInput | string[]
   projectedYield?: string | null
   titleAr?: string | null
-  descriptionAr?: string | null
   locationAr?: string | null
   status?: $Enums.ListingStatus
   rejectionReason?: string | null
@@ -2106,10 +2109,10 @@ export type ListingUpdateWithoutEnquiriesInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2160,10 +2163,10 @@ export type ListingUncheckedUpdateWithoutEnquiriesInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2212,10 +2215,10 @@ export type ListingCreateWithoutSavesInput = {
   isOffPlan?: boolean
   badge?: string | null
   flags?: Prisma.ListingCreateflagsInput | string[]
+  amenities?: Prisma.ListingCreateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingCreatekeyFeaturesInput | string[]
   projectedYield?: string | null
   titleAr?: string | null
-  descriptionAr?: string | null
   locationAr?: string | null
   status?: $Enums.ListingStatus
   rejectionReason?: string | null
@@ -2266,10 +2269,10 @@ export type ListingUncheckedCreateWithoutSavesInput = {
   isOffPlan?: boolean
   badge?: string | null
   flags?: Prisma.ListingCreateflagsInput | string[]
+  amenities?: Prisma.ListingCreateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingCreatekeyFeaturesInput | string[]
   projectedYield?: string | null
   titleAr?: string | null
-  descriptionAr?: string | null
   locationAr?: string | null
   status?: $Enums.ListingStatus
   rejectionReason?: string | null
@@ -2334,10 +2337,10 @@ export type ListingUpdateWithoutSavesInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2388,10 +2391,10 @@ export type ListingUncheckedUpdateWithoutSavesInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2440,10 +2443,10 @@ export type ListingCreateWithoutReportsInput = {
   isOffPlan?: boolean
   badge?: string | null
   flags?: Prisma.ListingCreateflagsInput | string[]
+  amenities?: Prisma.ListingCreateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingCreatekeyFeaturesInput | string[]
   projectedYield?: string | null
   titleAr?: string | null
-  descriptionAr?: string | null
   locationAr?: string | null
   status?: $Enums.ListingStatus
   rejectionReason?: string | null
@@ -2494,10 +2497,10 @@ export type ListingUncheckedCreateWithoutReportsInput = {
   isOffPlan?: boolean
   badge?: string | null
   flags?: Prisma.ListingCreateflagsInput | string[]
+  amenities?: Prisma.ListingCreateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingCreatekeyFeaturesInput | string[]
   projectedYield?: string | null
   titleAr?: string | null
-  descriptionAr?: string | null
   locationAr?: string | null
   status?: $Enums.ListingStatus
   rejectionReason?: string | null
@@ -2562,10 +2565,10 @@ export type ListingUpdateWithoutReportsInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2616,10 +2619,10 @@ export type ListingUncheckedUpdateWithoutReportsInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2668,10 +2671,10 @@ export type ListingCreateManyOwnerInput = {
   isOffPlan?: boolean
   badge?: string | null
   flags?: Prisma.ListingCreateflagsInput | string[]
+  amenities?: Prisma.ListingCreateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingCreatekeyFeaturesInput | string[]
   projectedYield?: string | null
   titleAr?: string | null
-  descriptionAr?: string | null
   locationAr?: string | null
   status?: $Enums.ListingStatus
   rejectionReason?: string | null
@@ -2717,10 +2720,10 @@ export type ListingUpdateWithoutOwnerInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2770,10 +2773,10 @@ export type ListingUncheckedUpdateWithoutOwnerInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2823,10 +2826,10 @@ export type ListingUncheckedUpdateManyWithoutOwnerInput = {
   isOffPlan?: Prisma.BoolFieldUpdateOperationsInput | boolean
   badge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   flags?: Prisma.ListingUpdateflagsInput | string[]
+  amenities?: Prisma.ListingUpdateamenitiesInput | string[]
   keyFeatures?: Prisma.ListingUpdatekeyFeaturesInput | string[]
   projectedYield?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   titleAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  descriptionAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationAr?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2931,10 +2934,10 @@ export type ListingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   isOffPlan?: boolean
   badge?: boolean
   flags?: boolean
+  amenities?: boolean
   keyFeatures?: boolean
   projectedYield?: boolean
   titleAr?: boolean
-  descriptionAr?: boolean
   locationAr?: boolean
   status?: boolean
   rejectionReason?: boolean
@@ -2987,10 +2990,10 @@ export type ListingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   isOffPlan?: boolean
   badge?: boolean
   flags?: boolean
+  amenities?: boolean
   keyFeatures?: boolean
   projectedYield?: boolean
   titleAr?: boolean
-  descriptionAr?: boolean
   locationAr?: boolean
   status?: boolean
   rejectionReason?: boolean
@@ -3038,10 +3041,10 @@ export type ListingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   isOffPlan?: boolean
   badge?: boolean
   flags?: boolean
+  amenities?: boolean
   keyFeatures?: boolean
   projectedYield?: boolean
   titleAr?: boolean
-  descriptionAr?: boolean
   locationAr?: boolean
   status?: boolean
   rejectionReason?: boolean
@@ -3089,10 +3092,10 @@ export type ListingSelectScalar = {
   isOffPlan?: boolean
   badge?: boolean
   flags?: boolean
+  amenities?: boolean
   keyFeatures?: boolean
   projectedYield?: boolean
   titleAr?: boolean
-  descriptionAr?: boolean
   locationAr?: boolean
   status?: boolean
   rejectionReason?: boolean
@@ -3103,7 +3106,7 @@ export type ListingSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "slug" | "title" | "description" | "listingType" | "category" | "propertyType" | "price" | "priceNegotiable" | "featured" | "bedrooms" | "bathrooms" | "floors" | "yearBuilt" | "areaSqft" | "addressLine" | "locality" | "city" | "state" | "pincode" | "latitude" | "longitude" | "reraNumber" | "areaSqm" | "availableFrom" | "availabilityNotes" | "zoning" | "frontageMeters" | "depthMeters" | "propertyUse" | "tier" | "isOffPlan" | "badge" | "flags" | "keyFeatures" | "projectedYield" | "titleAr" | "descriptionAr" | "locationAr" | "status" | "rejectionReason" | "publishedAt" | "expiresAt" | "viewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
+export type ListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "slug" | "title" | "description" | "listingType" | "category" | "propertyType" | "price" | "priceNegotiable" | "featured" | "bedrooms" | "bathrooms" | "floors" | "yearBuilt" | "areaSqft" | "addressLine" | "locality" | "city" | "state" | "pincode" | "latitude" | "longitude" | "reraNumber" | "areaSqm" | "availableFrom" | "availabilityNotes" | "zoning" | "frontageMeters" | "depthMeters" | "propertyUse" | "tier" | "isOffPlan" | "badge" | "flags" | "amenities" | "keyFeatures" | "projectedYield" | "titleAr" | "locationAr" | "status" | "rejectionReason" | "publishedAt" | "expiresAt" | "viewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
 export type ListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   media?: boolean | Prisma.Listing$mediaArgs<ExtArgs>
@@ -3164,10 +3167,10 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     isOffPlan: boolean
     badge: string | null
     flags: string[]
+    amenities: string[]
     keyFeatures: string[]
     projectedYield: string | null
     titleAr: string | null
-    descriptionAr: string | null
     locationAr: string | null
     status: $Enums.ListingStatus
     rejectionReason: string | null
@@ -3639,10 +3642,10 @@ export interface ListingFieldRefs {
   readonly isOffPlan: Prisma.FieldRef<"Listing", 'Boolean'>
   readonly badge: Prisma.FieldRef<"Listing", 'String'>
   readonly flags: Prisma.FieldRef<"Listing", 'String[]'>
+  readonly amenities: Prisma.FieldRef<"Listing", 'String[]'>
   readonly keyFeatures: Prisma.FieldRef<"Listing", 'String[]'>
   readonly projectedYield: Prisma.FieldRef<"Listing", 'String'>
   readonly titleAr: Prisma.FieldRef<"Listing", 'String'>
-  readonly descriptionAr: Prisma.FieldRef<"Listing", 'String'>
   readonly locationAr: Prisma.FieldRef<"Listing", 'String'>
   readonly status: Prisma.FieldRef<"Listing", 'ListingStatus'>
   readonly rejectionReason: Prisma.FieldRef<"Listing", 'String'>

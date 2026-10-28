@@ -14,6 +14,8 @@ export interface Property {
   titleAr: string;
   location: string;
   locationAr: string;
+  latitude?: number | null;
+  longitude?: number | null;
   city: string;
   priceSAR: number;
   type: string;
@@ -27,11 +29,13 @@ export interface Property {
   description: string;
   descriptionAr: string;
   keyFeatures: string[];
+  amenities?: string[];
   keyFeaturesAr?: string[];
   projectedYield: string;
   registration: string;
   flags: string[];
   image: string;
+  media?: { kind: "IMAGE" | "VIDEO_LINK" | "VIDEO_UPLOAD"; src: string }[];
 }
 
 export interface MegaProject {

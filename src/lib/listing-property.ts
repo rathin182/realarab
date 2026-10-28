@@ -5,7 +5,6 @@ export interface ListingForProperty {
   title: string;
   titleAr: string | null;
   description: string;
-  descriptionAr: string | null;
   listingType: "SALE" | "RENT";
   isOffPlan?: boolean;
   category: "RESIDENTIAL" | "COMMERCIAL" | "LAND";
@@ -16,6 +15,8 @@ export interface ListingForProperty {
   areaSqm: number | null;
   areaSqft: number | null;
   locality: string | null;
+  latitude: number | null;
+  longitude: number | null;
   city: string;
   locationAr: string | null;
   tier: string | null;
@@ -23,8 +24,9 @@ export interface ListingForProperty {
   projectedYield: string | null;
   reraNumber: string | null;
   flags: string[];
+  amenities: string[];
   keyFeatures: string[];
-  media: { kind: "IMAGE" | "VIDEO_LINK" | "VIDEO_UPLOAD"; storageKey: string | null; isCover: boolean; position: number }[];
+  media: { kind: "IMAGE" | "VIDEO_LINK" | "VIDEO_UPLOAD"; storageKey: string | null; externalUrl: string | null; isCover: boolean; position: number }[];
 }
 
 export function listingToProperty(listing: ListingForProperty): Property {
@@ -33,6 +35,10 @@ export function listingToProperty(listing: ListingForProperty): Property {
     : "curated";
   const images = listing.media.filter((media) => media.kind === "IMAGE");
   const cover = images.find((media) => media.isCover) ?? images[0];
+  const propertyMedia = listing.media.flatMap((media) => {
+    const src = media.storageKey ?? media.externalUrl;
+    return src ? [{ kind: media.kind, src }] : [];
+  });
   const transaction = listing.category === "COMMERCIAL"
     ? "commercial"
     : listing.listingType === "RENT"
@@ -46,6 +52,8 @@ export function listingToProperty(listing: ListingForProperty): Property {
     titleAr: listing.titleAr ?? listing.title,
     location: [listing.locality, listing.city].filter(Boolean).join(", "),
     locationAr: listing.locationAr ?? [listing.locality, listing.city].filter(Boolean).join(", "),
+    latitude: listing.latitude,
+    longitude: listing.longitude,
     city: listing.city,
     priceSAR: Number(listing.price),
     type: listing.propertyType ?? listing.category.toLowerCase(),
@@ -56,11 +64,13 @@ export function listingToProperty(listing: ListingForProperty): Property {
     bathrooms: listing.bathrooms ?? 0,
     badge: listing.badge ?? listing.category,
     description: listing.description,
-    descriptionAr: listing.descriptionAr ?? listing.description,
+    descriptionAr: listing.description,
     keyFeatures: listing.keyFeatures,
     projectedYield: listing.projectedYield ?? "",
     registration: listing.reraNumber ?? "",
     flags: listing.flags,
+    amenities: listing.amenities,
     image: cover?.storageKey ?? "/images/property-placeholder.jpg",
+    media: propertyMedia,
   };
 }

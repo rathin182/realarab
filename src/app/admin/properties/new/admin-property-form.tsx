@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { createAdminListing } from "@/actions/admin";
 import { useSiteLanguage } from "@/components/providers/LanguageContext";
@@ -19,6 +20,20 @@ const sections: { id: string; icon: LucideIcon; labels: [string, string]; active
   { id: "amenities", icon: Sparkles, labels: ["Amenities", "المرافق"], active: true },
   // { id: "additional", icon: Tag, labels: ["Additional", "إضافي"], active: true },
 ];
+
+function ListingSubmitButton({ listingStatus, isArabic }: { listingStatus: string; isArabic: boolean }) {
+  const { pending } = useFormStatus();
+  const actionLabel = listingStatus === "DRAFT"
+    ? (isArabic ? "حفظ كمسودة" : "Save Listing as Draft")
+    : (isArabic ? "نشر العقار" : "Publish Listing");
+
+  return (
+    <button type="submit" disabled={pending} aria-busy={pending} className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-[#234532] px-5 text-sm font-medium text-white hover:bg-[#183424] disabled:cursor-wait disabled:opacity-75">
+      {pending && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />}
+      {pending ? (isArabic ? "جارٍ الحفظ..." : listingStatus === "DRAFT" ? "Saving..." : "Publishing...") : actionLabel}
+    </button>
+  );
+}
 
 function ChipInput({ name, label, placeholder, note, isArabic }: { name: string; label: string; placeholder: string; note: string; isArabic: boolean }) {
   const [value, setValue] = useState("");
@@ -59,9 +74,69 @@ function ChipInput({ name, label, placeholder, note, isArabic }: { name: string;
 }
 
 const defaultAmenities: [string, string][] = [
-  ["Parking", "موقف سيارات"], ["Swimming pool", "مسبح"], ["Garden", "حديقة"],
-  ["Gym", "صالة رياضية"], ["Security", "أمن"], ["Central AC", "تكييف مركزي"],
-  ["Balcony", "شرفة"], ["Elevator", "مصعد"], ["Smart home", "منزل ذكي"],
+  // Basic Amenities
+  ["Parking", "موقف سيارات"],
+  ["Swimming pool", "مسبح"],
+  ["Garden", "حديقة"],
+  ["Gym", "صالة رياضية"],
+  ["Security", "أمن"],
+  ["Central AC", "تكييف مركزي"],
+  ["Balcony", "شرفة"],
+  ["Elevator", "مصعد"],
+  ["Smart home", "منزل ذكي"],
+
+  // Rooms & Interior
+  ["Maids Room", "غرفة خادمة"],
+  ["Study", "غرفة دراسة"],
+  ["Central A/C & Heating", "تكييف وتدفئة مركزية"],
+  ["Built in Wardrobes", "خزائن مدمجة"],
+  ["Walk-in Closet", "غرفة ملابس"],
+  ["Built in Kitchen Appliances", "أجهزة مطبخ مدمجة"],
+  ["Laundry Room", "غرفة غسيل"],
+  ["Storage Areas", "مناطق تخزين"],
+  ["Double Glazed Windows", "نوافذ زجاجية مزدوجة"],
+
+  // Private Facilities
+  ["Private Garden", "حديقة خاصة"],
+  ["Private Pool", "مسبح خاص"],
+  ["Private Gym", "صالة رياضية خاصة"],
+  ["Private Jacuzzi", "جاكوزي خاص"],
+  ["Covered Parking", "موقف سيارات مغطى"],
+  ["Broadband Internet", "إنترنت عالي السرعة"],
+  ["Satellite / Cable TV", "تلفزيون فضائي / كابل"],
+  ["Intercom", "نظام اتصال داخلي"],
+
+  // Shared Facilities
+  ["Shared Pool", "مسبح مشترك"],
+  ["Shared Spa", "منتجع صحي مشترك"],
+  ["Shared Gym", "صالة رياضية مشتركة"],
+  ["Concierge Service", "خدمة الاستقبال والإرشاد"],
+  ["Business Center", "مركز أعمال"],
+  ["ATM Facility", "جهاز صراف آلي"],
+  ["Kids Play Area", "منطقة لعب للأطفال"],
+  ["Reception/Waiting Room", "غرفة استقبال وانتظار"],
+  ["Cafeteria or Canteen", "كافتيريا أو مقصف"],
+  ["Shared Kitchen", "مطبخ مشترك"],
+  ["Lobby in Building", "ردهة المبنى"],
+  ["Service Elevators", "مصاعد الخدمة"],
+  ["Prayer Room", "غرفة صلاة"],
+
+  // Security & Maintenance
+  ["Maid Service", "خدمة الخادمة"],
+  ["Maintenance Staff", "موظفو الصيانة"],
+  ["CCTV Security", "كاميرات مراقبة أمنية"],
+  ["Cleaning Services", "خدمات التنظيف"],
+  ["Waste Disposal", "التخلص من النفايات"],
+  ["Electricity Backup", "مولد كهربائي احتياطي"],
+  ["Facilities for Disabled", "مرافق لذوي الإعاقة"],
+  ["First Aid Medical Center", "مركز إسعافات أولية"],
+  ["Day Care Center", "مركز رعاية نهارية"],
+
+  // Outdoor & Views
+  ["Barbeque Area", "منطقة الشواء"],
+  ["View of Water", "إطلالة على المياه"],
+  ["View of Landmark", "إطلالة على معلم بارز"],
+  ["Pets Allowed", "يسمح بالحيوانات الأليفة"],
 ];
 
 function AmenitySelector({ isArabic }: { isArabic: boolean }) {
@@ -124,9 +199,12 @@ export default function AdminPropertyForm() {
   const { language } = useSiteLanguage();
   const isArabic = language === "ar";
   const [activeSection, setActiveSection] = useState("basic-information");
+  const [propertyCategory, setPropertyCategory] = useState<"RESIDENTIAL" | "COMMERCIAL">("RESIDENTIAL");
   const [propertyType, setPropertyType] = useState("");
   const [listingStatus, setListingStatus] = useState("DRAFT");
+  const [isOffPlan, setIsOffPlan] = useState(false);
   const [propertyTypeError, setPropertyTypeError] = useState(false);
+  const isLandType = ["LAND", "INDUSTRIAL_LAND", "MIXED_USE_LAND"].includes(propertyType);
 
   useEffect(() => {
     const sectionNodes = Array.from(document.querySelectorAll<HTMLElement>("section[id]"));
@@ -143,13 +221,7 @@ export default function AdminPropertyForm() {
 
   return (
     <main dir={isArabic ? "rtl" : "ltr"} className="min-h-screen bg-[#f3f1eb] px-4 pb-12 pt-8 text-[#24231f] sm:px-6">
-      <form action={createAdminListing} onSubmit={(event) => {
-        if (!propertyType) {
-          event.preventDefault();
-          setPropertyTypeError(true);
-          document.getElementById("property-type-options")?.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      }} className="mx-auto max-w-7xl space-y-5">
+      <div className="mx-auto max-w-7xl space-y-5">
         <div className="flex flex-wrap items-end justify-between gap-5">
           <div>
             <div className="mb-3 flex items-center gap-2 text-xs text-neutral-500">
@@ -164,6 +236,15 @@ export default function AdminPropertyForm() {
             <span aria-hidden="true">←</span>{isArabic ? "العودة إلى العقارات" : "Back to Properties"}
           </Link>
         </div>
+      </div>
+      <form action={createAdminListing} onSubmit={(event) => {
+        if (!propertyCategory || !propertyType) {
+          event.preventDefault();
+          setPropertyTypeError(true);
+          document.getElementById("property-type-options")?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }} className="mx-auto max-w-7xl space-y-5">
+
 
         <nav aria-label={isArabic ? "أقسام نموذج العقار" : "Property form sections"} className="sticky top-20 z-30 mt-7 overflow-x-auto rounded-lg border border-[#e3dfd5] bg-[#faf9f5]/95 shadow-sm backdrop-blur-md">
           <div className="flex min-w-max items-stretch px-2 sm:min-w-0 sm:justify-between sm:px-3">
@@ -204,17 +285,28 @@ export default function AdminPropertyForm() {
               <input name="title" required maxLength={160} placeholder={isArabic ? "مثال: فيلا فاخرة في الدرعية" : "e.g. Luxury Villa in Diriyah"} className={fieldClass} />
             </label>
             <fieldset id="property-type-options" aria-invalid={propertyTypeError} className="sm:col-span-2">
-              <legend className="text-sm font-medium">{isArabic ? "نوع العقار" : "Property Type"}<span className="ms-1 text-red-700">*</span></legend>
+              <legend className="text-sm font-medium">{isArabic ? "فئة العقار ونوعه" : "Property Category and Type"}<span className="ms-1 text-red-700">*</span></legend>
               <input type="hidden" name="propertyType" value={propertyType} />
-              <input type="hidden" name="category" value={propertyType === "LAND" ? "LAND" : propertyType === "COMMERCIAL" ? "COMMERCIAL" : "RESIDENTIAL"} />
-              <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-5">
-                {[["VILLA", "Villa", "فيلا"], ["APARTMENT", "Apartment", "شقة"], ["TOWNHOUSE", "Townhouse", "منزل متصل"], ["LAND", "Land", "أرض"], ["COMMERCIAL", "Commercial", "تجاري"]].map(([value, label, labelAr]) => (
-                  <button key={value} type="button" aria-pressed={propertyType === value} onClick={() => { setPropertyType(value); setPropertyTypeError(false); }} className={`min-h-11 rounded-md border px-3 text-sm transition-colors ${propertyType === value ? "border-[#234532] bg-[#234532] text-white" : "border-[#d8d3c8] bg-white hover:bg-[#f4f1ea]"}`}>
-                    {isArabic ? labelAr : label}
+              <input type="hidden" name="category" value={propertyCategory} />
+              <div className="mt-2 grid grid-cols-2 border-b border-[#dedbd5]">
+                {([["RESIDENTIAL", isArabic ? "سكني" : "Residential"], ["COMMERCIAL", isArabic ? "تجاري" : "Commercial"]] as const).map(([category, label]) => (
+                  <button key={category} type="button" aria-pressed={propertyCategory === category} onClick={() => { setPropertyCategory(category); setPropertyType(""); setPropertyTypeError(false); }} className={`min-h-11 border-b-2 px-4 text-sm transition-colors ${propertyCategory === category ? "border-emerald-600 font-semibold text-emerald-700" : "border-transparent text-neutral-500 hover:text-neutral-800"}`}>
+                    {label}
                   </button>
                 ))}
               </div>
-              {propertyTypeError && <p role="alert" className="mt-2 text-xs text-red-700">{isArabic ? "يرجى اختيار نوع العقار." : "Choose a property type to continue."}</p>}
+              <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {(propertyCategory === "RESIDENTIAL"
+                  ? [["APARTMENT", "Apartment", "شقة"], ["VILLA", "Villa", "فيلا"], ["TOWNHOUSE", "Townhouse", "منزل متصل"], ["PENTHOUSE", "Penthouse", "بنتهاوس"], ["VILLA_COMPOUND", "Villa Compound", "مجمع فلل"], ["HOTEL_APARTMENT", "Hotel Apartment", "شقة فندقية"], ["LAND", "Land", "أرض"], ["FLOOR", "Floor", "طابق"], ["BUILDING", "Building", "مبنى"]]
+                  : [["OFFICE", "Office", "مكتب"], ["SHOP", "Shop", "متجر"], ["WAREHOUSE", "Warehouse", "مستودع"], ["LABOUR_CAMP", "Labour Camp", "سكن عمال"], ["VILLA", "Villa", "فيلا"], ["BULK_UNIT", "Bulk Unit", "وحدة تجارية"], ["LAND", "Land", "أرض"], ["FLOOR", "Floor", "طابق"], ["BUILDING", "Building", "مبنى"], ["FACTORY", "Factory", "مصنع"], ["INDUSTRIAL_LAND", "Industrial Land", "أرض صناعية"], ["MIXED_USE_LAND", "Mixed Use Land", "أرض متعددة الاستخدامات"], ["SHOWROOM", "Showroom", "صالة عرض"], ["OTHER_COMMERCIAL", "Other Commercial", "تجاري آخر"]]
+                ).map(([value, label, labelAr]) => (
+                  <button key={value} type="button" aria-pressed={propertyType === value} onClick={() => { setPropertyType(value); setPropertyTypeError(false); }} className={`flex min-h-11 items-center gap-3 rounded-full border px-3 text-sm transition-colors ${propertyType === value ? "border-emerald-600 bg-emerald-50 font-medium text-emerald-800" : "border-[#d8d8d8] bg-white text-neutral-600 hover:bg-[#f4f1ea]"}`}>
+                    <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 ${propertyType === value ? "border-emerald-600" : "border-neutral-300"}`}>{propertyType === value && <span className="h-2.5 w-2.5 rounded-full bg-emerald-600" />}</span>
+                    <span className="flex-1 text-center">{isArabic ? labelAr : label}</span>
+                  </button>
+                ))}
+              </div>
+              {propertyTypeError && <p role="alert" className="mt-2 text-xs text-red-700">{isArabic ? "يرجى اختيار فئة العقار ونوعه." : "Choose a category and property type."}</p>}
             </fieldset>
             <label className="block text-sm font-medium">{isArabic ? "السوق" : "Market"}<span className="ms-1 text-red-700">*</span>
               <select name="listingType" required defaultValue="" className={fieldClass}>
@@ -261,10 +353,10 @@ export default function AdminPropertyForm() {
           </div>
 
           <div className="grid gap-x-6 gap-y-5 p-5 sm:grid-cols-2 sm:p-7">
-            <label className="block text-sm font-medium">{isArabic ? "المساحة (م²)" : "Area (sqm)"}
+            <label className="block text-sm font-medium">{isArabic ? "المساحة (م²)" : "Area (m2)"}
               <input name="areaSqm" type="number" min="0" step="1" placeholder="350" className={fieldClass} />
             </label>
-            {propertyType && propertyType !== "LAND" && <>
+            {propertyType && !isLandType && <>
               <label className="block text-sm font-medium">{isArabic ? "غرف النوم" : "Bedrooms"}
                 <input name="bedrooms" type="number" min="0" step="1" placeholder="4" className={fieldClass} />
               </label>
@@ -272,7 +364,7 @@ export default function AdminPropertyForm() {
                 <input name="bathrooms" type="number" min="0" step="1" placeholder="3" className={fieldClass} />
               </label>
             </>}
-            {propertyType === "LAND" && <>
+            {isLandType && <>
               <label className="block text-sm font-medium">{isArabic ? "التصنيف التنظيمي" : "Zoning"}
                 <input name="zoning" placeholder={isArabic ? "سكني، تجاري، متعدد الاستخدامات" : "Residential, commercial, mixed-use"} className={fieldClass} />
               </label>
@@ -283,7 +375,7 @@ export default function AdminPropertyForm() {
                 <input name="depthMeters" type="number" min="0" step="0.1" placeholder="40" className={fieldClass} />
               </label>
             </>}
-            {propertyType && propertyType !== "LAND" && <>
+            {propertyType && !isLandType && <>
               <label className="block text-sm font-medium">{isArabic ? "عدد الطوابق" : "Floors"}
                 <input name="floors" type="number" min="1" step="1" placeholder="2" className={fieldClass} />
               </label>
@@ -291,10 +383,21 @@ export default function AdminPropertyForm() {
                 <input name="yearBuilt" type="number" min="1800" max="2100" step="1" placeholder="2025" className={fieldClass} />
               </label>
             </>}
-            {propertyType === "COMMERCIAL" && <label className="block text-sm font-medium sm:col-span-2">{isArabic ? "الاستخدام التجاري" : "Commercial use"}
+            {propertyCategory === "COMMERCIAL" && <label className="block text-sm font-medium sm:col-span-2">{isArabic ? "الاستخدام التجاري" : "Commercial use"}
               <input name="propertyUse" placeholder={isArabic ? "مكاتب، تجزئة، ضيافة، مستودعات" : "Office, retail, hospitality, warehouse"} className={fieldClass} />
             </label>}
-            <ChipInput name="keyFeatures" label={isArabic ? "الميزات الرئيسية" : "Key features"} placeholder={isArabic ? "أدخل ميزة أو أكثر" : "Enter one or more features"} note={isArabic ? "افصل الميزات المتعددة بفواصل، ثم اضغط إضافة." : "Separate multiple features with commas, then click Add Feature."} isArabic={isArabic} />
+            <fieldset className="sm:col-span-2">
+              <legend className="text-sm font-medium">{isArabic ? "حالة العقار" : "Property readiness"}</legend>
+              <input type="hidden" name="isOffPlan" value={isOffPlan ? "true" : "false"} />
+              <div className="mt-2 grid max-w-xl grid-cols-2 gap-3">
+                {([[false, isArabic ? "جاهز" : "Ready"], [true, isArabic ? "على الخارطة" : "Off-plan"]] as const).map(([offPlan, label]) => (
+                  <button key={label} type="button" aria-pressed={isOffPlan === offPlan} onClick={() => setIsOffPlan(offPlan)} className={`min-h-11 rounded-md border px-4 text-sm transition-colors ${isOffPlan === offPlan ? "border-[#234532] bg-[#234532] font-medium text-white" : "border-[#d8d3c8] bg-white hover:bg-[#f4f1ea]"}`}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+            <ChipInput name="keyFeatures" label={isArabic ? "الميزات الرئيسية" : "Key features"} placeholder={isArabic ? "أدخل ميزة أو أكثر" : "Enter one or more features"} note={isArabic ? "افصل كل ميزة بفاصلة؛ تُحفظ كل ميزة كعنصر منفصل." : "Separate each feature with a comma. Each feature is saved as its own item."} isArabic={isArabic} />
           </div>
         </section>
 
@@ -355,10 +458,7 @@ export default function AdminPropertyForm() {
             </div>
           </div>
           <div className="grid gap-x-6 gap-y-5 p-5 sm:grid-cols-2 sm:p-7">
-            <label className="block text-sm font-medium sm:col-span-2">{isArabic ? "الوصف بالعربية" : "Arabic description"}<span className="ms-1 text-red-700">*</span>
-              <textarea name="descriptionAr" required maxLength={5000} rows={6} dir="rtl" placeholder="اكتب وصف العقار باللغة العربية" className={`${fieldClass} h-auto resize-y px-3 py-3`} />
-            </label>
-            <label className="block text-sm font-medium sm:col-span-2">{isArabic ? "الوصف بالإنجليزية" : "English description"}
+            <label className="block text-sm font-medium sm:col-span-2">{isArabic ? "الوصف بالإنجليزية" : "Description"}<span className="ms-1 text-red-700">*</span>
               <textarea name="description" maxLength={5000} rows={5} placeholder={isArabic ? "أضف وصفًا اختياريًا باللغة الإنجليزية" : "Add an optional English description"} className={`${fieldClass} h-auto resize-y px-3 py-3`} />
             </label>
           </div>
@@ -400,19 +500,17 @@ export default function AdminPropertyForm() {
               <span className="mt-1 block text-xs font-normal text-neutral-500">{isArabic ? "افصل الوسوم بفواصل." : "Separate flags with commas."}</span>
             </label>
             <label className="flex min-h-11 items-center gap-3 text-sm sm:col-span-2">
-              <input type="checkbox" name="isOffPlan" value="true" className="h-4 w-4 accent-[#234532]" />
+              <input type="checkbox" name="isOffPlanLegacy" value="true" className="h-4 w-4 accent-[#234532]" />
               <span>{isArabic ? "عقار على الخارطة" : "Off-plan property"}</span>
             </label>
           </div>
         </section> */}
 
-        <div className="flex flex-wrap justify-end gap-3 rounded-lg border border-[#e3dfd5] bg-[#faf9f5] px-5 py-4 sm:px-7">
+        <div className="flex flex-wrap justify-end gap-3  px-5 py-4 sm:px-7">
           <Link href="/admin/properties" className="inline-flex h-11 items-center rounded-md border border-[#d8d3c8] bg-white px-5 text-sm hover:bg-[#f8f6f3]">
             {isArabic ? "إلغاء" : "Cancel"}
           </Link>
-          <button type="submit" className="inline-flex h-11 items-center rounded-md bg-[#234532] px-5 text-sm font-medium text-white hover:bg-[#183424]">
-            {listingStatus === "DRAFT" ? (isArabic ? "حفظ كمسودة" : "Save Listing as Draft") : (isArabic ? "نشر العقار" : "Publish Listing")}
-          </button>
+          <ListingSubmitButton listingStatus={listingStatus} isArabic={isArabic} />
         </div>
       </form>
     </main>

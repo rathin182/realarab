@@ -1,142 +1,107 @@
 "use client";
 
-import Script from "next/script";
-import { useEffect, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 
 type Props = { fieldClass: string; isArabic: boolean };
-type LatLng = { lat: number; lng: number };
-type MapEvent = { latLng?: { lat(): number; lng(): number } };
-type AddressComponent = { long_name: string; types: string[] };
-type GeocodeResult = { address_components: AddressComponent[]; geometry?: { location: { lat(): number; lng(): number } } };
-type MapInstance = {
-  addListener(event: string, handler: (event: MapEvent) => void): void;
-  setCenter(position: LatLng): void;
-};
-type MarkerInstance = {
-  setPosition(position: LatLng): void;
-  addListener(event: string, handler: (event: MapEvent) => void): void;
-};
-type GoogleMaps = {
-  Map: new (element: HTMLElement, options: { center: LatLng; zoom: number; mapTypeControl: boolean; streetViewControl: boolean }) => MapInstance;
-  Marker: new (options: { map: MapInstance; position: LatLng; draggable: boolean }) => MarkerInstance;
-  Geocoder: new () => {
-    geocode(request: { address?: string; location?: LatLng }, callback: (results: GeocodeResult[] | null, status: string) => void): void;
-  };
-};
+const DEFAULT_CENTER = "24.7136,46.6753";
 
-const DEFAULT_CENTER = { lat: 24.7136, lng: 46.6753 };
+function parseCoordinates(value: string) {
+  const dms = /(-?\d+(?:\.\d+)?)\s*°\s*(\d+(?:\.\d+)?)\s*['′’]\s*(\d+(?:\.\d+)?)\s*["″”]?\s*([NSEW])/gi;
+  const matches = [...value.matchAll(dms)];
+  let latitude: number;
+  let longitude: number;
+
+  if (matches.length === 2 && value.replace(dms, "").replace(/[\s,;]+/g, "") === "") {
+    const toDecimal = (match: RegExpMatchArray) => {
+      const degrees = Number(match[1]);
+      const minutes = Number(match[2]);
+      const seconds = Number(match[3]);
+      const direction = match[4].toUpperCase();
+      if (minutes >= 60 || seconds >= 60 || (direction === "N" || direction === "S") && Math.abs(degrees) > 90 || (direction === "E" || direction === "W") && Math.abs(degrees) > 180) return null;
+      const sign = direction === "S" || direction === "W" ? -1 : 1;
+      return sign * (Math.abs(degrees) + minutes / 60 + seconds / 3600);
+    };
+    const latitudeMatch = matches.find((match) => /[NS]/i.test(match[4]));
+    const longitudeMatch = matches.find((match) => /[EW]/i.test(match[4]));
+    if (!latitudeMatch || !longitudeMatch) return null;
+    const parsedLatitude = toDecimal(latitudeMatch);
+    const parsedLongitude = toDecimal(longitudeMatch);
+    if (parsedLatitude === null || parsedLongitude === null) return null;
+    latitude = parsedLatitude;
+    longitude = parsedLongitude;
+  } else {
+    const parts = value.trim().split(/[\s,;]+/).filter(Boolean);
+    if (parts.length !== 2) return null;
+    [latitude, longitude] = parts.map(Number);
+  }
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
+  if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) return null;
+  return { latitude, longitude };
+}
 
 export default function LocationMapPicker({ fieldClass, isArabic }: Props) {
-  const mapElement = useRef<HTMLDivElement>(null);
-  const map = useRef<MapInstance | null>(null);
-  const marker = useRef<MarkerInstance | null>(null);
-  const geocoder = useRef<InstanceType<GoogleMaps["Geocoder"]> | null>(null);
-  const skipAddressLookup = useRef(false);
   const [locality, setLocality] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [mapReady, setMapReady] = useState(false);
-  const [mapError, setMapError] = useState(false);
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-
-  function updatePin(position: LatLng, reverseGeocode = true) {
-    setLatitude(position.lat.toFixed(6));
-    setLongitude(position.lng.toFixed(6));
-    marker.current?.setPosition(position);
-
-    if (reverseGeocode && geocoder.current) {
-      geocoder.current.geocode({ location: position }, (results, statusCode) => {
-        if (statusCode !== "OK" || !results?.[0]) return;
-        const components = results[0].address_components;
-        const find = (...types: string[]) => components.find((component) => types.some((type) => component.types.includes(type)))?.long_name ?? "";
-        skipAddressLookup.current = true;
-        setLocality(find("sublocality_level_1", "neighborhood", "route"));
-        setCity(find("locality", "administrative_area_level_2"));
-        setState(find("administrative_area_level_1"));
-      });
-    }
-  }
-
-  function initializeMap() {
-    const maps = (window as Window & { google?: { maps: GoogleMaps } }).google?.maps;
-    if (!maps || !mapElement.current || map.current) return;
-    map.current = new maps.Map(mapElement.current, {
-      center: DEFAULT_CENTER,
-      zoom: 11,
-      mapTypeControl: false,
-      streetViewControl: false,
-    });
-    marker.current = new maps.Marker({ map: map.current, position: DEFAULT_CENTER, draggable: true });
-    geocoder.current = new maps.Geocoder();
-    map.current.addListener("click", (event) => {
-      if (event.latLng) updatePin({ lat: event.latLng.lat(), lng: event.latLng.lng() });
-    });
-    marker.current.addListener("dragend", (event) => {
-      if (event.latLng) updatePin({ lat: event.latLng.lat(), lng: event.latLng.lng() });
-    });
-    setMapReady(true);
-  }
-
-  useEffect(() => {
-    const address = [locality, city, state].map((part) => part.trim()).filter(Boolean).join(", ");
-    if (skipAddressLookup.current) {
-      skipAddressLookup.current = false;
-      return;
-    }
-    if (!address || !geocoder.current) return;
-    const timer = window.setTimeout(() => {
-      geocoder.current?.geocode({ address: `${address}, Saudi Arabia` }, (results, statusCode) => {
-        const location = statusCode === "OK" ? results?.[0]?.geometry?.location : undefined;
-        if (!location) return;
-        const position = { lat: location.lat(), lng: location.lng() };
-        setLatitude(position.lat.toFixed(6));
-        setLongitude(position.lng.toFixed(6));
-        marker.current?.setPosition(position);
-        map.current?.setCenter(position);
-      });
-    }, 600);
-    return () => window.clearTimeout(timer);
-  }, [locality, city, state, mapReady]);
-
-  useEffect(() => {
-    const lat = Number(latitude);
-    const lng = Number(longitude);
-    if (!latitude || !longitude || !Number.isFinite(lat) || !Number.isFinite(lng) || !map.current) return;
-    const position = { lat, lng };
-    marker.current?.setPosition(position);
-    map.current.setCenter(position);
-  }, [latitude, longitude]);
+  const [coordinateText, setCoordinateText] = useState("");
+  const coordinates = parseCoordinates(coordinateText);
+  const address = [locality, city, state, "Saudi Arabia"].filter(Boolean).join(", ");
+  const mapQuery = coordinates ? `${coordinates.latitude},${coordinates.longitude}` : address;
+  const mapUrl = useMemo(
+    () => `https://maps.google.com/maps?q=${encodeURIComponent(mapQuery || DEFAULT_CENTER)}&z=15&output=embed`,
+    [mapQuery],
+  );
 
   return (
     <div className="space-y-4">
-      {apiKey && <Script src={`https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}`} strategy="afterInteractive" onLoad={initializeMap} onError={() => setMapError(true)} />}
       <div className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
-        <label className="block text-sm font-medium sm:col-span-2">{isArabic ? "العنوان / الحي" : "Address / locality"}
-          <input name="locality" value={locality} onChange={(event) => setLocality(event.currentTarget.value)} placeholder={isArabic ? "اكتب عنوان العقار" : "Type the property address"} className={fieldClass} />
+        <label className="block text-sm font-medium sm:col-span-2">
+          {isArabic ? "العنوان / الحي" : "Detailed address / locality"}
+          <input name="locality" value={locality} onChange={(event) => setLocality(event.currentTarget.value)} placeholder={isArabic ? "الشارع، الحي، المبنى" : "Street, neighbourhood, building"} className={fieldClass} />
         </label>
-        <label className="block text-sm font-medium">{isArabic ? "المدينة" : "City"}<span className="ms-1 text-red-700">*</span>
+        <label className="block text-sm font-medium">
+          {isArabic ? "المدينة" : "City"}<span className="ms-1 text-red-700">*</span>
           <input name="city" required value={city} onChange={(event) => setCity(event.currentTarget.value)} placeholder={isArabic ? "مثال: الرياض" : "e.g. Riyadh"} className={fieldClass} />
         </label>
-        <label className="block text-sm font-medium">{isArabic ? "المنطقة / الولاية" : "State / Region"}<span className="ms-1 text-red-700">*</span>
+        <label className="block text-sm font-medium">
+          {isArabic ? "المنطقة / الولاية" : "State / Region"}<span className="ms-1 text-red-700">*</span>
           <input name="state" required value={state} onChange={(event) => setState(event.currentTarget.value)} placeholder={isArabic ? "مثال: منطقة الرياض" : "e.g. Riyadh Province"} className={fieldClass} />
         </label>
-        <label className="block text-sm font-medium">{isArabic ? "خط العرض" : "Latitude"}
-          <input name="latitude" type="number" min="-90" max="90" step="any" value={latitude} onChange={(event) => setLatitude(event.currentTarget.value)} placeholder="24.7136" className={fieldClass} />
+        <label className="block text-sm font-medium sm:col-span-2">
+          {isArabic ? "الإحداثيات (خط العرض، خط الطول)" : "Coordinates (latitude, longitude)"}
+          <input
+            name="coordinates"
+            value={coordinateText}
+            onChange={(event) => setCoordinateText(event.currentTarget.value)}
+            placeholder="24.7136, 46.6753"
+            inputMode="decimal"
+            className={fieldClass}
+            aria-describedby="coordinates-help"
+          />
         </label>
-        <label className="block text-sm font-medium">{isArabic ? "خط الطول" : "Longitude"}
-          <input name="longitude" type="number" min="-180" max="180" step="any" value={longitude} onChange={(event) => setLongitude(event.currentTarget.value)} placeholder="46.6753" className={fieldClass} />
-        </label>
+        <input type="hidden" name="latitude" value={coordinates?.latitude ?? ""} />
+        <input type="hidden" name="longitude" value={coordinates?.longitude ?? ""} />
       </div>
-      <div ref={mapElement} className="h-64 overflow-hidden rounded-md border border-[#d8d3c8] bg-[#ece9e1] sm:h-72" aria-label={isArabic ? "خريطة تحديد العقار" : "Property location map"} />
-      {!apiKey ? (
-        <p className="text-xs text-amber-800">{isArabic ? "أضف NEXT_PUBLIC_GOOGLE_MAPS_API_KEY لتفعيل الخريطة." : "Set NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to enable the interactive map."}</p>
-      ) : mapError ? (
-        <p className="text-xs text-red-700">{isArabic ? "تعذر تحميل الخريطة. تحقق من مفتاح Google Maps وإعدادات واجهة API." : "Map unavailable. Check the Google Maps key and API settings."}</p>
-      ) : (
-        <p className="text-xs text-neutral-500">{mapReady ? (isArabic ? "اكتب عنوانًا أو اسحب الدبوس لتحديث الموقع والإحداثيات." : "Type an address or drag the pin to update the location and coordinates.") : (isArabic ? "جارٍ تحميل الخريطة..." : "Loading map...")}</p>
-      )}
+      <p id="coordinates-help" className="text-xs text-neutral-500">
+        {isArabic
+          ? "في خرائط Google، اضغط مطولًا على الموقع ثم انسخ الإحداثيات الظاهرة والصقها هنا."
+          : "Paste decimal coordinates (24.7136, 46.6753) or degrees, minutes and seconds (22°39′38.7″N 88°23′48.1″E) from Google Maps."}
+        {coordinateText && !coordinates && <span className="ms-1 text-red-700">{isArabic ? "أدخل الإحداثيات العشرية أو الدرجات والدقائق والثواني بالترتيب الصحيح." : "Enter valid decimal coordinates or DMS coordinates with N/S and E/W."}</span>}
+      </p>
+      <div className="overflow-hidden rounded-md border border-[#d8d3c8] bg-[#ece9e1]">
+        <iframe
+          key={mapUrl}
+          title={isArabic ? "خريطة موقع العقار" : "Property location map"}
+          src={mapUrl}
+          className="h-64 w-full border-0 sm:h-72"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          allowFullScreen
+        />
+      </div>
+      <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery || DEFAULT_CENTER)}`} target="_blank" rel="noreferrer" className="inline-flex text-xs font-medium text-[#0C3826] underline underline-offset-2">
+        {isArabic ? "افتح خرائط Google لتحديد الموقع ونسخ الإحداثيات" : "Open Google Maps to find the location and copy its coordinates"}
+      </a>
     </div>
   );
 }

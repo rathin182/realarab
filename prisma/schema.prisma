@@ -152,10 +152,10 @@ model Listing {
   isOffPlan        Boolean          @default(false)
   badge            String?
   flags            String[]         @default([])
+  amenities        String[]         @default([])
   keyFeatures      String[]         @default([])
   projectedYield   String?
   titleAr          String?
-  descriptionAr    String?
   locationAr       String?
 
   status           ListingStatus    @default(DRAFT)

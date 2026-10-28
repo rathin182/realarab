@@ -113,8 +113,7 @@ export async function resolveReport(formData: FormData) {
 export async function createAdminListing(formData: FormData) {
   const session = await requireAdmin();
   const title = String(formData.get("title") ?? "").trim();
-  const descriptionAr = String(formData.get("descriptionAr") ?? "").trim();
-  const description = String(formData.get("description") ?? "").trim() || descriptionAr;
+  const description = String(formData.get("description") ?? "").trim();
   const city = String(formData.get("city") ?? "").trim();
   const state = String(formData.get("state") ?? "").trim();
   const propertyType = String(formData.get("propertyType") ?? "").trim();
@@ -130,8 +129,13 @@ export async function createAdminListing(formData: FormData) {
   const yearBuilt = Number(formData.get("yearBuilt"));
   const frontageMeters = Number(formData.get("frontageMeters"));
   const depthMeters = Number(formData.get("depthMeters"));
-  const latitudeValue = String(formData.get("latitude") ?? "").trim();
-  const longitudeValue = String(formData.get("longitude") ?? "").trim();
+  const coordinateText = String(formData.get("coordinates") ?? "").trim();
+  const coordinateParts = coordinateText.split(/[\s,;]+/).filter(Boolean);
+  if (coordinateText && coordinateParts.length !== 2) {
+    redirect("/admin/properties/new?error=invalid");
+  }
+  const latitudeValue = coordinateText ? coordinateParts[0] : String(formData.get("latitude") ?? "").trim();
+  const longitudeValue = coordinateText ? coordinateParts[1] : String(formData.get("longitude") ?? "").trim();
   const latitude = latitudeValue ? Number(latitudeValue) : null;
   const longitude = longitudeValue ? Number(longitudeValue) : null;
   const availableFromValue = String(formData.get("availableFrom") ?? "").trim();
@@ -141,15 +145,21 @@ export async function createAdminListing(formData: FormData) {
   const status = ["LIVE", "DRAFT", "SOLD_OR_RENTED"].includes(statusValue)
     ? statusValue as "LIVE" | "DRAFT" | "SOLD_OR_RENTED"
     : "DRAFT";
-  const categoryValue = String(formData.get("category") ?? "RESIDENTIAL");
-  const category = ["RESIDENTIAL", "COMMERCIAL", "LAND"].includes(categoryValue)
-    ? categoryValue as "RESIDENTIAL" | "COMMERCIAL" | "LAND"
-    : "RESIDENTIAL";
+  const categoryValue = String(formData.get("category") ?? "");
+  const category = ["RESIDENTIAL", "COMMERCIAL"].includes(categoryValue)
+    ? categoryValue as "RESIDENTIAL" | "COMMERCIAL"
+    : null;
+  const residentialTypes = ["APARTMENT", "VILLA", "TOWNHOUSE", "PENTHOUSE", "VILLA_COMPOUND", "HOTEL_APARTMENT", "LAND", "FLOOR", "BUILDING"];
+  const commercialTypes = ["OFFICE", "SHOP", "WAREHOUSE", "LABOUR_CAMP", "VILLA", "BULK_UNIT", "LAND", "FLOOR", "BUILDING", "FACTORY", "INDUSTRIAL_LAND", "MIXED_USE_LAND", "SHOWROOM", "OTHER_COMMERCIAL"];
+  const isValidPropertyType = category === "RESIDENTIAL"
+    ? residentialTypes.includes(propertyType)
+    : category === "COMMERCIAL" && commercialTypes.includes(propertyType);
   const tierValue = String(formData.get("tier") ?? "curated");
   const tier = ["featured", "curated", "vault", "syndicate"].includes(tierValue) ? tierValue : "curated";
-  const keyFeatures = [...formData.getAll("amenities"), ...formData.getAll("keyFeatures")]
+  const amenities = formData.getAll("amenities").map(String).map((item) => item.trim()).filter(Boolean);
+  const keyFeatures = formData.getAll("keyFeatures")
     .map(String)
-    .flatMap((feature) => feature.split(","))
+    .flatMap((feature) => feature.split(/[\n,]+/))
     .map((feature) => feature.trim())
     .filter(Boolean);
   const flags = String(formData.get("flags") ?? "").split(",").map((flag) => flag.trim()).filter(Boolean);
@@ -175,7 +185,7 @@ export async function createAdminListing(formData: FormData) {
   }
 
   if (
-    !title || title.length > 160 || !descriptionAr || !description || !city || !state || !["VILLA", "APARTMENT", "TOWNHOUSE", "LAND", "COMMERCIAL"].includes(propertyType) ||
+    !title || title.length > 160 || !description || !city || !state || !isValidPropertyType ||
     !Number.isSafeInteger(price) || price < 0 ||
     (formData.get("areaSqm") && (!Number.isSafeInteger(areaSqm) || areaSqm < 0)) ||
     (propertyType !== "LAND" && formData.get("bedrooms") && (!Number.isSafeInteger(bedrooms) || bedrooms < 0)) ||
@@ -203,7 +213,7 @@ export async function createAdminListing(formData: FormData) {
       title,
       description,
       listingType,
-      category: propertyType === "LAND" ? "LAND" : propertyType === "COMMERCIAL" ? "COMMERCIAL" : category,
+      category: category!,
       propertyType,
       price: BigInt(price),
       priceNegotiable: formData.get("priceNegotiable") === "true",
@@ -227,11 +237,11 @@ export async function createAdminListing(formData: FormData) {
       tier,
       status,
       publishedAt: status === "LIVE" ? new Date() : null,
-      descriptionAr: descriptionAr || null,
       reraNumber: String(formData.get("reraNumber") ?? "").trim() || null,
       projectedYield: String(formData.get("projectedYield") ?? "").trim() || null,
       badge: String(formData.get("badge") ?? "").trim() || null,
       flags,
+      amenities,
       keyFeatures,
       isOffPlan: formData.get("isOffPlan") === "true",
       ...(imageUrl || galleryImageUrls.length || videoUploadUrl ? { media: {

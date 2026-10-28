@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Property, Currency, Language } from '../../types';
 import { PROPERTIES } from '../../data/websiteContent';
@@ -24,16 +24,45 @@ import {
   Calculator,
   Download,
   ArrowUpRight,
+  ChevronLeft,
+  ChevronRight as ChevronRightIcon,
+  X,
+  ZoomIn,
+  ZoomOut,
 } from 'lucide-react';
 
 interface PropertyDetailClientProps {
   property: Property;
 }
 
+function getVideoEmbedUrl(url: string) {
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname === "youtu.be") return `https://www.youtube.com/embed/${parsed.pathname.slice(1)}`;
+    if (parsed.hostname.endsWith("youtube.com")) {
+      const id = parsed.searchParams.get("v");
+      return id ? `https://www.youtube.com/embed/${id}` : url;
+    }
+    if (parsed.hostname.endsWith("vimeo.com")) {
+      const id = parsed.pathname.split("/").filter(Boolean).pop();
+      return id ? `https://player.vimeo.com/video/${id}` : url;
+    }
+  } catch {
+    return url;
+  }
+  return url;
+}
+
 export const PropertyDetailClient: React.FC<PropertyDetailClientProps> = ({ property }) => {
   const [currency, setCurrency] = useState<Currency>('SAR');
   const [language, setLanguage] = useState<Language>('en');
   const [inquirySent, setInquirySent] = useState(false);
+  const gallery = property.media?.length ? property.media : [{ kind: "IMAGE" as const, src: property.image }];
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
+  const activeMedia = gallery[activeMediaIndex] ?? gallery[0];
+  const [showContactSlide, setShowContactSlide] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxZoom, setLightboxZoom] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -57,6 +86,44 @@ export const PropertyDetailClient: React.FC<PropertyDetailClientProps> = ({ prop
   const tenureYears = 15;
   const totalProfit = financedAmount * annualProfitRate * tenureYears;
   const monthlyInstallmentSAR = Math.round((financedAmount + totalProfit) / (tenureYears * 12));
+  const mapQuery = property.latitude != null && property.longitude != null
+    ? `${property.latitude},${property.longitude}`
+    : [property.location, property.city].filter(Boolean).join(", ");
+  const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=15&output=embed`;
+
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setLightboxOpen(false);
+      if (event.key === "ArrowRight") showNext();
+      if (event.key === "ArrowLeft") showPrevious();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [lightboxOpen, gallery.length]);
+
+  function openLightbox(index: number) {
+    setActiveMediaIndex(index);
+    setLightboxZoom(1);
+    setLightboxOpen(true);
+  }
+
+  function showNext() {
+    if (activeMediaIndex >= gallery.length - 1) {
+      setLightboxOpen(false);
+      setShowContactSlide(true);
+      return;
+    }
+    setActiveMediaIndex((index) => index + 1);
+  }
+
+  function showPrevious() {
+    if (showContactSlide) {
+      setShowContactSlide(false);
+      return;
+    }
+    setActiveMediaIndex((index) => Math.max(index - 1, 0));
+  }
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -141,18 +208,47 @@ export const PropertyDetailClient: React.FC<PropertyDetailClientProps> = ({ prop
           </div>
         </div>
 
-        {/* Hero Architectural Gallery Canvas */}
-        <div className="relative aspect-[16/9] lg:aspect-[21/9] w-full overflow-hidden bg-neutral-100 border border-neutral-200 mb-12 shadow-sm">
-          <img
-            src={property.image}
-            alt={property.title}
-            referrerPolicy="no-referrer"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 bg-white/95 backdrop-blur-md px-4 py-2 border border-neutral-200 text-xs font-mono text-neutral-700">
-            <span className="text-[#0C3826] font-bold">FAL BROKERAGE APPROVED</span> · CERTIFIED ASSET DOSSIER
+        {/* Property photo and video gallery */}
+        <section aria-label={isAr ? "صور وفيديو العقار" : "Property photos and videos"} className={showContactSlide ? "fixed inset-0 z-[80] flex items-center justify-center overflow-hidden bg-neutral-900 p-4 sm:p-8" : "mb-12"}>
+          {showContactSlide && <>
+            <img src={property.image} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-30 blur-sm" />
+            <div className="absolute inset-0 bg-white/35" />
+            <button type="button" onClick={showPrevious} aria-label={isAr ? "العودة إلى آخر صورة" : "Back to last media"} className="absolute start-4 top-1/2 z-[95] grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-neutral-800 shadow-lg hover:bg-white sm:start-6"><ChevronLeft className="h-6 w-6" /></button>
+            <button type="button" onClick={() => { setShowContactSlide(false); setActiveMediaIndex(0); }} aria-label={isAr ? "العودة إلى أول صورة" : "Restart gallery"} className="absolute end-4 top-1/2 z-[95] grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-neutral-800 shadow-lg hover:bg-white sm:end-6"><ChevronRightIcon className="h-6 w-6" /></button>
+            <button type="button" onClick={() => setShowContactSlide(false)} aria-label={isAr ? "إغلاق نموذج التواصل والعودة إلى المعرض" : "Close contact form and return to gallery"} className="absolute end-4 top-4 z-[100] grid h-11 w-11 place-items-center rounded-full bg-white/95 text-neutral-800 shadow-lg hover:bg-white sm:end-6 sm:top-6"><X className="h-5 w-5" /></button>
+          </>}
+          <div className={showContactSlide ? "relative hidden" : "relative aspect-[16/9] lg:aspect-[21/9] w-full overflow-hidden bg-neutral-100 border border-neutral-200 shadow-sm"}>
+            {activeMedia.kind === "IMAGE" ? (
+              <button type="button" onClick={() => openLightbox(activeMediaIndex)} aria-label={isAr ? "معاينة الصورة" : "Open image preview"} className="h-full w-full cursor-pointer overflow-hidden bg-neutral-100">
+                <img src={activeMedia.src} alt={`${property.title} ${activeMediaIndex + 1}`} referrerPolicy="no-referrer" className="relative z-10 h-full w-full object-cover" />
+              </button>
+            ) : activeMedia.kind === "VIDEO_UPLOAD" ? (
+              <video key={activeMedia.src} src={activeMedia.src} controls playsInline className="h-full w-full object-cover" aria-label={`${property.title} video`} />
+            ) : (
+              <iframe key={activeMedia.src} src={getVideoEmbedUrl(activeMedia.src)} title={`${property.title} video`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="h-full w-full border-0" />
+            )}
+            {activeMediaIndex > 0 && <button type="button" onClick={showPrevious} aria-label={isAr ? "الوسيط السابق" : "Previous media"} className="absolute start-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-neutral-900 shadow hover:bg-white"><ChevronLeft className="h-5 w-5" /></button>}
+            <button type="button" onClick={showNext} aria-label={activeMediaIndex === gallery.length - 1 ? (isAr ? "الانتقال إلى نموذج التواصل" : "Continue to contact form") : (isAr ? "الوسيط التالي" : "Next media")} className="absolute end-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-neutral-900 shadow hover:bg-white"><ChevronRightIcon className="h-5 w-5" /></button>
+            <div className="absolute bottom-4 start-4 bg-white/95 px-4 py-2 text-xs font-mono text-neutral-700">{activeMediaIndex + 1} / {gallery.length}{activeMedia.kind !== "IMAGE" ? ` · ${isAr ? "فيديو" : "Video"}` : ""}</div>
           </div>
-        </div>
+          {!showContactSlide && gallery.length > 1 && <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+            {gallery.map((media, index) => <button key={`${media.src}-${index}`} type="button" onClick={() => setActiveMediaIndex(index)} aria-label={`${isAr ? "عرض الوسيط" : "Show media"} ${index + 1}`} aria-pressed={activeMediaIndex === index} className={`relative h-16 w-24 shrink-0 overflow-hidden border-2 ${activeMediaIndex === index ? "border-[#0C3826]" : "border-neutral-200"}`}>
+              {media.kind === "IMAGE" ? <img src={media.src} alt="" className="h-full w-full object-cover" /> : <span className="grid h-full w-full place-items-center bg-neutral-900 text-xs font-medium text-white">{isAr ? "فيديو" : "VIDEO"}</span>}
+            </button>)}
+          </div>}
+        </section>
+
+        {lightboxOpen && activeMedia?.kind === "IMAGE" && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4" role="dialog" aria-modal="true" aria-label={isAr ? "معاينة الصورة" : "Image preview"} onClick={() => setLightboxOpen(false)}>
+          <button type="button" onClick={() => setLightboxOpen(false)} aria-label={isAr ? "إغلاق" : "Close preview"} className="absolute end-4 top-4 z-10 rounded-full bg-white/10 p-3 text-white hover:bg-white/20"><X className="h-6 w-6" /></button>
+          <div className="absolute start-4 top-4 z-10 flex gap-2" onClick={(event) => event.stopPropagation()}>
+            <button type="button" onClick={() => setLightboxZoom((zoom) => Math.min(zoom + 0.25, 3))} aria-label={isAr ? "تكبير" : "Zoom in"} className="rounded-full bg-white/10 p-3 text-white hover:bg-white/20"><ZoomIn className="h-5 w-5" /></button>
+            <button type="button" onClick={() => setLightboxZoom((zoom) => Math.max(zoom - 0.25, 1))} aria-label={isAr ? "تصغير" : "Zoom out"} className="rounded-full bg-white/10 p-3 text-white hover:bg-white/20"><ZoomOut className="h-5 w-5" /></button>
+          </div>
+          {activeMediaIndex > 0 && <button type="button" onClick={(event) => { event.stopPropagation(); showPrevious(); }} aria-label={isAr ? "الصورة السابقة" : "Previous image"} className="absolute start-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/10 p-3 text-white hover:bg-white/20"><ChevronLeft className="h-7 w-7" /></button>}
+          <img src={activeMedia.src} alt={`${property.title} ${activeMediaIndex + 1}`} onClick={(event) => event.stopPropagation()} className=" object-cover transition-transform duration-200" style={{ transform: `scale(${lightboxZoom})` }} />
+          <button type="button" onClick={(event) => { event.stopPropagation(); showNext(); }} aria-label={activeMediaIndex === gallery.length - 1 ? (isAr ? "الانتقال إلى نموذج التواصل" : "Continue to contact form") : (isAr ? "الصورة التالية" : "Next image")} className="absolute end-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/10 p-3 text-white hover:bg-white/20"><ChevronRightIcon className="h-7 w-7" /></button>
+          <span className="absolute bottom-4 rounded bg-black/50 px-3 py-2 text-sm text-white">{activeMediaIndex + 1} / {gallery.length}</span>
+        </div>}
 
         {/* 2-Column Core Architectural Spec & Inquiry Dossier */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -213,13 +309,12 @@ export const PropertyDetailClient: React.FC<PropertyDetailClientProps> = ({ prop
               </div>
             </div>
 
-            {/* Key Amenities & Privileges */}
-            <div>
+            {property.amenities?.length ? <div>
               <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-neutral-400 mb-4">
-                {isAr ? 'المزايا الاستثنائية والامتيازات' : '03. Curated Amenities & Sovereign Privileges'}
+                {isAr ? 'المرافق' : '03. Amenities'}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {property.keyFeatures.map((feat, i) => (
+                {property.amenities.map((feat, i) => (
                   <div
                     key={i}
                     className="flex items-start gap-3 p-4 border border-neutral-200 bg-white hover:border-[#0C3826] transition-colors"
@@ -229,56 +324,40 @@ export const PropertyDetailClient: React.FC<PropertyDetailClientProps> = ({ prop
                   </div>
                 ))}
               </div>
-            </div>
+            </div> : null}
+
+            {property.keyFeatures.length ? <div>
+              <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-neutral-400 mb-4">
+                {isAr ? 'الميزات الرئيسية' : '04. Key Features'}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {property.keyFeatures.map((feat, i) => (
+                  <div key={i} className="flex items-start gap-3 p-4 border border-neutral-200 bg-white hover:border-[#0C3826] transition-colors">
+                    <CheckCircle2 className="w-4 h-4 text-[#A98950] shrink-0 mt-0.5" />
+                    <span className="text-sm text-neutral-800 font-light">{feat}</span>
+                  </div>
+                ))}
+              </div>
+            </div> : null}
 
             {/* Interactive SAMA Sharia Financing Breakdown */}
-            <div className="border border-neutral-200 p-8 bg-neutral-50">
-              <div className="flex items-center gap-3 mb-6">
-                <Calculator className="w-5 h-5 text-[#0C3826]" />
-                <div>
-                  <h3 className="font-serif text-2xl text-[#0C3826] font-normal">
-                    {isAr ? 'نموذج التمويل الإسلامي (المرابحة)' : 'SAMA Murabaha Financing Model'}
-                  </h3>
-                  <p className="text-xs text-neutral-500 font-mono">
-                    {isAr ? 'معتمد وفقاً للوائح البنك المركزي السعودي (ساما)' : 'Compliant with Saudi Central Bank (SAMA) Guidelines'}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t border-neutral-200">
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-500 block">
-                    {isAr ? 'الدفعة الأولى (30%)' : 'Down Payment (30%)'}
-                  </span>
-                  <span className="font-serif text-xl text-[#0C3826] tabular-nums mt-1 block">
-                    {formatPrice(downPaymentAmount, currency)}
-                  </span>
-                </div>
-
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-500 block">
-                    {isAr ? 'القسط الشهري التقديري (15 سنة)' : 'Estimated Monthly (15 Yrs)'}
-                  </span>
-                  <span className="font-serif text-xl text-[#0C3826] tabular-nums mt-1 block">
-                    {formatPrice(monthlyInstallmentSAR, currency)} / mo
-                  </span>
-                </div>
-
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-500 block">
-                    {isAr ? 'الأهلية للإقامة المميزة' : 'Golden Visa Eligibility'}
-                  </span>
-                  <span className="text-xs font-mono uppercase text-[#0C3826] font-bold mt-1 block">
-                    {property.priceSAR >= 4000000 ? 'QUALIFIED (4M+ SAR)' : 'STANDARD ELIGIBILITY'}
-                  </span>
-                </div>
-              </div>
+            {mapQuery && <section className="mb-12 border border-neutral-200 bg-neutral-50 p-5 sm:p-7">
+          <div className="mb-4 flex items-center justify-between gap-4">
+            <div>
+              <h2 className="font-serif text-2xl text-[#0C3826]">{isAr ? "موقع العقار" : "Property Location"}</h2>
+              <p className="mt-1 text-sm text-neutral-500">{isAr ? property.locationAr : property.location}</p>
             </div>
+            <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`} target="_blank" rel="noreferrer" className="inline-flex shrink-0 items-center gap-1 text-sm text-[#0C3826] underline underline-offset-2">
+              {isAr ? "افتح في خرائط Google" : "Open in Google Maps"}<ArrowUpRight className="h-4 w-4" />
+            </a>
+          </div>
+          <iframe title={isAr ? "خريطة موقع العقار" : "Property location map"} src={mapUrl} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen className="h-72 w-full border-0 sm:h-96" />
+        </section>}
           </div>
 
           {/* Right Column (4 cols): Private Acquisition Desk & Counselor */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="sticky top-28 bg-white border border-neutral-300 p-6 sm:p-8 shadow-sm">
+            <div id="dossier" className={showContactSlide ? "fixed left-1/2 top-1/2 z-[90] max-h-[92vh] w-[min(28rem,calc(100%-2rem))] -translate-x-1/2 -translate-y-1/2 overflow-y-auto bg-white border border-neutral-300 p-6 sm:p-8 shadow-2xl" : "sticky top-28 bg-white border border-neutral-300 p-6 sm:p-8 shadow-sm"}>
               <div className="flex items-center gap-2 mb-2">
                 <ShieldCheck className="w-4 h-4 text-[#A98950]" />
                 <span className="text-[10px] font-mono uppercase tracking-widest text-[#0C3826] font-semibold">
