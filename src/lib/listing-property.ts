@@ -7,6 +7,7 @@ export interface ListingForProperty {
   description: string;
   descriptionAr: string | null;
   listingType: "SALE" | "RENT";
+  isOffPlan?: boolean;
   category: "RESIDENTIAL" | "COMMERCIAL" | "LAND";
   propertyType: string | null;
   price: bigint | number;
@@ -48,6 +49,7 @@ export function listingToProperty(listing: ListingForProperty): Property {
     priceSAR: Number(listing.price),
     type: listing.propertyType ?? listing.category.toLowerCase(),
     transaction,
+    isOffPlan: listing.isOffPlan ?? false,
     sizeSqm: listing.areaSqm ?? (listing.areaSqft ? Math.round(listing.areaSqft * 0.092903) : 0),
     bedrooms: listing.bedrooms ?? 0,
     bathrooms: listing.bathrooms ?? 0,
