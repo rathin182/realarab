@@ -4,6 +4,7 @@ import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState } fr
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { ArrowDownUp, ArrowUpRight, Bath, BedDouble, Check, ChevronDown, MapPin, Maximize2, Search, SlidersHorizontal, X } from 'lucide-react';
+import { Footer } from '../../components/layout/Footer';
 import { CURRENCY_RATES } from '../../data/websiteContent';
 import { Currency, Property, TransactionFilter } from '../../types';
 import { formatPrice } from '../../lib/currency';
@@ -248,6 +249,7 @@ function PropertiesContent() {
   const inputClass = 'mt-1.5 h-11 w-full border border-neutral-200 bg-white px-3 text-sm text-neutral-800 outline-none transition placeholder:text-neutral-400 focus:border-[#0C3826]';
 
   return (
+    <>
     <main className="min-h-screen bg-white pb-20 text-[#141A17]">
       <section className="border-b border-neutral-200 bg-[#F7F6F1] px-5 pb-12 pt-12 sm:px-8 sm:pb-16 lg:px-12">
         <div className="mx-auto max-w-7xl">
@@ -330,6 +332,8 @@ function PropertiesContent() {
         </> : <div className="border-y border-neutral-200 py-20 text-center"><p className="font-serif text-3xl text-[#0C3826]">No properties match those filters.</p><p className="mt-2 text-sm text-neutral-500">Try changing a filter or clearing your search.</p><button type="button" onClick={resetFilters} className="mt-5 border border-[#0C3826] px-5 py-3 text-xs uppercase tracking-wider text-[#0C3826] transition-colors hover:bg-[#0C3826] hover:text-white">Reset filters</button></div>}
       </section>
     </main>
+    <Footer language="en" onOpenPrivateOffice={() => undefined} onOpenBuyerGuide={() => undefined} />
+    </>
   );
 }
 
