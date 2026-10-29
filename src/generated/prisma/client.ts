@@ -91,3 +91,8 @@ export type AuditLog = Prisma.AuditLogModel
  * 
  */
 export type AgentApplication = Prisma.AgentApplicationModel
+/**
+ * Model ContactSettings
+ * 
+ */
+export type ContactSettings = Prisma.ContactSettingsModel

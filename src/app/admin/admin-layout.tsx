@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logoutAction } from "@/actions/auth";
 import { useSiteLanguage } from "@/components/providers/LanguageContext";
-import { Building2, ChartNoAxesColumn, ClipboardList, LayoutDashboard } from "lucide-react";
+import { Building2, ChartNoAxesColumn, ClipboardList, Contact, LayoutDashboard } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { language } = useSiteLanguage();
@@ -20,6 +20,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin" aria-current={pathname === "/admin" ? "page" : undefined} className={linkClass(pathname === "/admin")}><LayoutDashboard className="h-4 w-4" />{isArabic ? "لوحة التحكم" : "Dashboard"}</Link>
           <Link href="/admin/properties" aria-current={pathname.startsWith("/admin/properties") ? "page" : undefined} className={linkClass(pathname.startsWith("/admin/properties"))}><Building2 className="h-4 w-4" />{isArabic ? "العقارات" : "Properties"}</Link>
           <Link href="/admin/review" aria-current={pathname.startsWith("/admin/review") ? "page" : undefined} className={linkClass(pathname.startsWith("/admin/review"))}><ClipboardList className="h-4 w-4" />{isArabic ? "الطلبات" : "Requests"}</Link>
+          <Link href="/admin/contact" aria-current={pathname === "/admin/contact" ? "page" : undefined} className={linkClass(pathname === "/admin/contact")}><Contact className="h-4 w-4" />{isArabic ? "بيانات التواصل" : "Contact info"}</Link>
           {/* <Link href="/admin#analytics" className={linkClass(false)}><ChartNoAxesColumn className="h-4 w-4" />{isArabic ? "التحليلات" : "Analytics"}</Link> */}
         </nav>
         <div className="mt-auto border-t border-[#e3dfd5] pt-4"><form action={logoutAction}><button className="w-full rounded-md border border-[#e3dfd5] px-3 py-2 text-start text-sm text-neutral-600">{isArabic ? "تسجيل الخروج" : "Log out"}</button></form></div>

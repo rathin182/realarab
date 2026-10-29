@@ -277,3 +277,25 @@ model AgentApplication {
   @@unique([reraState, reraNumber])
   @@index([status, createdAt])
 }
+
+model ContactSettings {
+  id                       String   @id @default("contact")
+  falRegistrationNumber    String   @default("1200034988")
+  riyadhLabel              String   @default("KINGDOM HEADQUARTERS")
+  riyadhTitle              String   @default("Riyadh Sovereign HQ")
+  riyadhAddress            String   @default("King Fahd Road, Al Olaya Financial District, Riyadh 12214, Kingdom of Saudi Arabia")
+  riyadhPhonePrimary       String   @default("+966 11 456 7890")
+  riyadhPhoneSecondary     String   @default("+966 50 123 4567")
+  riyadhEmail              String   @default("riyadh@najmestates.sa")
+  riyadhVisitingHours      String   @default("Sun – Thu, 09:00 – 18:00 AST")
+  internationalLabel       String   @default("INTERNATIONAL HUB")
+  internationalBadge       String   @default("GLOBAL SALON")
+  internationalTitle      String   @default("Hyderabad International Hub")
+  internationalAddress    String   @default("Jubilee Hills / HITEC Corridor, Hyderabad, Telangana 500033, India")
+  internationalPhonePrimary   String   @default("+91 40 6789 0123")
+  internationalPhoneSecondary String   @default("+91 98 7654 3210")
+  internationalEmail      String   @default("hyderabad@najmestates.sa")
+  internationalVisitingHours String @default("Mon – Sat, 10:00 – 19:00 IST")
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+}

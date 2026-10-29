@@ -406,7 +406,8 @@ export const ModelName = {
   SavedListing: 'SavedListing',
   Report: 'Report',
   AuditLog: 'AuditLog',
-  AgentApplication: 'AgentApplication'
+  AgentApplication: 'AgentApplication',
+  ContactSettings: 'ContactSettings'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -422,7 +423,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "account" | "verificationToken" | "listing" | "listingMedia" | "enquiry" | "savedListing" | "report" | "auditLog" | "agentApplication"
+    modelProps: "user" | "account" | "verificationToken" | "listing" | "listingMedia" | "enquiry" | "savedListing" | "report" | "auditLog" | "agentApplication" | "contactSettings"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1166,6 +1167,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ContactSettings: {
+      payload: Prisma.$ContactSettingsPayload<ExtArgs>
+      fields: Prisma.ContactSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ContactSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ContactSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.ContactSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ContactSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.ContactSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.ContactSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.ContactSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ContactSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.ContactSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>
+        }
+        update: {
+          args: Prisma.ContactSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.ContactSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ContactSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ContactSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.ContactSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.ContactSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateContactSettings>
+        }
+        groupBy: {
+          args: Prisma.ContactSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ContactSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1381,6 +1456,31 @@ export const AgentApplicationScalarFieldEnum = {
 } as const
 
 export type AgentApplicationScalarFieldEnum = (typeof AgentApplicationScalarFieldEnum)[keyof typeof AgentApplicationScalarFieldEnum]
+
+
+export const ContactSettingsScalarFieldEnum = {
+  id: 'id',
+  falRegistrationNumber: 'falRegistrationNumber',
+  riyadhLabel: 'riyadhLabel',
+  riyadhTitle: 'riyadhTitle',
+  riyadhAddress: 'riyadhAddress',
+  riyadhPhonePrimary: 'riyadhPhonePrimary',
+  riyadhPhoneSecondary: 'riyadhPhoneSecondary',
+  riyadhEmail: 'riyadhEmail',
+  riyadhVisitingHours: 'riyadhVisitingHours',
+  internationalLabel: 'internationalLabel',
+  internationalBadge: 'internationalBadge',
+  internationalTitle: 'internationalTitle',
+  internationalAddress: 'internationalAddress',
+  internationalPhonePrimary: 'internationalPhonePrimary',
+  internationalPhoneSecondary: 'internationalPhoneSecondary',
+  internationalEmail: 'internationalEmail',
+  internationalVisitingHours: 'internationalVisitingHours',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ContactSettingsScalarFieldEnum = (typeof ContactSettingsScalarFieldEnum)[keyof typeof ContactSettingsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1821,6 +1921,7 @@ export type GlobalOmitConfig = {
   report?: Prisma.ReportOmit
   auditLog?: Prisma.AuditLogOmit
   agentApplication?: Prisma.AgentApplicationOmit
+  contactSettings?: Prisma.ContactSettingsOmit
 }
 
 /* Types for Logging */

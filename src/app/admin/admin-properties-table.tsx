@@ -53,12 +53,10 @@ export default function AdminPropertiesTable({ properties }: { properties: Admin
               <tr>
                 <th className="px-3 py-3 text-left font-medium">{isArabic ? "العقار" : "Property"}</th>
                 <th className="px-3 py-3 text-left font-medium">{isArabic ? "الموقع" : "Location"}</th>
-                <th className="px-3 py-3 text-left font-medium">{isArabic ? "الحالة" : "Status"}</th>
                 <th className="px-3 py-3 text-left font-medium">{isArabic ? "نوع العرض" : "Listing"}</th>
                 <th className="px-3 py-3 text-left font-medium">{isArabic ? "الفئة" : "Category"}</th>
                 <th className="px-3 py-3 text-right font-medium">{isArabic ? "السعر (ريال)" : "Price (SAR)"}</th>
                 <th className="px-3 py-3 text-right font-medium">{isArabic ? "المشاهدات" : "Views"}</th>
-                <th className="px-3 py-3 text-right font-medium">{isArabic ? "تاريخ الإضافة" : "Added"}</th>
               </tr>
             </thead>
             <tbody>
@@ -66,12 +64,10 @@ export default function AdminPropertiesTable({ properties }: { properties: Admin
                 <tr key={property.id} className="border-t border-[#e8e4db]">
                   <td className="px-5 py-3"><Link href={`/properties/${property.slug}`} className="font-medium hover:underline">{property.title}</Link></td>
                   <td className="px-3 py-3 text-neutral-600">{property.city}, {property.state}</td>
-                  <td className="px-3 py-3">{property.status.toLowerCase().split("_").map((part) => part[0].toUpperCase() + part.slice(1)).join(" ")}</td>
                   <td className="px-3 py-3">{property.listingType === "RENT" ? (isArabic ? "إيجار" : "Rent") : (isArabic ? "بيع" : "Sale")}</td>
                   <td className="px-3 py-3">{property.category.toLowerCase().replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())}</td>
                   <td className="px-3 py-3 text-right tabular-nums">{property.price.toLocaleString(isArabic ? "ar-SA" : "en-US")}</td>
                   <td className="px-3 py-3 text-right tabular-nums">{property.viewCount.toLocaleString("en-US")}</td>
-                  <td className="px-5 py-3 text-right tabular-nums">{new Date(property.createdAt).toLocaleDateString(isArabic ? "ar-SA" : "en-IN")}</td>
                 </tr>
               ))}
             </tbody>

@@ -2,13 +2,15 @@ import { requireAdmin } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import AdminDashboard from "./admin-dashboard";
 
-export default async function AdminPage() {
+export default async function AdminPage({ searchParams }: { searchParams: Promise<{ created?: string }> }) {
     const session = await requireAdmin();
+    const params = await searchParams;
 
-    const [byStatus, enquiries, properties] =
+    const [byStatus, enquiries, livePropertyValue, properties] =
     await Promise.all([
         prisma.listing.groupBy({ by: ["status"], _count: { _all: true } }),
         prisma.enquiry.count(),
+        prisma.listing.aggregate({ where: { status: "LIVE" }, _sum: { price: true } }),
         prisma.listing.findMany({
             orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }, { id: "asc" }],
             take: 10,
@@ -42,6 +44,8 @@ export default async function AdminPage() {
             liveProperties={status.LIVE ?? 0}
             enquiries={enquiries}
             properties={tableProperties}
+            totalPropertyValue={`${(livePropertyValue._sum.price ?? 0n).toLocaleString("en-US")} SAR`}
+            listingCreated={params.created === "1"}
         />
     );
 }
