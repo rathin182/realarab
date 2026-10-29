@@ -9,20 +9,28 @@ import { HeroSearch } from '@/components/user/home/HeroSearch';
 import { FeaturedProperties } from '@/components/user/home/FeaturedProperties';
 import { PopularLocations } from '@/components/user/home/PopularLocations';
 import { HomeSkeleton } from '@/components/user/home/HomeSkeleton';
+import { Toast, useToast } from '@/components/feedback/Toast';
 
 export default function BuyerHomePage() {
   const [data, setData] = useState<BuyerHomeData | null>(null);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const { toast, showToast, dismissToast } = useToast();
 
   useEffect(() => {
     let cancelled = false;
     getBuyerHome()
       .then((d) => {
-        if (!cancelled) setData(d);
+        if (!cancelled) {
+          setData(d);
+          if (attempt > 0) showToast('Dashboard refreshed.');
+        }
       })
       .catch(() => {
-        if (!cancelled) setError(true);
+        if (!cancelled) {
+          setError(true);
+          showToast('Could not refresh the dashboard. Please try again.', 'error');
+        }
       });
     return () => {
       cancelled = true;
@@ -32,12 +40,14 @@ export default function BuyerHomePage() {
   function retry() {
     setError(false);
     setData(null);
+    showToast('Refreshing dashboard.', 'info');
     setAttempt((n) => n + 1);
   }
 
   if (error) {
     return (
       <div className="rounded-3xl bg-[#F8F5F0] p-10 text-center">
+        <Toast toast={toast} onDismiss={dismissToast} />
         <h2 className="font-serif text-2xl text-[#2E221C]">Couldn&apos;t load your home page</h2>
         <p className="mt-2 text-[14px] text-[#6F625A]">Something went wrong while fetching data.</p>
         <button
@@ -50,10 +60,11 @@ export default function BuyerHomePage() {
     );
   }
 
-  if (!data) return <HomeSkeleton />;
+  if (!data) return <><Toast toast={toast} onDismiss={dismissToast} /><HomeSkeleton /></>;
 
   return (
     <div className="flex flex-col gap-5">
+      <Toast toast={toast} onDismiss={dismissToast} />
       <HeroSearch hero={data.hero} filters={data.filters} />
 
       <Link

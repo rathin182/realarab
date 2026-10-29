@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { logoutAction } from "@/actions/auth";
 import { useSiteLanguage } from "@/components/providers/LanguageContext";
-import { Building2, ChartNoAxesColumn, ClipboardList, LayoutDashboard, type LucideIcon } from "lucide-react";
+import { Toast, useToast } from "@/components/feedback/Toast";
+import { Banknote, Building2, ChartNoAxesColumn, ClipboardList, LayoutDashboard, type LucideIcon } from "lucide-react";
 import AdminPropertiesTable from "./admin-properties-table";
+import RequestSection from "./request-section";
 
 type AdminProperty = {
   id: string;
@@ -25,35 +28,51 @@ type AdminDashboardProps = {
   totalProperties: number;
   liveProperties: number;
   enquiries: number;
+  totalPropertyValue: string;
   properties: AdminProperty[];
+  listingCreated: boolean;
 };
 
-function Stat({ label, value, icon: Icon, tone }: { label: string; value: number; icon: LucideIcon; tone: string }) {
+function Stat({ label, value, icon: Icon, tone }: { label: string; value: number | string; icon: LucideIcon; tone: string }) {
   return (
     <div className="flex min-h-36 flex-col overflow-hidden rounded-lg border border-[#e3dfd5] bg-[#faf9f5] shadow-sm transition-shadow hover:shadow-md">
       <div className={`h-1 w-full ${tone}`} />
-      <div className="flex flex-1 items-start justify-between gap-4 p-5">
-        <div className="flex min-h-24 flex-col">
-          <p className="text-sm font-medium text-neutral-500">{label}</p>
-          <p className="mt-auto pt-3 font-serif text-4xl font-medium tabular-nums text-[#24231f]">{value.toLocaleString()}</p>
-        </div>
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md border border-[#e8e4db] bg-white text-[#6e654f]">
-          <Icon aria-hidden="true" className="h-5 w-5" />
-        </span>
-      </div>
+      {typeof value === "number" ? <div className="flex flex-1 items-start justify-between gap-4 p-5">
+          <div className="flex min-h-24 flex-col">
+            <p className="text-sm font-medium text-neutral-500">{label}</p>
+            <p className="mt-auto pt-3 font-serif text-4xl font-medium tabular-nums text-[#24231f]">{value.toLocaleString()}</p>
+          </div>
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md border border-[#e8e4db] bg-white text-[#6e654f]">
+            <Icon aria-hidden="true" className="h-5 w-5" />
+          </span>
+        </div> : <div className="flex flex-1 flex-col p-5">
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-sm font-medium text-neutral-500">{label}</p>
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md border border-[#e8e4db] bg-white text-[#6e654f]">
+              <Icon aria-hidden="true" className="h-5 w-5" />
+            </span>
+          </div>
+          <p title={value} className="mt-auto truncate pt-3 font-serif text-[22px] font-medium tabular-nums text-[#24231f]">{value}</p>
+        </div>}
     </div>
   );
 }
 
-export default function AdminDashboard({ email, totalProperties, liveProperties, enquiries, properties }: AdminDashboardProps) {
+export default function AdminDashboard({ email, totalProperties, liveProperties, enquiries, totalPropertyValue, properties, listingCreated }: AdminDashboardProps) {
   const { language } = useSiteLanguage();
   const isArabic = language === "ar";
+  const { toast, showToast, dismissToast } = useToast();
+
+  useEffect(() => {
+    if (listingCreated) showToast(isArabic ? "تم إنشاء العقار بنجاح." : "Property created successfully.");
+  }, [listingCreated]);
 
   return (
     <main dir={isArabic ? "rtl" : "ltr"} className="min-h-screen bg-[#f3f1eb] text-[#24231f] md:grid md:grid-cols-[220px_minmax(0,1fr)]">
+      <Toast toast={toast} onDismiss={dismissToast} />
       <aside className="flex flex-col border-r border-[#e3dfd5] bg-[#faf9f5] p-4 md:min-h-screen">
         <Link href="/admin" className="mb-8 flex items-center gap-3 px-2 py-3 font-serif text-xl">
-          <Building2 className="h-6 w-6 text-[#8f7654]" /> NAJAM {isArabic ? "الإدارة" : "Admin"}
+          <Building2 className="h-6 w-6 text-[#8f7654]" /> NAJM {isArabic ? "الإدارة" : "Admin"}
         </Link>
         <nav aria-label={isArabic ? "أقسام الإدارة" : "Admin sections"} className="space-y-1 text-sm">
           <a href="#dashboard" className="flex items-center gap-3 rounded-md bg-[#eee8dc] px-3 py-2.5"><LayoutDashboard className="h-4 w-4" />{isArabic ? "لوحة التحكم" : "Dashboard"}</a>
@@ -80,13 +99,17 @@ export default function AdminDashboard({ email, totalProperties, liveProperties,
           </div>
         </header>
 
-        <section id="analytics" className="grid grid-cols-2 gap-3 xl:grid-cols-3">
+        <section id="analytics" className="grid grid-cols-3 gap-3 xl:grid-cols-4">
           <Stat label={isArabic ? "إجمالي العقارات" : "Total properties"} value={totalProperties} icon={Building2} tone="bg-[#71816b]" />
           <Stat label={isArabic ? "العقارات النشطة" : "Live properties"} value={liveProperties} icon={ChartNoAxesColumn} tone="bg-[#b89b72]" />
           <Stat label={isArabic ? "طلبات الاستفسار" : "Inquiry requests"} value={enquiries} icon={ClipboardList} tone="bg-[#a76f5a]" />
+          <Stat label={isArabic ? "إجمالي قيمة العقارات النشطة" : "Total live property value"} value={totalPropertyValue} icon={Banknote} tone="bg-[#71816b]" />
         </section>
 
-        <AdminPropertiesTable properties={properties} />
+        <section className="flex gap-3">
+          <AdminPropertiesTable properties={properties} />
+          <RequestSection />
+        </section>
       </div>
     </main>
   );

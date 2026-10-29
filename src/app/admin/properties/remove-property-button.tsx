@@ -1,28 +1,11 @@
 'use client';
 
-import { archiveAdminListing } from '@/actions/admin';
-import { useSiteLanguage } from '@/components/providers/LanguageContext';
+import { Trash2 } from 'lucide-react';
 
-export function RemovePropertyButton({ propertyId, propertyTitle }: { propertyId: string; propertyTitle: string }) {
-  const { language } = useSiteLanguage();
-  const isArabic = language === 'ar';
-
+export function RemovePropertyButton({ onClick, label }: { onClick: () => void; label: string }) {
   return (
-    <form
-      action={archiveAdminListing}
-      onSubmit={(event) => {
-        const prompt = isArabic
-          ? `هل تريد إزالة "${propertyTitle}" من الموقع؟ ستظل الاستفسارات والسجلات الحالية محفوظة.`
-          : `Remove "${propertyTitle}" from the public website? Existing enquiries and records will be preserved.`;
-        if (!window.confirm(prompt)) {
-          event.preventDefault();
-        }
-      }}
-    >
-      <input type="hidden" name="id" value={propertyId} />
-      <button type="submit" className="rounded-md border border-red-200 px-3 py-1.5 text-xs text-red-700 hover:bg-red-50">
-        {isArabic ? 'إزالة' : 'Remove'}
-      </button>
-    </form>
+    <button type="button" onClick={onClick} aria-label={label} title={label} className="grid h-8 w-8 shrink-0 place-items-center rounded-md border border-red-200 text-red-700 hover:bg-red-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-600">
+      <Trash2 aria-hidden="true" className="h-4 w-4" />
+    </button>
   );
 }

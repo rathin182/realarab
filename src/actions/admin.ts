@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/permissions";
 import { redirect } from "next/navigation";
+import { CONTACT_SETTINGS_ID, type ContactSettingsValues } from "@/lib/contact-settings";
 
 export async function reviewAgentApplication(formData: FormData) {
     const session = await requireAdmin();
@@ -321,11 +322,87 @@ export async function archiveAdminListing(formData: FormData) {
   revalidatePath(`/properties/${listing.slug}`);
   revalidatePath("/admin");
   revalidatePath("/admin/properties");
+  return { ok: true };
+}
+
+export async function updateAdminListing(formData: FormData) {
+  const session = await requireAdmin();
+  const id = String(formData.get("id") ?? "").trim();
+  const title = String(formData.get("title") ?? "").trim();
+  const city = String(formData.get("city") ?? "").trim();
+  const locality = String(formData.get("locality") ?? "").trim() || null;
+  const state = String(formData.get("state") ?? "").trim();
+  const propertyType = String(formData.get("propertyType") ?? "").trim() || null;
+  const price = Number(formData.get("price"));
+  const listingType = String(formData.get("listingType") ?? "");
+  const category = String(formData.get("category") ?? "");
+  const status = String(formData.get("status") ?? "");
+  const bedroomsValue = String(formData.get("bedrooms") ?? "").trim();
+  const bathroomsValue = String(formData.get("bathrooms") ?? "").trim();
+  const areaSqmValue = String(formData.get("areaSqm") ?? "").trim();
+  const bedrooms = bedroomsValue ? Number(bedroomsValue) : null;
+  const bathrooms = bathroomsValue ? Number(bathroomsValue) : null;
+  const areaSqm = areaSqmValue ? Number(areaSqmValue) : null;
+  const validStatuses = ["DRAFT", "PENDING_REVIEW", "LIVE", "REJECTED", "EXPIRED", "SOLD_OR_RENTED", "ARCHIVED"];
+
+  if (
+    !id || !title || title.length > 160 || !city || !state ||
+    !Number.isSafeInteger(price) || price < 0 ||
+    !["SALE", "RENT"].includes(listingType) ||
+    !["RESIDENTIAL", "COMMERCIAL", "LAND"].includes(category) ||
+    !validStatuses.includes(status) ||
+    (propertyType !== null && propertyType.length > 100) ||
+    (bedrooms !== null && (!Number.isSafeInteger(bedrooms) || bedrooms < 0)) ||
+    (bathrooms !== null && (!Number.isSafeInteger(bathrooms) || bathrooms < 0)) ||
+    (areaSqm !== null && (!Number.isSafeInteger(areaSqm) || areaSqm < 0))
+  ) {
+    return { ok: false, message: "Check the property details and try again." };
+  }
+
+  const listing = await prisma.listing.findUnique({ where: { id }, select: { id: true, slug: true, publishedAt: true } });
+  if (!listing) return { ok: false, message: "Property not found." };
+
+  await prisma.$transaction([
+    prisma.listing.update({
+      where: { id },
+      data: {
+        title,
+        city,
+        locality,
+        state,
+        propertyType,
+        price: BigInt(price),
+        listingType: listingType as "SALE" | "RENT",
+        category: category as "RESIDENTIAL" | "COMMERCIAL" | "LAND",
+        status: status as "DRAFT" | "PENDING_REVIEW" | "LIVE" | "REJECTED" | "EXPIRED" | "SOLD_OR_RENTED" | "ARCHIVED",
+        bedrooms,
+        bathrooms,
+        areaSqm,
+        ...(status === "LIVE" && !listing.publishedAt ? { publishedAt: new Date() } : {}),
+      },
+    }),
+    prisma.auditLog.create({
+      data: {
+        actorId: session.user.id,
+        action: "listing.update",
+        entityType: "Listing",
+        entityId: id,
+        details: { slug: listing.slug, title },
+      },
+    }),
+  ]);
+
+  revalidatePath("/");
+  revalidatePath("/properties");
+  revalidatePath(`/properties/${listing.slug}`);
+  revalidatePath("/admin");
+  revalidatePath("/admin/properties");
+  return { ok: true };
 }
 export async function bulkArchiveAdminListings(formData: FormData) {
   const session = await requireAdmin();
   const ids = [...new Set(formData.getAll("ids").map(String).filter(Boolean))];
-  if (ids.length === 0) return;
+  if (ids.length === 0) return { ok: false };
 
   const listings = await prisma.listing.findMany({
     where: { id: { in: ids } },
@@ -358,6 +435,62 @@ export async function bulkArchiveAdminListings(formData: FormData) {
   revalidatePath("/properties");
   revalidatePath("/admin");
   revalidatePath("/admin/properties");
+  return { ok: true };
+}
+
+export async function saveContactSettings(formData: FormData) {
+  const session = await requireAdmin();
+  const fieldNames: (keyof ContactSettingsValues)[] = [
+    "falRegistrationNumber",
+    "riyadhLabel",
+    "riyadhTitle",
+    "riyadhAddress",
+    "riyadhPhonePrimary",
+    "riyadhPhoneSecondary",
+    "riyadhEmail",
+    "riyadhVisitingHours",
+    "internationalLabel",
+    "internationalBadge",
+    "internationalTitle",
+    "internationalAddress",
+    "internationalPhonePrimary",
+    "internationalPhoneSecondary",
+    "internationalEmail",
+    "internationalVisitingHours",
+  ];
+  const settings = Object.fromEntries(fieldNames.map((name) => [name, String(formData.get(name) ?? "").trim()])) as ContactSettingsValues;
+  const requiredFields = fieldNames.filter((name) => name !== "riyadhPhoneSecondary" && name !== "internationalPhoneSecondary");
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (
+    requiredFields.some((name) => !settings[name]) ||
+    fieldNames.some((name) => settings[name].length > 240) ||
+    !emailPattern.test(settings.riyadhEmail) ||
+    !emailPattern.test(settings.internationalEmail)
+  ) {
+    return { ok: false, message: "Enter valid contact details. Email addresses must be valid." };
+  }
+
+  await prisma.$transaction([
+    prisma.contactSettings.upsert({
+      where: { id: CONTACT_SETTINGS_ID },
+      create: { id: CONTACT_SETTINGS_ID, ...settings },
+      update: settings,
+    }),
+    prisma.auditLog.create({
+      data: {
+        actorId: session.user.id,
+        action: "contact.settings_update",
+        entityType: "ContactSettings",
+        entityId: CONTACT_SETTINGS_ID,
+      },
+    }),
+  ]);
+
+  revalidatePath("/contact");
+  revalidatePath("/admin/contact");
+  revalidatePath("/api/contact-settings");
+  return { ok: true };
 }
 
 const ENQUIRY_STATUSES = [

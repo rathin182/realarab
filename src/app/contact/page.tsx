@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   MapPin,
   Phone,
@@ -13,9 +13,11 @@ import {
   ArrowUpRight,
   MessageSquare,
 } from 'lucide-react';
+import { DEFAULT_CONTACT_SETTINGS, type ContactSettingsValues } from '@/lib/contact-settings';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [contactSettings, setContactSettings] = useState<ContactSettingsValues>(DEFAULT_CONTACT_SETTINGS);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,6 +27,22 @@ export default function ContactPage() {
     region: 'Riyadh Core',
     message: '',
   });
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/contact-settings')
+      .then((response) => {
+        if (!response.ok) throw new Error('Could not load contact settings');
+        return response.json() as Promise<ContactSettingsValues>;
+      })
+      .then((settings) => {
+        if (!cancelled) setContactSettings(settings);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,39 +74,39 @@ export default function ContactPage() {
             <div className="p-8 border border-neutral-300 bg-neutral-50/50 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-mono uppercase tracking-widest text-[#A98950]">
-                  KINGDOM HEADQUARTERS
+                  {contactSettings.riyadhLabel}
                 </span>
                 <span className="text-[10px] font-mono px-2 py-0.5 bg-[#0C3826] text-white">
-                  FAL #1200034988
+                  FAL #{contactSettings.falRegistrationNumber}
                 </span>
               </div>
 
               <h3 className="font-serif text-2xl text-[#0C3826] font-normal">
-                Riyadh Sovereign HQ
+                {contactSettings.riyadhTitle}
               </h3>
 
               <div className="space-y-3 text-xs text-neutral-600 font-light pt-2">
                 <div className="flex items-start gap-3">
                   <MapPin className="w-4 h-4 text-[#A98950] shrink-0 mt-0.5" />
-                  <span>King Fahd Road, Al Olaya Financial District, Riyadh 12214, Kingdom of Saudi Arabia</span>
+                  <span>{contactSettings.riyadhAddress}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="w-4 h-4 text-[#A98950] shrink-0" />
-                  <a href="tel:+966114567890" className="hover:text-[#0C3826] font-mono">
-                    +966 11 456 7890 / +966 50 123 4567
+                  <a href={`tel:${contactSettings.riyadhPhonePrimary.replace(/[^\d+]/g, '')}`} className="hover:text-[#0C3826] font-mono">
+                    {[contactSettings.riyadhPhonePrimary, contactSettings.riyadhPhoneSecondary].filter(Boolean).join(' / ')}
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="w-4 h-4 text-[#A98950] shrink-0" />
-                  <a href="mailto:riyadh@najmestates.sa" className="hover:text-[#0C3826] font-mono">
-                    riyadh@najmestates.sa
+                  <a href={`mailto:${contactSettings.riyadhEmail}`} className="hover:text-[#0C3826] font-mono">
+                    {contactSettings.riyadhEmail}
                   </a>
                 </div>
               </div>
 
               <div className="pt-4 border-t border-neutral-200 flex items-center justify-between text-[11px] font-mono text-neutral-500">
                 <span>Visiting Hours:</span>
-                <span>Sun – Thu, 09:00 – 18:00 AST</span>
+                <span>{contactSettings.riyadhVisitingHours}</span>
               </div>
             </div>
 
@@ -96,39 +114,39 @@ export default function ContactPage() {
             <div className="p-8 border border-neutral-200 bg-white space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-mono uppercase tracking-widest text-[#A98950]">
-                  INTERNATIONAL HUB
+                  {contactSettings.internationalLabel}
                 </span>
                 <span className="text-[10px] font-mono px-2 py-0.5 border border-neutral-300 text-neutral-600">
-                  GLOBAL SALON
+                  {contactSettings.internationalBadge}
                 </span>
               </div>
 
               <h3 className="font-serif text-2xl text-[#0C3826] font-normal">
-                Hyderabad International Hub
+                {contactSettings.internationalTitle}
               </h3>
 
               <div className="space-y-3 text-xs text-neutral-600 font-light pt-2">
                 <div className="flex items-start gap-3">
                   <MapPin className="w-4 h-4 text-[#A98950] shrink-0 mt-0.5" />
-                  <span>Jubilee Hills / HITEC Corridor, Hyderabad, Telangana 500033, India</span>
+                  <span>{contactSettings.internationalAddress}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="w-4 h-4 text-[#A98950] shrink-0" />
-                  <a href="tel:+914067890123" className="hover:text-[#0C3826] font-mono">
-                    +91 40 6789 0123 / +91 98 7654 3210
+                  <a href={`tel:${contactSettings.internationalPhonePrimary.replace(/[^\d+]/g, '')}`} className="hover:text-[#0C3826] font-mono">
+                    {[contactSettings.internationalPhonePrimary, contactSettings.internationalPhoneSecondary].filter(Boolean).join(' / ')}
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="w-4 h-4 text-[#A98950] shrink-0" />
-                  <a href="mailto:hyderabad@najmestates.sa" className="hover:text-[#0C3826] font-mono">
-                    hyderabad@najmestates.sa
+                  <a href={`mailto:${contactSettings.internationalEmail}`} className="hover:text-[#0C3826] font-mono">
+                    {contactSettings.internationalEmail}
                   </a>
                 </div>
               </div>
 
               <div className="pt-4 border-t border-neutral-200 flex items-center justify-between text-[11px] font-mono text-neutral-500">
                 <span>Visiting Hours:</span>
-                <span>Mon – Sat, 10:00 – 19:00 IST</span>
+                <span>{contactSettings.internationalVisitingHours}</span>
               </div>
             </div>
 
@@ -300,7 +318,7 @@ export default function ContactPage() {
                   </button>
 
                   <div className="flex items-center justify-between text-[10px] font-mono text-neutral-400 pt-2">
-                    <span>FAL Brokerage Registration #1200034988</span>
+                    <span>FAL Brokerage Registration #{contactSettings.falRegistrationNumber}</span>
                     <span>Direct Encryption</span>
                   </div>
                 </form>
@@ -318,7 +336,7 @@ export default function ContactPage() {
               NAJM ESTATES KSA
             </span>
             <span className="font-mono text-[10px] tracking-[0.2em] text-neutral-500 uppercase block">
-              FAL BROKERAGE REGISTRATION #1200034988
+              FAL BROKERAGE REGISTRATION #{contactSettings.falRegistrationNumber}
             </span>
           </div>
           <div className="text-[11px] font-mono text-neutral-400">

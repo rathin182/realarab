@@ -60,7 +60,8 @@ export const ModelName = {
   SavedListing: 'SavedListing',
   Report: 'Report',
   AuditLog: 'AuditLog',
-  AgentApplication: 'AgentApplication'
+  AgentApplication: 'AgentApplication',
+  ContactSettings: 'ContactSettings'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -259,6 +260,31 @@ export const AgentApplicationScalarFieldEnum = {
 } as const
 
 export type AgentApplicationScalarFieldEnum = (typeof AgentApplicationScalarFieldEnum)[keyof typeof AgentApplicationScalarFieldEnum]
+
+
+export const ContactSettingsScalarFieldEnum = {
+  id: 'id',
+  falRegistrationNumber: 'falRegistrationNumber',
+  riyadhLabel: 'riyadhLabel',
+  riyadhTitle: 'riyadhTitle',
+  riyadhAddress: 'riyadhAddress',
+  riyadhPhonePrimary: 'riyadhPhonePrimary',
+  riyadhPhoneSecondary: 'riyadhPhoneSecondary',
+  riyadhEmail: 'riyadhEmail',
+  riyadhVisitingHours: 'riyadhVisitingHours',
+  internationalLabel: 'internationalLabel',
+  internationalBadge: 'internationalBadge',
+  internationalTitle: 'internationalTitle',
+  internationalAddress: 'internationalAddress',
+  internationalPhonePrimary: 'internationalPhonePrimary',
+  internationalPhoneSecondary: 'internationalPhoneSecondary',
+  internationalEmail: 'internationalEmail',
+  internationalVisitingHours: 'internationalVisitingHours',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ContactSettingsScalarFieldEnum = (typeof ContactSettingsScalarFieldEnum)[keyof typeof ContactSettingsScalarFieldEnum]
 
 
 export const SortOrder = {

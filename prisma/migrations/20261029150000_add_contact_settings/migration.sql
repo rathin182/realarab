@@ -1,0 +1,22 @@
+CREATE TABLE "ContactSettings" (
+  "id" TEXT NOT NULL DEFAULT 'contact',
+  "falRegistrationNumber" TEXT NOT NULL DEFAULT '1200034988',
+  "riyadhLabel" TEXT NOT NULL DEFAULT 'KINGDOM HEADQUARTERS',
+  "riyadhTitle" TEXT NOT NULL DEFAULT 'Riyadh Sovereign HQ',
+  "riyadhAddress" TEXT NOT NULL DEFAULT 'King Fahd Road, Al Olaya Financial District, Riyadh 12214, Kingdom of Saudi Arabia',
+  "riyadhPhonePrimary" TEXT NOT NULL DEFAULT '+966 11 456 7890',
+  "riyadhPhoneSecondary" TEXT NOT NULL DEFAULT '+966 50 123 4567',
+  "riyadhEmail" TEXT NOT NULL DEFAULT 'riyadh@najmestates.sa',
+  "riyadhVisitingHours" TEXT NOT NULL DEFAULT 'Sun – Thu, 09:00 – 18:00 AST',
+  "internationalLabel" TEXT NOT NULL DEFAULT 'INTERNATIONAL HUB',
+  "internationalBadge" TEXT NOT NULL DEFAULT 'GLOBAL SALON',
+  "internationalTitle" TEXT NOT NULL DEFAULT 'Hyderabad International Hub',
+  "internationalAddress" TEXT NOT NULL DEFAULT 'Jubilee Hills / HITEC Corridor, Hyderabad, Telangana 500033, India',
+  "internationalPhonePrimary" TEXT NOT NULL DEFAULT '+91 40 6789 0123',
+  "internationalPhoneSecondary" TEXT NOT NULL DEFAULT '+91 98 7654 3210',
+  "internationalEmail" TEXT NOT NULL DEFAULT 'hyderabad@najmestates.sa',
+  "internationalVisitingHours" TEXT NOT NULL DEFAULT 'Mon – Sat, 10:00 – 19:00 IST',
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP(3) NOT NULL,
+  CONSTRAINT "ContactSettings_pkey" PRIMARY KEY ("id")
+);
