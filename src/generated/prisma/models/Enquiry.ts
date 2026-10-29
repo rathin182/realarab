@@ -32,6 +32,10 @@ export type EnquiryMinAggregateOutputType = {
   email: string | null
   phone: string | null
   message: string | null
+  investorType: string | null
+  propertySlug: string | null
+  propertyTitle: string | null
+  source: string | null
   status: $Enums.EnquiryStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -45,6 +49,10 @@ export type EnquiryMaxAggregateOutputType = {
   email: string | null
   phone: string | null
   message: string | null
+  investorType: string | null
+  propertySlug: string | null
+  propertyTitle: string | null
+  source: string | null
   status: $Enums.EnquiryStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -58,6 +66,10 @@ export type EnquiryCountAggregateOutputType = {
   email: number
   phone: number
   message: number
+  investorType: number
+  propertySlug: number
+  propertyTitle: number
+  source: number
   status: number
   createdAt: number
   updatedAt: number
@@ -73,6 +85,10 @@ export type EnquiryMinAggregateInputType = {
   email?: true
   phone?: true
   message?: true
+  investorType?: true
+  propertySlug?: true
+  propertyTitle?: true
+  source?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -86,6 +102,10 @@ export type EnquiryMaxAggregateInputType = {
   email?: true
   phone?: true
   message?: true
+  investorType?: true
+  propertySlug?: true
+  propertyTitle?: true
+  source?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -99,6 +119,10 @@ export type EnquiryCountAggregateInputType = {
   email?: true
   phone?: true
   message?: true
+  investorType?: true
+  propertySlug?: true
+  propertyTitle?: true
+  source?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -179,12 +203,16 @@ export type EnquiryGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type EnquiryGroupByOutputType = {
   id: string
-  listingId: string
-  senderId: string
+  listingId: string | null
+  senderId: string | null
   name: string
   email: string
   phone: string | null
   message: string
+  investorType: string | null
+  propertySlug: string | null
+  propertyTitle: string | null
+  source: string | null
   status: $Enums.EnquiryStatus
   createdAt: Date
   updatedAt: Date
@@ -213,27 +241,35 @@ export type EnquiryWhereInput = {
   OR?: Prisma.EnquiryWhereInput[]
   NOT?: Prisma.EnquiryWhereInput | Prisma.EnquiryWhereInput[]
   id?: Prisma.StringFilter<"Enquiry"> | string
-  listingId?: Prisma.StringFilter<"Enquiry"> | string
-  senderId?: Prisma.StringFilter<"Enquiry"> | string
+  listingId?: Prisma.StringNullableFilter<"Enquiry"> | string | null
+  senderId?: Prisma.StringNullableFilter<"Enquiry"> | string | null
   name?: Prisma.StringFilter<"Enquiry"> | string
   email?: Prisma.StringFilter<"Enquiry"> | string
   phone?: Prisma.StringNullableFilter<"Enquiry"> | string | null
   message?: Prisma.StringFilter<"Enquiry"> | string
+  investorType?: Prisma.StringNullableFilter<"Enquiry"> | string | null
+  propertySlug?: Prisma.StringNullableFilter<"Enquiry"> | string | null
+  propertyTitle?: Prisma.StringNullableFilter<"Enquiry"> | string | null
+  source?: Prisma.StringNullableFilter<"Enquiry"> | string | null
   status?: Prisma.EnumEnquiryStatusFilter<"Enquiry"> | $Enums.EnquiryStatus
   createdAt?: Prisma.DateTimeFilter<"Enquiry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Enquiry"> | Date | string
-  listing?: Prisma.XOR<Prisma.ListingScalarRelationFilter, Prisma.ListingWhereInput>
-  sender?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  listing?: Prisma.XOR<Prisma.ListingNullableScalarRelationFilter, Prisma.ListingWhereInput> | null
+  sender?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type EnquiryOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  listingId?: Prisma.SortOrder
-  senderId?: Prisma.SortOrder
+  listingId?: Prisma.SortOrderInput | Prisma.SortOrder
+  senderId?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   message?: Prisma.SortOrder
+  investorType?: Prisma.SortOrderInput | Prisma.SortOrder
+  propertySlug?: Prisma.SortOrderInput | Prisma.SortOrder
+  propertyTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  source?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -246,27 +282,35 @@ export type EnquiryWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.EnquiryWhereInput | Prisma.EnquiryWhereInput[]
   OR?: Prisma.EnquiryWhereInput[]
   NOT?: Prisma.EnquiryWhereInput | Prisma.EnquiryWhereInput[]
-  listingId?: Prisma.StringFilter<"Enquiry"> | string
-  senderId?: Prisma.StringFilter<"Enquiry"> | string
+  listingId?: Prisma.StringNullableFilter<"Enquiry"> | string | null
+  senderId?: Prisma.StringNullableFilter<"Enquiry"> | string | null
   name?: Prisma.StringFilter<"Enquiry"> | string
   email?: Prisma.StringFilter<"Enquiry"> | string
   phone?: Prisma.StringNullableFilter<"Enquiry"> | string | null
   message?: Prisma.StringFilter<"Enquiry"> | string
+  investorType?: Prisma.StringNullableFilter<"Enquiry"> | string | null
+  propertySlug?: Prisma.StringNullableFilter<"Enquiry"> | string | null
+  propertyTitle?: Prisma.StringNullableFilter<"Enquiry"> | string | null
+  source?: Prisma.StringNullableFilter<"Enquiry"> | string | null
   status?: Prisma.EnumEnquiryStatusFilter<"Enquiry"> | $Enums.EnquiryStatus
   createdAt?: Prisma.DateTimeFilter<"Enquiry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Enquiry"> | Date | string
-  listing?: Prisma.XOR<Prisma.ListingScalarRelationFilter, Prisma.ListingWhereInput>
-  sender?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  listing?: Prisma.XOR<Prisma.ListingNullableScalarRelationFilter, Prisma.ListingWhereInput> | null
+  sender?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id">
 
 export type EnquiryOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  listingId?: Prisma.SortOrder
-  senderId?: Prisma.SortOrder
+  listingId?: Prisma.SortOrderInput | Prisma.SortOrder
+  senderId?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   message?: Prisma.SortOrder
+  investorType?: Prisma.SortOrderInput | Prisma.SortOrder
+  propertySlug?: Prisma.SortOrderInput | Prisma.SortOrder
+  propertyTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  source?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -280,12 +324,16 @@ export type EnquiryScalarWhereWithAggregatesInput = {
   OR?: Prisma.EnquiryScalarWhereWithAggregatesInput[]
   NOT?: Prisma.EnquiryScalarWhereWithAggregatesInput | Prisma.EnquiryScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Enquiry"> | string
-  listingId?: Prisma.StringWithAggregatesFilter<"Enquiry"> | string
-  senderId?: Prisma.StringWithAggregatesFilter<"Enquiry"> | string
+  listingId?: Prisma.StringNullableWithAggregatesFilter<"Enquiry"> | string | null
+  senderId?: Prisma.StringNullableWithAggregatesFilter<"Enquiry"> | string | null
   name?: Prisma.StringWithAggregatesFilter<"Enquiry"> | string
   email?: Prisma.StringWithAggregatesFilter<"Enquiry"> | string
   phone?: Prisma.StringNullableWithAggregatesFilter<"Enquiry"> | string | null
   message?: Prisma.StringWithAggregatesFilter<"Enquiry"> | string
+  investorType?: Prisma.StringNullableWithAggregatesFilter<"Enquiry"> | string | null
+  propertySlug?: Prisma.StringNullableWithAggregatesFilter<"Enquiry"> | string | null
+  propertyTitle?: Prisma.StringNullableWithAggregatesFilter<"Enquiry"> | string | null
+  source?: Prisma.StringNullableWithAggregatesFilter<"Enquiry"> | string | null
   status?: Prisma.EnumEnquiryStatusWithAggregatesFilter<"Enquiry"> | $Enums.EnquiryStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Enquiry"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Enquiry"> | Date | string
@@ -297,21 +345,29 @@ export type EnquiryCreateInput = {
   email: string
   phone?: string | null
   message: string
+  investorType?: string | null
+  propertySlug?: string | null
+  propertyTitle?: string | null
+  source?: string | null
   status?: $Enums.EnquiryStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  listing: Prisma.ListingCreateNestedOneWithoutEnquiriesInput
-  sender: Prisma.UserCreateNestedOneWithoutEnquiriesInput
+  listing?: Prisma.ListingCreateNestedOneWithoutEnquiriesInput
+  sender?: Prisma.UserCreateNestedOneWithoutEnquiriesInput
 }
 
 export type EnquiryUncheckedCreateInput = {
   id?: string
-  listingId: string
-  senderId: string
+  listingId?: string | null
+  senderId?: string | null
   name: string
   email: string
   phone?: string | null
   message: string
+  investorType?: string | null
+  propertySlug?: string | null
+  propertyTitle?: string | null
+  source?: string | null
   status?: $Enums.EnquiryStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -323,21 +379,29 @@ export type EnquiryUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  investorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertySlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEnquiryStatusFieldUpdateOperationsInput | $Enums.EnquiryStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  listing?: Prisma.ListingUpdateOneRequiredWithoutEnquiriesNestedInput
-  sender?: Prisma.UserUpdateOneRequiredWithoutEnquiriesNestedInput
+  listing?: Prisma.ListingUpdateOneWithoutEnquiriesNestedInput
+  sender?: Prisma.UserUpdateOneWithoutEnquiriesNestedInput
 }
 
 export type EnquiryUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  listingId?: Prisma.StringFieldUpdateOperationsInput | string
-  senderId?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  senderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  investorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertySlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEnquiryStatusFieldUpdateOperationsInput | $Enums.EnquiryStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -345,12 +409,16 @@ export type EnquiryUncheckedUpdateInput = {
 
 export type EnquiryCreateManyInput = {
   id?: string
-  listingId: string
-  senderId: string
+  listingId?: string | null
+  senderId?: string | null
   name: string
   email: string
   phone?: string | null
   message: string
+  investorType?: string | null
+  propertySlug?: string | null
+  propertyTitle?: string | null
+  source?: string | null
   status?: $Enums.EnquiryStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -362,6 +430,10 @@ export type EnquiryUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  investorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertySlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEnquiryStatusFieldUpdateOperationsInput | $Enums.EnquiryStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -369,12 +441,16 @@ export type EnquiryUpdateManyMutationInput = {
 
 export type EnquiryUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  listingId?: Prisma.StringFieldUpdateOperationsInput | string
-  senderId?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  senderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  investorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertySlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEnquiryStatusFieldUpdateOperationsInput | $Enums.EnquiryStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -398,6 +474,10 @@ export type EnquiryCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  investorType?: Prisma.SortOrder
+  propertySlug?: Prisma.SortOrder
+  propertyTitle?: Prisma.SortOrder
+  source?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -411,6 +491,10 @@ export type EnquiryMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  investorType?: Prisma.SortOrder
+  propertySlug?: Prisma.SortOrder
+  propertyTitle?: Prisma.SortOrder
+  source?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -424,6 +508,10 @@ export type EnquiryMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  investorType?: Prisma.SortOrder
+  propertySlug?: Prisma.SortOrder
+  propertyTitle?: Prisma.SortOrder
+  source?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -523,19 +611,27 @@ export type EnquiryCreateWithoutSenderInput = {
   email: string
   phone?: string | null
   message: string
+  investorType?: string | null
+  propertySlug?: string | null
+  propertyTitle?: string | null
+  source?: string | null
   status?: $Enums.EnquiryStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  listing: Prisma.ListingCreateNestedOneWithoutEnquiriesInput
+  listing?: Prisma.ListingCreateNestedOneWithoutEnquiriesInput
 }
 
 export type EnquiryUncheckedCreateWithoutSenderInput = {
   id?: string
-  listingId: string
+  listingId?: string | null
   name: string
   email: string
   phone?: string | null
   message: string
+  investorType?: string | null
+  propertySlug?: string | null
+  propertyTitle?: string | null
+  source?: string | null
   status?: $Enums.EnquiryStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -572,12 +668,16 @@ export type EnquiryScalarWhereInput = {
   OR?: Prisma.EnquiryScalarWhereInput[]
   NOT?: Prisma.EnquiryScalarWhereInput | Prisma.EnquiryScalarWhereInput[]
   id?: Prisma.StringFilter<"Enquiry"> | string
-  listingId?: Prisma.StringFilter<"Enquiry"> | string
-  senderId?: Prisma.StringFilter<"Enquiry"> | string
+  listingId?: Prisma.StringNullableFilter<"Enquiry"> | string | null
+  senderId?: Prisma.StringNullableFilter<"Enquiry"> | string | null
   name?: Prisma.StringFilter<"Enquiry"> | string
   email?: Prisma.StringFilter<"Enquiry"> | string
   phone?: Prisma.StringNullableFilter<"Enquiry"> | string | null
   message?: Prisma.StringFilter<"Enquiry"> | string
+  investorType?: Prisma.StringNullableFilter<"Enquiry"> | string | null
+  propertySlug?: Prisma.StringNullableFilter<"Enquiry"> | string | null
+  propertyTitle?: Prisma.StringNullableFilter<"Enquiry"> | string | null
+  source?: Prisma.StringNullableFilter<"Enquiry"> | string | null
   status?: Prisma.EnumEnquiryStatusFilter<"Enquiry"> | $Enums.EnquiryStatus
   createdAt?: Prisma.DateTimeFilter<"Enquiry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Enquiry"> | Date | string
@@ -589,19 +689,27 @@ export type EnquiryCreateWithoutListingInput = {
   email: string
   phone?: string | null
   message: string
+  investorType?: string | null
+  propertySlug?: string | null
+  propertyTitle?: string | null
+  source?: string | null
   status?: $Enums.EnquiryStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  sender: Prisma.UserCreateNestedOneWithoutEnquiriesInput
+  sender?: Prisma.UserCreateNestedOneWithoutEnquiriesInput
 }
 
 export type EnquiryUncheckedCreateWithoutListingInput = {
   id?: string
-  senderId: string
+  senderId?: string | null
   name: string
   email: string
   phone?: string | null
   message: string
+  investorType?: string | null
+  propertySlug?: string | null
+  propertyTitle?: string | null
+  source?: string | null
   status?: $Enums.EnquiryStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -635,11 +743,15 @@ export type EnquiryUpdateManyWithWhereWithoutListingInput = {
 
 export type EnquiryCreateManySenderInput = {
   id?: string
-  listingId: string
+  listingId?: string | null
   name: string
   email: string
   phone?: string | null
   message: string
+  investorType?: string | null
+  propertySlug?: string | null
+  propertyTitle?: string | null
+  source?: string | null
   status?: $Enums.EnquiryStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -651,19 +763,27 @@ export type EnquiryUpdateWithoutSenderInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  investorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertySlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEnquiryStatusFieldUpdateOperationsInput | $Enums.EnquiryStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  listing?: Prisma.ListingUpdateOneRequiredWithoutEnquiriesNestedInput
+  listing?: Prisma.ListingUpdateOneWithoutEnquiriesNestedInput
 }
 
 export type EnquiryUncheckedUpdateWithoutSenderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  investorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertySlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEnquiryStatusFieldUpdateOperationsInput | $Enums.EnquiryStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -671,11 +791,15 @@ export type EnquiryUncheckedUpdateWithoutSenderInput = {
 
 export type EnquiryUncheckedUpdateManyWithoutSenderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  investorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertySlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEnquiryStatusFieldUpdateOperationsInput | $Enums.EnquiryStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -683,11 +807,15 @@ export type EnquiryUncheckedUpdateManyWithoutSenderInput = {
 
 export type EnquiryCreateManyListingInput = {
   id?: string
-  senderId: string
+  senderId?: string | null
   name: string
   email: string
   phone?: string | null
   message: string
+  investorType?: string | null
+  propertySlug?: string | null
+  propertyTitle?: string | null
+  source?: string | null
   status?: $Enums.EnquiryStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -699,19 +827,27 @@ export type EnquiryUpdateWithoutListingInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  investorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertySlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEnquiryStatusFieldUpdateOperationsInput | $Enums.EnquiryStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sender?: Prisma.UserUpdateOneRequiredWithoutEnquiriesNestedInput
+  sender?: Prisma.UserUpdateOneWithoutEnquiriesNestedInput
 }
 
 export type EnquiryUncheckedUpdateWithoutListingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  senderId?: Prisma.StringFieldUpdateOperationsInput | string
+  senderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  investorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertySlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEnquiryStatusFieldUpdateOperationsInput | $Enums.EnquiryStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -719,11 +855,15 @@ export type EnquiryUncheckedUpdateWithoutListingInput = {
 
 export type EnquiryUncheckedUpdateManyWithoutListingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  senderId?: Prisma.StringFieldUpdateOperationsInput | string
+  senderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   message?: Prisma.StringFieldUpdateOperationsInput | string
+  investorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertySlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEnquiryStatusFieldUpdateOperationsInput | $Enums.EnquiryStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -739,11 +879,15 @@ export type EnquirySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   email?: boolean
   phone?: boolean
   message?: boolean
+  investorType?: boolean
+  propertySlug?: boolean
+  propertyTitle?: boolean
+  source?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>
-  sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  listing?: boolean | Prisma.Enquiry$listingArgs<ExtArgs>
+  sender?: boolean | Prisma.Enquiry$senderArgs<ExtArgs>
 }, ExtArgs["result"]["enquiry"]>
 
 export type EnquirySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -754,11 +898,15 @@ export type EnquirySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   email?: boolean
   phone?: boolean
   message?: boolean
+  investorType?: boolean
+  propertySlug?: boolean
+  propertyTitle?: boolean
+  source?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>
-  sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  listing?: boolean | Prisma.Enquiry$listingArgs<ExtArgs>
+  sender?: boolean | Prisma.Enquiry$senderArgs<ExtArgs>
 }, ExtArgs["result"]["enquiry"]>
 
 export type EnquirySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -769,11 +917,15 @@ export type EnquirySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   email?: boolean
   phone?: boolean
   message?: boolean
+  investorType?: boolean
+  propertySlug?: boolean
+  propertyTitle?: boolean
+  source?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>
-  sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  listing?: boolean | Prisma.Enquiry$listingArgs<ExtArgs>
+  sender?: boolean | Prisma.Enquiry$senderArgs<ExtArgs>
 }, ExtArgs["result"]["enquiry"]>
 
 export type EnquirySelectScalar = {
@@ -784,39 +936,47 @@ export type EnquirySelectScalar = {
   email?: boolean
   phone?: boolean
   message?: boolean
+  investorType?: boolean
+  propertySlug?: boolean
+  propertyTitle?: boolean
+  source?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EnquiryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "listingId" | "senderId" | "name" | "email" | "phone" | "message" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["enquiry"]>
+export type EnquiryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "listingId" | "senderId" | "name" | "email" | "phone" | "message" | "investorType" | "propertySlug" | "propertyTitle" | "source" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["enquiry"]>
 export type EnquiryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>
-  sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  listing?: boolean | Prisma.Enquiry$listingArgs<ExtArgs>
+  sender?: boolean | Prisma.Enquiry$senderArgs<ExtArgs>
 }
 export type EnquiryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>
-  sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  listing?: boolean | Prisma.Enquiry$listingArgs<ExtArgs>
+  sender?: boolean | Prisma.Enquiry$senderArgs<ExtArgs>
 }
 export type EnquiryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>
-  sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  listing?: boolean | Prisma.Enquiry$listingArgs<ExtArgs>
+  sender?: boolean | Prisma.Enquiry$senderArgs<ExtArgs>
 }
 
 export type $EnquiryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Enquiry"
   objects: {
-    listing: Prisma.$ListingPayload<ExtArgs>
-    sender: Prisma.$UserPayload<ExtArgs>
+    listing: Prisma.$ListingPayload<ExtArgs> | null
+    sender: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    listingId: string
-    senderId: string
+    listingId: string | null
+    senderId: string | null
     name: string
     email: string
     phone: string | null
     message: string
+    investorType: string | null
+    propertySlug: string | null
+    propertyTitle: string | null
+    source: string | null
     status: $Enums.EnquiryStatus
     createdAt: Date
     updatedAt: Date
@@ -1214,8 +1374,8 @@ readonly fields: EnquiryFieldRefs;
  */
 export interface Prisma__EnquiryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  listing<T extends Prisma.ListingDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ListingDefaultArgs<ExtArgs>>): Prisma.Prisma__ListingClient<runtime.Types.Result.GetResult<Prisma.$ListingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  sender<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  listing<T extends Prisma.Enquiry$listingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Enquiry$listingArgs<ExtArgs>>): Prisma.Prisma__ListingClient<runtime.Types.Result.GetResult<Prisma.$ListingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  sender<T extends Prisma.Enquiry$senderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Enquiry$senderArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1252,6 +1412,10 @@ export interface EnquiryFieldRefs {
   readonly email: Prisma.FieldRef<"Enquiry", 'String'>
   readonly phone: Prisma.FieldRef<"Enquiry", 'String'>
   readonly message: Prisma.FieldRef<"Enquiry", 'String'>
+  readonly investorType: Prisma.FieldRef<"Enquiry", 'String'>
+  readonly propertySlug: Prisma.FieldRef<"Enquiry", 'String'>
+  readonly propertyTitle: Prisma.FieldRef<"Enquiry", 'String'>
+  readonly source: Prisma.FieldRef<"Enquiry", 'String'>
   readonly status: Prisma.FieldRef<"Enquiry", 'EnquiryStatus'>
   readonly createdAt: Prisma.FieldRef<"Enquiry", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Enquiry", 'DateTime'>
@@ -1653,6 +1817,44 @@ export type EnquiryDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Enquiries to delete.
    */
   limit?: number
+}
+
+/**
+ * Enquiry.listing
+ */
+export type Enquiry$listingArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Listing
+   */
+  select?: Prisma.ListingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Listing
+   */
+  omit?: Prisma.ListingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ListingInclude<ExtArgs> | null
+  where?: Prisma.ListingWhereInput
+}
+
+/**
+ * Enquiry.sender
+ */
+export type Enquiry$senderArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

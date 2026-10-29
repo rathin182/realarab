@@ -18,7 +18,6 @@ import {
   Building2,
   FileCheck,
   Send,
-  Phone,
   Mail,
   ChevronRight,
   Calculator,
@@ -125,9 +124,46 @@ export const PropertyDetailClient: React.FC<PropertyDetailClientProps> = ({ prop
     setActiveMediaIndex((index) => Math.max(index - 1, 0));
   }
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const [inquirySending, setInquirySending] = useState(false);
+  const [inquiryError, setInquiryError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setInquirySent(true);
+    if (inquirySending) return;
+
+    const email = formData.email.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!email.includes('@') || !emailRegex.test(email)) {
+      setEmailError(true);
+      return;
+    }
+
+    setEmailError(false);
+    setInquirySending(true);
+    setInquiryError(false);
+    try {
+      const res = await fetch('/api/enquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email,
+          phone: formData.phone,
+          investorType: formData.investorType,
+          message: formData.message,
+          propertySlug: property.id,
+          propertyTitle: property.title,
+          source: 'property-page',
+        }),
+      });
+      if (!res.ok) throw new Error('request failed');
+      setInquirySent(true);
+    } catch {
+      setInquiryError(true);
+    } finally {
+      setInquirySending(false);
+    }
   };
 
   const handleShare = () => {
@@ -416,10 +452,22 @@ export const PropertyDetailClient: React.FC<PropertyDetailClientProps> = ({ prop
                       type="email"
                       required
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) => {
+                        setFormData({ ...formData, email: e.target.value });
+                        setEmailError(false);
+                      }}
                       placeholder="investor@familyoffice.sa"
+                      aria-invalid={emailError}
+                      aria-describedby={emailError ? "property-email-error" : undefined}
                       className="w-full text-xs p-3 border border-neutral-200 focus:border-[#0C3826] focus:outline-none transition-colors"
                     />
+                    {emailError && (
+                      <p id="property-email-error" role="alert" className="mt-1 text-xs text-red-700">
+                        {isAr
+                          ? "يرجى إدخال عنوان بريد إلكتروني صحيح."
+                          : "Please enter a valid email address."}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -452,9 +500,16 @@ export const PropertyDetailClient: React.FC<PropertyDetailClientProps> = ({ prop
                     </select>
                   </div>
 
+                  {inquiryError && (
+                    <p role="alert" className="text-xs text-red-700">
+                      {isAr ? 'تعذر إرسال الطلب، يرجى المحاولة مرة أخرى.' : 'Could not send your request. Please try again.'}
+                    </p>
+                  )}
+
                   <button
                     type="submit"
-                    className="w-full bg-[#0C3826] hover:bg-[#08281B] text-white text-xs font-mono uppercase tracking-widest py-3.5 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                    disabled={inquirySending}
+                    className="w-full bg-[#0C3826] hover:bg-[#08281B] disabled:opacity-60 text-white text-xs font-mono uppercase tracking-widest py-3.5 transition-colors flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>{isAr ? 'إرسال طلب التملك' : 'Request Private Dossier'}</span>
@@ -462,24 +517,6 @@ export const PropertyDetailClient: React.FC<PropertyDetailClientProps> = ({ prop
                 </form>
               )}
 
-              {/* Instant WhatsApp Direct Desk */}
-              <div className="mt-6 pt-6 border-t border-neutral-200 space-y-3">
-                <a
-                  href={`https://wa.me/966500000000?text=${encodeURIComponent(
-                    `Hello Najm Estates Private Office, I am inquiring about: ${property.title} (Registration: ${property.registration})`
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full border border-neutral-300 hover:border-neutral-900 text-neutral-800 text-xs font-mono uppercase tracking-wider py-3 px-4 flex items-center justify-center gap-2 transition-colors"
-                >
-                  <Phone className="w-3.5 h-3.5 text-[#0C3826]" />
-                  <span>{isAr ? 'محادثة واتساب مباشرة' : 'Direct WhatsApp Desk'}</span>
-                </a>
-
-                <div className="text-[10px] font-mono text-neutral-400 text-center uppercase tracking-wider">
-                  FAL Registration #1200034988 · Confidential
-                </div>
-              </div>
             </div>
           </div>
         </div>

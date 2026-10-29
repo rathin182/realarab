@@ -141,14 +141,14 @@ model Listing {
   longitude        Float?
   reraNumber       String?
 
-  areaSqm          Int?             // the Saudi forms use sqm instead of areaSqft
-  availableFrom    DateTime?
+  areaSqm          Int?            
+  availableFrom     DateTime?
   availabilityNotes String?
   zoning           String?
   frontageMeters   Float?
   depthMeters      Float?
   propertyUse      String?
-  tier             String?          // featured | curated | vault | syndicate (null = curated)
+  tier             String?          
   isOffPlan        Boolean          @default(false)
   badge            String?
   flags            String[]         @default([])
@@ -194,24 +194,28 @@ model ListingMedia {
 }
 
 model Enquiry {
-  id        String        @id @default(cuid())
-  listingId String
-  senderId  String
-  name      String
-  email     String
-  phone     String?
-  message   String
-  status    EnquiryStatus @default(NEW)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @default(now()) @updatedAt
+  id            String        @id @default(cuid())
+  listingId     String?       
+  senderId      String?       
+  name          String
+  email         String
+  phone         String?
+  message       String
+  investorType  String?
+  propertySlug  String?
+  propertyTitle String?
+  source        String?       // "property-page" | "home-modal"
+  status        EnquiryStatus @default(NEW)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @default(now()) @updatedAt
 
-  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  sender  User    @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  listing Listing? @relation(fields: [listingId], references: [id], onDelete: SetNull)
+  sender  User?    @relation(fields: [senderId], references: [id], onDelete: SetNull)
 
   @@index([listingId, createdAt])
   @@index([senderId])
+  @@index([status, createdAt])
 }
-
 model SavedListing {
   userId    String
   listingId String

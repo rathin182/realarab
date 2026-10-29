@@ -20,13 +20,35 @@ export const PropertyDossierModal: React.FC<PropertyDossierModalProps> = ({
   const [inquiryName, setInquiryName] = useState('');
   const [inquiryPhone, setInquiryPhone] = useState('');
   const [isSent, setIsSent] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   if (!property) return null;
 
-  const handleInquirySubmit = (e: React.FormEvent) => {
+  const handleInquirySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inquiryName || !inquiryPhone) return;
-    setIsSent(true);
+    if (!inquiryName || !inquiryPhone || isSending) return;
+    setIsSending(true);
+    setHasError(false);
+    try {
+      const res = await fetch('/api/enquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: inquiryName,
+          phone: inquiryPhone,
+          propertySlug: property.id,
+          propertyTitle: property.title,
+          source: 'home-modal',
+        }),
+      });
+      if (!res.ok) throw new Error('request failed');
+      setIsSent(true);
+    } catch {
+      setHasError(true);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -165,9 +187,16 @@ export const PropertyDossierModal: React.FC<PropertyDossierModalProps> = ({
                     />
                   </div>
 
+                  {hasError && (
+                    <p role="alert" className="text-xs text-red-700">
+                      {isAr ? 'تعذر إرسال الطلب، يرجى المحاولة مرة أخرى.' : 'Could not send your request. Please try again.'}
+                    </p>
+                  )}
+
                   <button
                     type="submit"
-                    className="w-full h-11 bg-[#0C3826] hover:bg-neutral-900 text-white text-xs uppercase tracking-[0.2em] font-medium transition-colors cursor-pointer"
+                    disabled={isSending}
+                    className="w-full h-11 disabled:opacity-60 bg-[#0C3826] hover:bg-neutral-900 text-white text-xs uppercase tracking-[0.2em] font-medium transition-colors cursor-pointer"
                   >
                     <span>{isAr ? 'إرسال طلب المعاينة' : 'Submit Private Request'}</span>
                   </button>

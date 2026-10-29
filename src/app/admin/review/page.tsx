@@ -6,7 +6,7 @@ import AdminLayout from "../admin-layout";
 export default async function ReviewPage() {
   await requireAdmin();
 
-  const [applications, listings, reports] = await Promise.all([
+  const [applications, listings, reports, enquiries] = await Promise.all([
     prisma.agentApplication.findMany({
       where: { status: "PENDING" },
       orderBy: { createdAt: "asc" },
@@ -25,19 +25,45 @@ export default async function ReviewPage() {
         reporter: { select: { email: true } },
       },
     }),
+    prisma.enquiry.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 100,
+      include: { listing: { select: { title: true, slug: true } } },
+    }),
   ]);
 
   return (
     <AdminLayout>
-    <AdminReviewPanel
-      applications={applications}
-      listings={listings.map((listing) => ({ ...listing, price: Number(listing.price) }))}
-      reports={reports.map((report) => ({
-        ...report,
-        createdAt: report.createdAt.toISOString(),
-        details: report.details == null ? null : typeof report.details === "string" ? report.details : JSON.stringify(report.details),
-      }))}
-    />
+      <AdminReviewPanel
+        applications={applications}
+        enquiries={enquiries.map((enquiry) => ({
+          id: enquiry.id,
+          name: enquiry.name,
+          email: enquiry.email,
+          phone: enquiry.phone,
+          message: enquiry.message,
+          investorType: enquiry.investorType,
+          status: enquiry.status,
+          source: enquiry.source,
+          createdAt: enquiry.createdAt.toISOString(),
+          propertyTitle: enquiry.listing?.title ?? enquiry.propertyTitle,
+          propertySlug: enquiry.listing?.slug ?? enquiry.propertySlug,
+        }))}
+        listings={listings.map((listing) => ({
+          ...listing,
+          price: Number(listing.price),
+        }))}
+        reports={reports.map((report) => ({
+          ...report,
+          createdAt: report.createdAt.toISOString(),
+          details:
+            report.details == null
+              ? null
+              : typeof report.details === "string"
+                ? report.details
+                : JSON.stringify(report.details),
+        }))}
+      />
     </AdminLayout>
   );
 }

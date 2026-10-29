@@ -399,18 +399,36 @@ export async function updateAdminListing(formData: FormData) {
   revalidatePath("/admin/properties");
   return { ok: true };
 }
-
 export async function bulkArchiveAdminListings(formData: FormData) {
   const session = await requireAdmin();
   const ids = [...new Set(formData.getAll("ids").map(String).filter(Boolean))];
   if (ids.length === 0) return { ok: false };
 
-  const listings = await prisma.listing.findMany({ where: { id: { in: ids } }, select: { id: true, slug: true, title: true } });
+  const listings = await prisma.listing.findMany({
+    where: { id: { in: ids } },
+    select: { id: true, slug: true, title: true },
+  });
+
   await prisma.$transaction([
-    prisma.listing.updateMany({ where: { id: { in: listings.map((listing) => listing.id) } }, data: { status: "ARCHIVED" } }),
-    ...listings.map((listing) => prisma.auditLog.create({
-      data: { actorId: session.user.id, action: "listing.archive", entityType: "Listing", entityId: listing.id, details: { slug: listing.slug, title: listing.title, source: "bulk" } },
-    })),
+    prisma.listing.updateMany({
+      where: { id: { in: listings.map((listing) => listing.id) } },
+      data: { status: "ARCHIVED" },
+    }),
+    ...listings.map((listing) =>
+      prisma.auditLog.create({
+        data: {
+          actorId: session.user.id,
+          action: "listing.archive",
+          entityType: "Listing",
+          entityId: listing.id,
+          details: {
+            slug: listing.slug,
+            title: listing.title,
+            source: "bulk",
+          },
+        },
+      }),
+    ),
   ]);
 
   revalidatePath("/");
@@ -473,4 +491,41 @@ export async function saveContactSettings(formData: FormData) {
   revalidatePath("/admin/contact");
   revalidatePath("/api/contact-settings");
   return { ok: true };
+}
+
+const ENQUIRY_STATUSES = [
+  "NEW",
+  "CONTACTED",
+  "VISIT_SCHEDULED",
+  "CLOSED",
+  "NOT_INTERESTED",
+] as const;
+
+export async function updateEnquiryStatus(formData: FormData) {
+  const session = await requireAdmin();
+  const id = String(formData.get("id") ?? "");
+  const status = String(formData.get("status") ?? "");
+
+  if (!id || !(ENQUIRY_STATUSES as readonly string[]).includes(status)) {
+    return;
+  }
+
+  await prisma.$transaction([
+    prisma.enquiry.update({
+      where: { id },
+      data: { status: status as (typeof ENQUIRY_STATUSES)[number] },
+    }),
+    prisma.auditLog.create({
+      data: {
+        actorId: session.user.id,
+        action: "enquiry.status",
+        entityType: "Enquiry",
+        entityId: id,
+        details: { status },
+      },
+    }),
+  ]);
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/review");
 }

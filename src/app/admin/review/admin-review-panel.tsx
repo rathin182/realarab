@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { resolveReport, reviewAgentApplication, reviewListing } from "@/actions/admin";
+import { resolveReport, reviewAgentApplication, reviewListing, updateEnquiryStatus } from "@/actions/admin";
 import { useSiteLanguage } from "@/components/providers/LanguageContext";
 
 type AgentApplication = {
@@ -34,8 +34,23 @@ type Report = {
   reporter: { email: string };
 };
 
+type PropertyRequest = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  message: string;
+  investorType: string | null;
+  status: string;
+  source: string | null;
+  createdAt: string;
+  propertyTitle: string | null;
+  propertySlug: string | null;
+};
+
 type AdminReviewPanelProps = {
   applications: AgentApplication[];
+  enquiries: PropertyRequest[];
   listings: Listing[];
   reports: Report[];
 };
@@ -43,12 +58,30 @@ type AdminReviewPanelProps = {
 const inputClass = "rounded border p-1 text-sm";
 const buttonClass = "rounded border px-3 py-1 text-sm";
 
-export default function AdminReviewPanel({ applications, listings, reports }: AdminReviewPanelProps) {
+const statusBadge: Record<string, string> = {
+  NEW: "bg-amber-100 text-amber-800",
+  CONTACTED: "bg-blue-100 text-blue-800",
+  VISIT_SCHEDULED: "bg-purple-100 text-purple-800",
+  CLOSED: "bg-emerald-100 text-emerald-800",
+  NOT_INTERESTED: "bg-neutral-200 text-neutral-600",
+};
+
+const sourceLabel = (source: string | null, isArabic: boolean) => {
+  if (source === "home-modal") return isArabic ? "الصفحة الرئيسية" : "Homepage";
+  if (source === "property-page") return isArabic ? "صفحة العقار" : "Property page";
+  return source;
+};
+
+export default function AdminReviewPanel({ applications, enquiries, listings, reports }: AdminReviewPanelProps) {
   const { language } = useSiteLanguage();
   const isArabic = language === "ar";
   const labels = isArabic ? {
     back: "← لوحة التحكم",
     agentApplications: "طلبات الوكلاء",
+    propertyRequests: "طلبات العقارات من الموقع",
+    noRequests: "لا توجد طلبات عقارات بعد.",
+    save: "حفظ",
+    enquiryStatuses: { NEW: "جديد", CONTACTED: "تم التواصل", VISIT_SCHEDULED: "تمت جدولة زيارة", CLOSED: "مغلق", NOT_INTERESTED: "غير مهتم" } as Record<string, string>,
     pendingListings: "العقارات بانتظار المراجعة",
     reportedListings: "العقارات المُبلّغ عنها",
     nonePending: "لا توجد طلبات معلقة.",
@@ -65,6 +98,10 @@ export default function AdminReviewPanel({ applications, listings, reports }: Ad
   } : {
     back: "← Admin dashboard",
     agentApplications: "Agent applications",
+    propertyRequests: "Property requests from the website",
+    noRequests: "No property requests yet.",
+    save: "Save",
+    enquiryStatuses: { NEW: "New", CONTACTED: "Contacted", VISIT_SCHEDULED: "Visit scheduled", CLOSED: "Closed", NOT_INTERESTED: "Not interested" } as Record<string, string>,
     pendingListings: "Listings awaiting review",
     reportedListings: "Reported listings",
     nonePending: "None pending.",
@@ -85,6 +122,69 @@ export default function AdminReviewPanel({ applications, listings, reports }: Ad
   return (
     <main dir={isArabic ? "rtl" : "ltr"} className="mx-auto min-h-screen max-w-5xl space-y-10">
       {/* <Link href="/admin" className="text-sm underline">{labels.back}</Link> */}
+      <section>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-xl font-semibold text-[#0C3826]">{labels.propertyRequests}</h2>
+          <div className="flex gap-2 text-xs">
+            <span className="rounded-full bg-amber-100 px-3 py-1 font-medium text-amber-800">
+              {enquiries.filter((e) => e.status === "NEW").length} {isArabic ? "جديد" : "new"}
+            </span>
+            <span className="rounded-full bg-neutral-100 px-3 py-1 text-neutral-600">
+              {enquiries.length} {isArabic ? "الإجمالي" : "total"}
+            </span>
+          </div>
+        </div>
+
+        {enquiries.length === 0 && (
+          <p className="rounded-lg border border-dashed border-neutral-300 p-8 text-center text-sm text-gray-500">{labels.noRequests}</p>
+        )}
+
+        <div className="space-y-3">
+          {enquiries.map((enquiry) => (
+            <form
+              key={enquiry.id}
+              action={updateEnquiryStatus}
+              className={`flex flex-col gap-4 rounded-lg border border-neutral-200 border-s-4 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between ${enquiry.status === "NEW" ? "border-s-[#A98950]" : "border-s-neutral-300"}`}
+            >
+              <input type="hidden" name="id" value={enquiry.id} />
+
+              <div className="min-w-0 flex-1 space-y-2 text-sm">
+                <div className="flex flex-wrap items-center gap-2">
+                  {enquiry.propertySlug
+                    ? <Link href={`/properties/${enquiry.propertySlug}`} className="text-base font-semibold text-[#0C3826] hover:underline">{enquiry.propertyTitle ?? enquiry.propertySlug}</Link>
+                    : <span className="text-base font-semibold text-[#0C3826]">{enquiry.propertyTitle ?? "—"}</span>}
+                  <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusBadge[enquiry.status] ?? "bg-neutral-100 text-neutral-600"}`}>
+                    {labels.enquiryStatuses[enquiry.status] ?? enquiry.status}
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-neutral-700">
+                  <span className="font-medium">{enquiry.name}</span>
+                  {enquiry.phone && <a href={`tel:${enquiry.phone}`} className="hover:underline">📞 {enquiry.phone}</a>}
+                  {!enquiry.email.endsWith("@guest.local") && <a href={`mailto:${enquiry.email}`} className="hover:underline">✉️ {enquiry.email}</a>}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-500">
+                  {enquiry.investorType && <span className="rounded bg-neutral-100 px-2 py-0.5">{enquiry.investorType}</span>}
+                  {enquiry.source && <span className="rounded bg-neutral-100 px-2 py-0.5">{sourceLabel(enquiry.source, isArabic)}</span>}
+                  <span>{new Date(enquiry.createdAt).toLocaleString(isArabic ? "ar-SA" : "en-GB", { dateStyle: "medium", timeStyle: "short" })}</span>
+                </div>
+
+                {enquiry.message && (
+                  <p className="rounded-md bg-neutral-50 px-3 py-2 text-neutral-700">{enquiry.message}</p>
+                )}
+              </div>
+
+              <div className="flex shrink-0 items-center gap-2">
+                <select key={`${enquiry.id}-${enquiry.status}`} name="status" defaultValue={enquiry.status} className="h-10 rounded-md border border-neutral-300 bg-white px-3 text-sm">
+                  {Object.entries(labels.enquiryStatuses).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                </select>
+                <button className="h-10 rounded-md bg-[#0C3826] px-4 text-sm font-medium text-white hover:bg-[#08281B]">{labels.save}</button>
+              </div>
+            </form>
+          ))}
+        </div>
+      </section>
 
       <section>
         <h2 className="mb-3 text-lg font-medium">{labels.agentApplications} ({applications.length})</h2>

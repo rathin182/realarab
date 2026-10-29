@@ -1398,6 +1398,10 @@ export const EnquiryScalarFieldEnum = {
   email: 'email',
   phone: 'phone',
   message: 'message',
+  investorType: 'investorType',
+  propertySlug: 'propertySlug',
+  propertyTitle: 'propertyTitle',
+  source: 'source',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

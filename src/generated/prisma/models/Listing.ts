@@ -1374,6 +1374,11 @@ export type ListingScalarRelationFilter = {
   isNot?: Prisma.ListingWhereInput
 }
 
+export type ListingNullableScalarRelationFilter = {
+  is?: Prisma.ListingWhereInput | null
+  isNot?: Prisma.ListingWhereInput | null
+}
+
 export type ListingCreateNestedManyWithoutOwnerInput = {
   create?: Prisma.XOR<Prisma.ListingCreateWithoutOwnerInput, Prisma.ListingUncheckedCreateWithoutOwnerInput> | Prisma.ListingCreateWithoutOwnerInput[] | Prisma.ListingUncheckedCreateWithoutOwnerInput[]
   connectOrCreate?: Prisma.ListingCreateOrConnectWithoutOwnerInput | Prisma.ListingCreateOrConnectWithoutOwnerInput[]
@@ -1503,10 +1508,12 @@ export type ListingCreateNestedOneWithoutEnquiriesInput = {
   connect?: Prisma.ListingWhereUniqueInput
 }
 
-export type ListingUpdateOneRequiredWithoutEnquiriesNestedInput = {
+export type ListingUpdateOneWithoutEnquiriesNestedInput = {
   create?: Prisma.XOR<Prisma.ListingCreateWithoutEnquiriesInput, Prisma.ListingUncheckedCreateWithoutEnquiriesInput>
   connectOrCreate?: Prisma.ListingCreateOrConnectWithoutEnquiriesInput
   upsert?: Prisma.ListingUpsertWithoutEnquiriesInput
+  disconnect?: Prisma.ListingWhereInput | boolean
+  delete?: Prisma.ListingWhereInput | boolean
   connect?: Prisma.ListingWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ListingUpdateToOneWithWhereWithoutEnquiriesInput, Prisma.ListingUpdateWithoutEnquiriesInput>, Prisma.ListingUncheckedUpdateWithoutEnquiriesInput>
 }
