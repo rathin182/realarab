@@ -83,8 +83,8 @@ export default function AdminReviewPanel({ applications, listings, reports }: Ad
   const approvalButtonClass = "rounded bg-black px-3 py-1 text-sm text-white";
 
   return (
-    <main dir={isArabic ? "rtl" : "ltr"} className="mx-auto min-h-screen max-w-5xl space-y-10 p-6">
-      <Link href="/admin" className="text-sm underline">{labels.back}</Link>
+    <main dir={isArabic ? "rtl" : "ltr"} className="mx-auto min-h-screen max-w-5xl space-y-10">
+      {/* <Link href="/admin" className="text-sm underline">{labels.back}</Link> */}
 
       <section>
         <h2 className="mb-3 text-lg font-medium">{labels.agentApplications} ({applications.length})</h2>

@@ -59,7 +59,7 @@ export default function AdminDashboard({ email, totalProperties, liveProperties,
           <a href="#dashboard" className="flex items-center gap-3 rounded-md bg-[#eee8dc] px-3 py-2.5"><LayoutDashboard className="h-4 w-4" />{isArabic ? "لوحة التحكم" : "Dashboard"}</a>
           <Link href="/admin/properties" className="flex items-center gap-3 rounded-md px-3 py-2.5 text-neutral-600 hover:bg-[#f2efe8]"><Building2 className="h-4 w-4" />{isArabic ? "العقارات" : "Properties"}</Link>
           <Link href="/admin/review" className="flex items-center gap-3 rounded-md px-3 py-2.5 text-neutral-600 hover:bg-[#f2efe8]"><ClipboardList className="h-4 w-4" />{isArabic ? "الطلبات" : "Requests"}</Link>
-          <a href="#analytics" className="flex items-center gap-3 rounded-md px-3 py-2.5 text-neutral-600 hover:bg-[#f2efe8]"><ChartNoAxesColumn className="h-4 w-4" />{isArabic ? "التحليلات" : "Analytics"}</a>
+          {/* <a href="#analytics" className="flex items-center gap-3 rounded-md px-3 py-2.5 text-neutral-600 hover:bg-[#f2efe8]"><ChartNoAxesColumn className="h-4 w-4" />{isArabic ? "التحليلات" : "Analytics"}</a> */}
         </nav>
         <div className="mt-auto border-t border-[#e3dfd5] pt-4">
           <form action={logoutAction}>

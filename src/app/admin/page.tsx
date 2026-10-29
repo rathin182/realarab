@@ -10,7 +10,8 @@ export default async function AdminPage() {
         prisma.listing.groupBy({ by: ["status"], _count: { _all: true } }),
         prisma.enquiry.count(),
         prisma.listing.findMany({
-            orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],
+            orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }, { id: "asc" }],
+            take: 10,
             select: {
                 id: true,
                 slug: true,

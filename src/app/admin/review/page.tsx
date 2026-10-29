@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import AdminReviewPanel from "./admin-review-panel";
+import AdminLayout from "../admin-layout";
 
 export default async function ReviewPage() {
   await requireAdmin();
@@ -27,6 +28,7 @@ export default async function ReviewPage() {
   ]);
 
   return (
+    <AdminLayout>
     <AdminReviewPanel
       applications={applications}
       listings={listings.map((listing) => ({ ...listing, price: Number(listing.price) }))}
@@ -36,5 +38,6 @@ export default async function ReviewPage() {
         details: report.details == null ? null : typeof report.details === "string" ? report.details : JSON.stringify(report.details),
       }))}
     />
+    </AdminLayout>
   );
 }

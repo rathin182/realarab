@@ -322,3 +322,22 @@ export async function archiveAdminListing(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath("/admin/properties");
 }
+
+export async function bulkArchiveAdminListings(formData: FormData) {
+  const session = await requireAdmin();
+  const ids = [...new Set(formData.getAll("ids").map(String).filter(Boolean))];
+  if (ids.length === 0) return;
+
+  const listings = await prisma.listing.findMany({ where: { id: { in: ids } }, select: { id: true, slug: true, title: true } });
+  await prisma.$transaction([
+    prisma.listing.updateMany({ where: { id: { in: listings.map((listing) => listing.id) } }, data: { status: "ARCHIVED" } }),
+    ...listings.map((listing) => prisma.auditLog.create({
+      data: { actorId: session.user.id, action: "listing.archive", entityType: "Listing", entityId: listing.id, details: { slug: listing.slug, title: listing.title, source: "bulk" } },
+    })),
+  ]);
+
+  revalidatePath("/");
+  revalidatePath("/properties");
+  revalidatePath("/admin");
+  revalidatePath("/admin/properties");
+}

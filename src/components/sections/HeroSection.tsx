@@ -90,12 +90,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ language, onSearch }) 
           <form ref={dropdownRef} onSubmit={submitSearch} className="mt-12 grid w-full grid-cols-1 gap-2 rounded-3xl border border-white/55 bg-white/20 p-3 text-[#20231F] shadow-[0_18px_55px_-24px_rgba(0,0,0,0.55)] backdrop-blur-md sm:grid-cols-2 lg:mt-20 lg:grid-cols-[repeat(3,minmax(0,1fr))_auto] lg:items-center lg:gap-2 lg:rounded-full lg:p-2">
             <div className="relative">
             <button type="button" aria-haspopup="listbox" aria-expanded={openDropdown === 'location'} onClick={() => setOpenDropdown(openDropdown === 'location' ? null : 'location')} className="flex min-h-14 w-full items-center gap-3 rounded-full px-4 text-left transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C3826]/30">
-              <MapPin className="h-4 w-4 shrink-0 text-[#0C3826]" />
+              <MapPin className="h-4 w-4 shrink-0 text-[#ffffff]" />
               <span className="min-w-0 flex-1">
-                <span className="block text-[10px] font-medium text-[#26352D]">{isAr ? 'الموقع' : 'Location'}</span>
-                <span className="block truncate text-sm font-medium text-[#20231F]">{city || (isAr ? 'جميع المدن' : 'All locations')}</span>
+                <span className="block text-[10px] text-[#EEEEEE]">{isAr ? 'الموقع' : 'Location'}</span>
+                <span className="block truncate text-sm font-light text-white">{city || (isAr ? 'جميع المدن' : 'All locations')}</span>
               </span>
-              <ChevronDown className={`h-4 w-4 shrink-0 text-[#34443A] transition-transform ${openDropdown === 'location' ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`h-4 w-4 shrink-0 text-[#EEEEEE] transition-transform ${openDropdown === 'location' ? 'rotate-180' : ''}`} />
             </button>
             {openDropdown === 'location' && <div role="listbox" aria-label={isAr ? 'الموقع' : 'Location'} className="absolute inset-x-1 top-[calc(100%+0.65rem)] z-50 max-h-64 overflow-y-auto rounded-2xl border border-white/70 bg-[#F7F6F1]/95 p-1.5 shadow-[0_20px_50px_-18px_rgba(0,0,0,0.55)] backdrop-blur-xl">
               {[{ id: '', label: isAr ? 'جميع المدن' : 'All locations' }, ...cities.map((item) => ({ id: item, label: item }))].map((option, index) => <button key={option.id || 'all'} type="button" role="option" aria-selected={city === option.id} onClick={() => { setCity(option.id); setOpenDropdown(null); }} className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-colors ${city === option.id ? 'bg-[#0C3826]/10 text-[#0C3826]' : 'text-[#29352E] hover:bg-white/80'}`}><span className="w-6 font-mono text-[9px] text-[#A98950]">{String(index + 1).padStart(2, '0')}</span><span className="flex-1">{option.label}</span>{city === option.id && <Check className="h-4 w-4" />}</button>)}
