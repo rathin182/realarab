@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/permissions";
 import { redirect } from "next/navigation";
-import { CONTACT_SETTINGS_ID, type ContactSettingsValues } from "@/lib/contact-settings";
 
 export async function reviewAgentApplication(formData: FormData) {
     const session = await requireAdmin();
@@ -438,51 +437,77 @@ export async function bulkArchiveAdminListings(formData: FormData) {
   return { ok: true };
 }
 
-export async function saveContactSettings(formData: FormData) {
+export async function saveContactCard(formData: FormData) {
   const session = await requireAdmin();
-  const fieldNames: (keyof ContactSettingsValues)[] = [
-    "falRegistrationNumber",
-    "riyadhLabel",
-    "riyadhTitle",
-    "riyadhAddress",
-    "riyadhPhonePrimary",
-    "riyadhPhoneSecondary",
-    "riyadhEmail",
-    "riyadhVisitingHours",
-    "internationalLabel",
-    "internationalBadge",
-    "internationalTitle",
-    "internationalAddress",
-    "internationalPhonePrimary",
-    "internationalPhoneSecondary",
-    "internationalEmail",
-    "internationalVisitingHours",
-  ];
-  const settings = Object.fromEntries(fieldNames.map((name) => [name, String(formData.get(name) ?? "").trim()])) as ContactSettingsValues;
-  const requiredFields = fieldNames.filter((name) => name !== "riyadhPhoneSecondary" && name !== "internationalPhoneSecondary");
+  const id = String(formData.get("id") ?? "").trim();
+  const sortOrder = Number(formData.get("sortOrder"));
+  const card = {
+    label: String(formData.get("label") ?? "").trim(),
+    badge: String(formData.get("badge") ?? "").trim(),
+    title: String(formData.get("title") ?? "").trim(),
+    address: String(formData.get("address") ?? "").trim(),
+    phonePrimary: String(formData.get("phonePrimary") ?? "").trim(),
+    phoneSecondary: String(formData.get("phoneSecondary") ?? "").trim(),
+    email: String(formData.get("email") ?? "").trim(),
+    visitingHours: String(formData.get("visitingHours") ?? "").trim(),
+  };
+  const fields = Object.values(card);
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (
-    requiredFields.some((name) => !settings[name]) ||
-    fieldNames.some((name) => settings[name].length > 240) ||
-    !emailPattern.test(settings.riyadhEmail) ||
-    !emailPattern.test(settings.internationalEmail)
+    !card.title || card.title.length > 160 ||
+    card.address.length > 500 ||
+    fields.some((value) => value.length > 240) ||
+    (!card.phonePrimary && !card.phoneSecondary && !card.email) ||
+    (card.email && !emailPattern.test(card.email)) ||
+    !Number.isSafeInteger(sortOrder) || sortOrder < 0
   ) {
-    return { ok: false, message: "Enter valid contact details. Email addresses must be valid." };
+    return { ok: false, message: "Enter a card title and at least one valid phone number or email." };
   }
 
+  if (!id && await prisma.contactCard.count() >= 4) {
+    return { ok: false, message: "A maximum of four contact cards is allowed." };
+  }
+
+  const savedCard = await prisma.$transaction(async (transaction) => {
+    const saved = id
+      ? await transaction.contactCard.update({ where: { id }, data: { ...card, sortOrder } })
+      : await transaction.contactCard.create({ data: { ...card, sortOrder } });
+    await transaction.auditLog.create({
+      data: {
+        actorId: session.user.id,
+        action: id ? "contact.card_update" : "contact.card_create",
+        entityType: "ContactCard",
+        entityId: saved.id,
+        details: { title: saved.title },
+      },
+    });
+    return saved;
+  });
+
+  revalidatePath("/contact");
+  revalidatePath("/admin/contact");
+  revalidatePath("/api/contact-settings");
+  return { ok: true, id: savedCard.id };
+}
+
+export async function deleteContactCard(formData: FormData) {
+  const session = await requireAdmin();
+  const id = String(formData.get("id") ?? "").trim();
+  if (!id) return { ok: false };
+
+  const card = await prisma.contactCard.findUnique({ where: { id }, select: { id: true, title: true } });
+  if (!card) return { ok: false };
+
   await prisma.$transaction([
-    prisma.contactSettings.upsert({
-      where: { id: CONTACT_SETTINGS_ID },
-      create: { id: CONTACT_SETTINGS_ID, ...settings },
-      update: settings,
-    }),
+    prisma.contactCard.delete({ where: { id } }),
     prisma.auditLog.create({
       data: {
         actorId: session.user.id,
-        action: "contact.settings_update",
-        entityType: "ContactSettings",
-        entityId: CONTACT_SETTINGS_ID,
+        action: "contact.card_delete",
+        entityType: "ContactCard",
+        entityId: id,
+        details: { title: card.title },
       },
     }),
   ]);

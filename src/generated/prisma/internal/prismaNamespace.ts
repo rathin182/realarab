@@ -407,7 +407,7 @@ export const ModelName = {
   Report: 'Report',
   AuditLog: 'AuditLog',
   AgentApplication: 'AgentApplication',
-  ContactSettings: 'ContactSettings'
+  ContactCard: 'ContactCard'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -423,7 +423,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "account" | "verificationToken" | "listing" | "listingMedia" | "enquiry" | "savedListing" | "report" | "auditLog" | "agentApplication" | "contactSettings"
+    modelProps: "user" | "account" | "verificationToken" | "listing" | "listingMedia" | "enquiry" | "savedListing" | "report" | "auditLog" | "agentApplication" | "contactCard"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1167,77 +1167,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    ContactSettings: {
-      payload: Prisma.$ContactSettingsPayload<ExtArgs>
-      fields: Prisma.ContactSettingsFieldRefs
+    ContactCard: {
+      payload: Prisma.$ContactCardPayload<ExtArgs>
+      fields: Prisma.ContactCardFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.ContactSettingsFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload> | null
+          args: Prisma.ContactCardFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactCardPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.ContactSettingsFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>
+          args: Prisma.ContactCardFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactCardPayload>
         }
         findFirst: {
-          args: Prisma.ContactSettingsFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload> | null
+          args: Prisma.ContactCardFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactCardPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.ContactSettingsFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>
+          args: Prisma.ContactCardFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactCardPayload>
         }
         findMany: {
-          args: Prisma.ContactSettingsFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>[]
+          args: Prisma.ContactCardFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactCardPayload>[]
         }
         create: {
-          args: Prisma.ContactSettingsCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>
+          args: Prisma.ContactCardCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactCardPayload>
         }
         createMany: {
-          args: Prisma.ContactSettingsCreateManyArgs<ExtArgs>
+          args: Prisma.ContactCardCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.ContactSettingsCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>[]
+          args: Prisma.ContactCardCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactCardPayload>[]
         }
         delete: {
-          args: Prisma.ContactSettingsDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>
+          args: Prisma.ContactCardDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactCardPayload>
         }
         update: {
-          args: Prisma.ContactSettingsUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>
+          args: Prisma.ContactCardUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactCardPayload>
         }
         deleteMany: {
-          args: Prisma.ContactSettingsDeleteManyArgs<ExtArgs>
+          args: Prisma.ContactCardDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.ContactSettingsUpdateManyArgs<ExtArgs>
+          args: Prisma.ContactCardUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.ContactSettingsUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>[]
+          args: Prisma.ContactCardUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactCardPayload>[]
         }
         upsert: {
-          args: Prisma.ContactSettingsUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactSettingsPayload>
+          args: Prisma.ContactCardUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactCardPayload>
         }
         aggregate: {
-          args: Prisma.ContactSettingsAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateContactSettings>
+          args: Prisma.ContactCardAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateContactCard>
         }
         groupBy: {
-          args: Prisma.ContactSettingsGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ContactSettingsGroupByOutputType>[]
+          args: Prisma.ContactCardGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactCardGroupByOutputType>[]
         }
         count: {
-          args: Prisma.ContactSettingsCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ContactSettingsCountAggregateOutputType> | number
+          args: Prisma.ContactCardCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactCardCountAggregateOutputType> | number
         }
       }
     }
@@ -1462,29 +1462,22 @@ export const AgentApplicationScalarFieldEnum = {
 export type AgentApplicationScalarFieldEnum = (typeof AgentApplicationScalarFieldEnum)[keyof typeof AgentApplicationScalarFieldEnum]
 
 
-export const ContactSettingsScalarFieldEnum = {
+export const ContactCardScalarFieldEnum = {
   id: 'id',
-  falRegistrationNumber: 'falRegistrationNumber',
-  riyadhLabel: 'riyadhLabel',
-  riyadhTitle: 'riyadhTitle',
-  riyadhAddress: 'riyadhAddress',
-  riyadhPhonePrimary: 'riyadhPhonePrimary',
-  riyadhPhoneSecondary: 'riyadhPhoneSecondary',
-  riyadhEmail: 'riyadhEmail',
-  riyadhVisitingHours: 'riyadhVisitingHours',
-  internationalLabel: 'internationalLabel',
-  internationalBadge: 'internationalBadge',
-  internationalTitle: 'internationalTitle',
-  internationalAddress: 'internationalAddress',
-  internationalPhonePrimary: 'internationalPhonePrimary',
-  internationalPhoneSecondary: 'internationalPhoneSecondary',
-  internationalEmail: 'internationalEmail',
-  internationalVisitingHours: 'internationalVisitingHours',
+  sortOrder: 'sortOrder',
+  label: 'label',
+  badge: 'badge',
+  title: 'title',
+  address: 'address',
+  phonePrimary: 'phonePrimary',
+  phoneSecondary: 'phoneSecondary',
+  email: 'email',
+  visitingHours: 'visitingHours',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type ContactSettingsScalarFieldEnum = (typeof ContactSettingsScalarFieldEnum)[keyof typeof ContactSettingsScalarFieldEnum]
+export type ContactCardScalarFieldEnum = (typeof ContactCardScalarFieldEnum)[keyof typeof ContactCardScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1925,7 +1918,7 @@ export type GlobalOmitConfig = {
   report?: Prisma.ReportOmit
   auditLog?: Prisma.AuditLogOmit
   agentApplication?: Prisma.AgentApplicationOmit
-  contactSettings?: Prisma.ContactSettingsOmit
+  contactCard?: Prisma.ContactCardOmit
 }
 
 /* Types for Logging */

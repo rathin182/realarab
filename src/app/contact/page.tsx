@@ -13,11 +13,11 @@ import {
   ArrowUpRight,
   MessageSquare,
 } from 'lucide-react';
-import { DEFAULT_CONTACT_SETTINGS, type ContactSettingsValues } from '@/lib/contact-settings';
+import { DEFAULT_CONTACT_CARDS, type ContactCard } from '@/lib/contact-settings';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
-  const [contactSettings, setContactSettings] = useState<ContactSettingsValues>(DEFAULT_CONTACT_SETTINGS);
+  const [contactCards, setContactCards] = useState<ContactCard[]>(DEFAULT_CONTACT_CARDS);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -33,10 +33,10 @@ export default function ContactPage() {
     fetch('/api/contact-settings')
       .then((response) => {
         if (!response.ok) throw new Error('Could not load contact settings');
-        return response.json() as Promise<ContactSettingsValues>;
+        return response.json() as Promise<ContactCard[]>;
       })
-      .then((settings) => {
-        if (!cancelled) setContactSettings(settings);
+      .then((cards) => {
+        if (!cancelled) setContactCards(cards);
       })
       .catch(() => {});
     return () => {
@@ -48,6 +48,7 @@ export default function ContactPage() {
     e.preventDefault();
     setSubmitted(true);
   };
+  const hasManyContactCards = contactCards.length > 2;
 
   return (
     <div className="min-h-screen bg-white text-[#141A17] font-sans selection:bg-[#0C3826]/10 selection:text-[#0C3826]">
@@ -68,90 +69,27 @@ export default function ContactPage() {
 
         {/* 2-Column: Global Salons on Left, Interactive Form on Right */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-          {/* Left Column (5 cols): Dual Salons & Concierge Protocol */}
-          <div className="lg:col-span-5 space-y-8">
-            {/* Riyadh Sovereign HQ Card */}
-            <div className="p-8 border border-neutral-300 bg-neutral-50/50 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#A98950]">
-                  {contactSettings.riyadhLabel}
-                </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 bg-[#0C3826] text-white">
-                  FAL #{contactSettings.falRegistrationNumber}
-                </span>
-              </div>
-
-              <h3 className="font-serif text-2xl text-[#0C3826] font-normal">
-                {contactSettings.riyadhTitle}
-              </h3>
-
-              <div className="space-y-3 text-xs text-neutral-600 font-light pt-2">
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-4 h-4 text-[#A98950] shrink-0 mt-0.5" />
-                  <span>{contactSettings.riyadhAddress}</span>
+          {/* Left Column (5 cols): Contact Cards & Concierge Protocol */}
+          <div className={`lg:col-span-5 ${hasManyContactCards ? 'grid grid-cols-1 content-start gap-4 sm:grid-cols-2' : 'space-y-8'}`}>
+            {contactCards.map((card, index) => {
+              const phone = card.phonePrimary || card.phoneSecondary;
+              return <div key={card.id} className={`min-w-0 space-y-4 border ${hasManyContactCards ? 'p-5' : 'p-8'} ${index === 0 ? 'border-neutral-300 bg-neutral-50/50' : 'border-neutral-200 bg-white'}`}>
+                {(card.label || card.badge) && <div className="flex flex-wrap items-center justify-between gap-2">
+                  {card.label && <span className="text-[10px] font-mono uppercase tracking-widest text-[#A98950]">{card.label}</span>}
+                  {card.badge && <span className="text-[10px] font-mono px-2 py-0.5 border border-neutral-300 text-neutral-600">{card.badge}</span>}
+                </div>}
+                {card.title && <h3 className="break-words font-serif text-2xl text-[#0C3826] font-normal">{card.title}</h3>}
+                <div className="space-y-3 text-xs text-neutral-600 font-light pt-2">
+                  {card.address && <div className="flex min-w-0 items-start gap-3"><MapPin className="w-4 h-4 text-[#A98950] shrink-0 mt-0.5" /><span className="min-w-0 break-words">{card.address}</span></div>}
+                  {(card.phonePrimary || card.phoneSecondary) && <div className="flex min-w-0 items-start gap-3"><Phone className="w-4 h-4 text-[#A98950] shrink-0" /><a href={`tel:${phone.replace(/[^\d+]/g, '')}`} className="min-w-0 break-all font-mono hover:text-[#0C3826]">{[card.phonePrimary, card.phoneSecondary].filter(Boolean).join(' / ')}</a></div>}
+                  {card.email && <div className="flex min-w-0 items-start gap-3"><Mail className="w-4 h-4 text-[#A98950] shrink-0" /><a href={`mailto:${card.email}`} className="min-w-0 break-all font-mono hover:text-[#0C3826]">{card.email}</a></div>}
                 </div>
-                <div className="flex items-center gap-3">
-                  <Phone className="w-4 h-4 text-[#A98950] shrink-0" />
-                  <a href={`tel:${contactSettings.riyadhPhonePrimary.replace(/[^\d+]/g, '')}`} className="hover:text-[#0C3826] font-mono">
-                    {[contactSettings.riyadhPhonePrimary, contactSettings.riyadhPhoneSecondary].filter(Boolean).join(' / ')}
-                  </a>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-[#A98950] shrink-0" />
-                  <a href={`mailto:${contactSettings.riyadhEmail}`} className="hover:text-[#0C3826] font-mono">
-                    {contactSettings.riyadhEmail}
-                  </a>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-neutral-200 flex items-center justify-between text-[11px] font-mono text-neutral-500">
-                <span>Visiting Hours:</span>
-                <span>{contactSettings.riyadhVisitingHours}</span>
-              </div>
-            </div>
-
-            {/* Hyderabad International Hub Card */}
-            <div className="p-8 border border-neutral-200 bg-white space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#A98950]">
-                  {contactSettings.internationalLabel}
-                </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 border border-neutral-300 text-neutral-600">
-                  {contactSettings.internationalBadge}
-                </span>
-              </div>
-
-              <h3 className="font-serif text-2xl text-[#0C3826] font-normal">
-                {contactSettings.internationalTitle}
-              </h3>
-
-              <div className="space-y-3 text-xs text-neutral-600 font-light pt-2">
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-4 h-4 text-[#A98950] shrink-0 mt-0.5" />
-                  <span>{contactSettings.internationalAddress}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Phone className="w-4 h-4 text-[#A98950] shrink-0" />
-                  <a href={`tel:${contactSettings.internationalPhonePrimary.replace(/[^\d+]/g, '')}`} className="hover:text-[#0C3826] font-mono">
-                    {[contactSettings.internationalPhonePrimary, contactSettings.internationalPhoneSecondary].filter(Boolean).join(' / ')}
-                  </a>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-[#A98950] shrink-0" />
-                  <a href={`mailto:${contactSettings.internationalEmail}`} className="hover:text-[#0C3826] font-mono">
-                    {contactSettings.internationalEmail}
-                  </a>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-neutral-200 flex items-center justify-between text-[11px] font-mono text-neutral-500">
-                <span>Visiting Hours:</span>
-                <span>{contactSettings.internationalVisitingHours}</span>
-              </div>
-            </div>
+                {card.visitingHours && <div className="flex flex-wrap items-center justify-between gap-2 border-t border-neutral-200 pt-4 text-[11px] font-mono text-neutral-500"><span className="flex items-center gap-2"><Clock className="h-3.5 w-3.5" />Visiting Hours:</span><span className="break-words">{card.visitingHours}</span></div>}
+              </div>;
+            })}
 
             {/* Confidentiality Notice */}
-            <div className="p-6 border border-neutral-200 bg-neutral-50 flex items-start gap-4">
+            <div className={`p-6 border border-neutral-200 bg-neutral-50 flex items-start gap-4 ${hasManyContactCards ? 'sm:col-span-2' : ''}`}>
               <Lock className="w-5 h-5 text-[#A98950] shrink-0 mt-0.5" />
               <div className="space-y-1 text-xs">
                 <span className="font-mono uppercase font-bold text-[#0C3826] block">
@@ -317,8 +255,7 @@ export default function ContactPage() {
                     <span>Submit Confidential Mandate</span>
                   </button>
 
-                  <div className="flex items-center justify-between text-[10px] font-mono text-neutral-400 pt-2">
-                    <span>FAL Brokerage Registration #{contactSettings.falRegistrationNumber}</span>
+                  <div className="flex items-center justify-end text-[10px] font-mono text-neutral-400 pt-2">
                     <span>Direct Encryption</span>
                   </div>
                 </form>
@@ -334,9 +271,6 @@ export default function ContactPage() {
           <div className="space-y-1">
             <span className="font-serif text-lg tracking-[0.1em] text-[#0C3826] block">
               NAJM ESTATES KSA
-            </span>
-            <span className="font-mono text-[10px] tracking-[0.2em] text-neutral-500 uppercase block">
-              FAL BROKERAGE REGISTRATION #{contactSettings.falRegistrationNumber}
             </span>
           </div>
           <div className="text-[11px] font-mono text-neutral-400">

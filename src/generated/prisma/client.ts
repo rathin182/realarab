@@ -92,7 +92,7 @@ export type AuditLog = Prisma.AuditLogModel
  */
 export type AgentApplication = Prisma.AgentApplicationModel
 /**
- * Model ContactSettings
+ * Model ContactCard
  * 
  */
-export type ContactSettings = Prisma.ContactSettingsModel
+export type ContactCard = Prisma.ContactCardModel
