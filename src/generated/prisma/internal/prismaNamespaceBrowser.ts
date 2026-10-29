@@ -53,6 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Account: 'Account',
+  AcquisitionMandate: 'AcquisitionMandate',
   VerificationToken: 'VerificationToken',
   Listing: 'Listing',
   ListingMedia: 'ListingMedia',
@@ -111,6 +112,24 @@ export const AccountScalarFieldEnum = {
 } as const
 
 export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
+
+
+export const AcquisitionMandateScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  investorType: 'investorType',
+  allocationTier: 'allocationTier',
+  region: 'region',
+  message: 'message',
+  source: 'source',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AcquisitionMandateScalarFieldEnum = (typeof AcquisitionMandateScalarFieldEnum)[keyof typeof AcquisitionMandateScalarFieldEnum]
 
 
 export const VerificationTokenScalarFieldEnum = {

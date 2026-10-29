@@ -10,6 +10,7 @@
  */
 export type * from './models/User.ts'
 export type * from './models/Account.ts'
+export type * from './models/AcquisitionMandate.ts'
 export type * from './models/VerificationToken.ts'
 export type * from './models/Listing.ts'
 export type * from './models/ListingMedia.ts'

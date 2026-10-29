@@ -28,6 +28,11 @@ export type User = Prisma.UserModel
  */
 export type Account = Prisma.AccountModel
 /**
+ * Model AcquisitionMandate
+ * 
+ */
+export type AcquisitionMandate = Prisma.AcquisitionMandateModel
+/**
  * Model VerificationToken
  * 
  */

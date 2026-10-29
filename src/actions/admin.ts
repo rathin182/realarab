@@ -4,6 +4,10 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/permissions";
 import { redirect } from "next/navigation";
+import {
+  CONTACT_SETTINGS_ID,
+  type ContactSettingsValues,
+} from "@/lib/contact-settings";
 
 export async function reviewAgentApplication(formData: FormData) {
     const session = await requireAdmin();
@@ -553,4 +557,61 @@ export async function updateEnquiryStatus(formData: FormData) {
 
   revalidatePath("/admin");
   revalidatePath("/admin/review");
+}
+
+const MANDATE_STATUSES = [
+  "NEW",
+  "CONTACTED",
+  "IN_PROGRESS",
+  "CLOSED",
+  "NOT_INTERESTED",
+] as const;
+
+export async function updateMandateStatus(formData: FormData) {
+  const session = await requireAdmin();
+
+  const id = String(formData.get("id") ?? "").trim();
+  const status = String(formData.get("status") ?? "");
+
+  if (
+    !id ||
+    !(MANDATE_STATUSES as readonly string[]).includes(status)
+  ) {
+    return { ok: false, message: "Invalid mandate or status." };
+  }
+
+  const mandate = await prisma.acquisitionMandate.findUnique({
+    where: { id },
+    select: { id: true, status: true },
+  });
+
+  if (!mandate) {
+    return { ok: false, message: "Mandate not found." };
+  }
+
+  await prisma.$transaction([
+    prisma.acquisitionMandate.update({
+      where: { id },
+      data: {
+        status: status as (typeof MANDATE_STATUSES)[number],
+      },
+    }),
+    prisma.auditLog.create({
+      data: {
+        actorId: session.user.id,
+        action: "mandate.status_change",
+        entityType: "AcquisitionMandate",
+        entityId: id,
+        details: {
+          previousStatus: mandate.status,
+          newStatus: status,
+        },
+      },
+    }),
+  ]);
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/review");
+
+  return { ok: true };
 }

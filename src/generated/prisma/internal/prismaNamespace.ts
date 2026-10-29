@@ -399,6 +399,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Account: 'Account',
+  AcquisitionMandate: 'AcquisitionMandate',
   VerificationToken: 'VerificationToken',
   Listing: 'Listing',
   ListingMedia: 'ListingMedia',
@@ -423,7 +424,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "account" | "verificationToken" | "listing" | "listingMedia" | "enquiry" | "savedListing" | "report" | "auditLog" | "agentApplication" | "contactCard"
+    modelProps: "user" | "account" | "acquisitionMandate" | "verificationToken" | "listing" | "listingMedia" | "enquiry" | "savedListing" | "report" | "auditLog" | "agentApplication" | "contactCard"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -572,6 +573,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AccountCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AccountCountAggregateOutputType> | number
+        }
+      }
+    }
+    AcquisitionMandate: {
+      payload: Prisma.$AcquisitionMandatePayload<ExtArgs>
+      fields: Prisma.AcquisitionMandateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AcquisitionMandateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcquisitionMandatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AcquisitionMandateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcquisitionMandatePayload>
+        }
+        findFirst: {
+          args: Prisma.AcquisitionMandateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcquisitionMandatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AcquisitionMandateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcquisitionMandatePayload>
+        }
+        findMany: {
+          args: Prisma.AcquisitionMandateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcquisitionMandatePayload>[]
+        }
+        create: {
+          args: Prisma.AcquisitionMandateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcquisitionMandatePayload>
+        }
+        createMany: {
+          args: Prisma.AcquisitionMandateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AcquisitionMandateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcquisitionMandatePayload>[]
+        }
+        delete: {
+          args: Prisma.AcquisitionMandateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcquisitionMandatePayload>
+        }
+        update: {
+          args: Prisma.AcquisitionMandateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcquisitionMandatePayload>
+        }
+        deleteMany: {
+          args: Prisma.AcquisitionMandateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AcquisitionMandateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AcquisitionMandateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcquisitionMandatePayload>[]
+        }
+        upsert: {
+          args: Prisma.AcquisitionMandateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcquisitionMandatePayload>
+        }
+        aggregate: {
+          args: Prisma.AcquisitionMandateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAcquisitionMandate>
+        }
+        groupBy: {
+          args: Prisma.AcquisitionMandateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AcquisitionMandateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AcquisitionMandateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AcquisitionMandateCountAggregateOutputType> | number
         }
       }
     }
@@ -1313,6 +1388,24 @@ export const AccountScalarFieldEnum = {
 export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
 
 
+export const AcquisitionMandateScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  investorType: 'investorType',
+  allocationTier: 'allocationTier',
+  region: 'region',
+  message: 'message',
+  source: 'source',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AcquisitionMandateScalarFieldEnum = (typeof AcquisitionMandateScalarFieldEnum)[keyof typeof AcquisitionMandateScalarFieldEnum]
+
+
 export const VerificationTokenScalarFieldEnum = {
   identifier: 'identifier',
   token: 'token',
@@ -1580,6 +1673,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MandateStatus'
+ */
+export type EnumMandateStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MandateStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'MandateStatus[]'
+ */
+export type ListEnumMandateStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MandateStatus[]'>
     
 
 
@@ -1910,6 +2017,7 @@ export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaC
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   account?: Prisma.AccountOmit
+  acquisitionMandate?: Prisma.AcquisitionMandateOmit
   verificationToken?: Prisma.VerificationTokenOmit
   listing?: Prisma.ListingOmit
   listingMedia?: Prisma.ListingMediaOmit

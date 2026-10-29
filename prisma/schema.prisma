@@ -15,6 +15,14 @@ enum Role {
   ADMIN
 }
 
+enum MandateStatus {
+  NEW
+  CONTACTED
+  IN_PROGRESS
+  CLOSED
+  NOT_INTERESTED
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -50,6 +58,23 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
+}
+
+model AcquisitionMandate {
+  id             String        @id @default(cuid())
+  name           String
+  email          String
+  phone          String
+  investorType   String
+  allocationTier String?
+  region         String?
+  message        String?
+  source         String?       // "home-faq" | "contact-page"
+  status         MandateStatus @default(NEW)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @default(now()) @updatedAt
+
+  @@index([status, createdAt])
 }
 
 model VerificationToken {

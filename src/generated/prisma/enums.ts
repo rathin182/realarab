@@ -19,6 +19,17 @@ export const Role = {
 export type Role = (typeof Role)[keyof typeof Role]
 
 
+export const MandateStatus = {
+  NEW: 'NEW',
+  CONTACTED: 'CONTACTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  CLOSED: 'CLOSED',
+  NOT_INTERESTED: 'NOT_INTERESTED'
+} as const
+
+export type MandateStatus = (typeof MandateStatus)[keyof typeof MandateStatus]
+
+
 export const ListingType = {
   SALE: 'SALE',
   RENT: 'RENT'

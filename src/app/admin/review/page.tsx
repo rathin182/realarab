@@ -1,3 +1,4 @@
+
 import { requireAdmin } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import AdminReviewPanel from "./admin-review-panel";
@@ -6,7 +7,13 @@ import AdminLayout from "../admin-layout";
 export default async function ReviewPage() {
   await requireAdmin();
 
-  const [applications, listings, reports, enquiries] = await Promise.all([
+  const [
+    applications,
+    listings,
+    reports,
+    enquiries,
+    mandates,
+  ] = await Promise.all([
     prisma.agentApplication.findMany({
       where: { status: "PENDING" },
       orderBy: { createdAt: "asc" },
@@ -30,12 +37,21 @@ export default async function ReviewPage() {
       take: 100,
       include: { listing: { select: { title: true, slug: true } } },
     }),
+    prisma.acquisitionMandate.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 100,
+    }),
   ]);
 
   return (
     <AdminLayout>
       <AdminReviewPanel
         applications={applications}
+        mandates={mandates.map((mandate) => ({
+          ...mandate,
+          createdAt: mandate.createdAt.toISOString(),
+          updatedAt: mandate.updatedAt.toISOString(),
+        }))}
         enquiries={enquiries.map((enquiry) => ({
           id: enquiry.id,
           name: enquiry.name,
