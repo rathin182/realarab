@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Archive, Eye, MapPin, Pencil, X } from "lucide-react";
 import { useSiteLanguage } from "@/components/providers/LanguageContext";
 import { archiveAdminListing, bulkArchiveAdminListings, updateAdminListing } from "@/actions/admin";
@@ -18,21 +18,26 @@ type Property = {
 
 const pageSize = 12;
 const fieldClass = "h-10 rounded-lg border border-[#e3dfd5] bg-white px-3 text-sm text-[#24231f] outline-none focus:border-[#8f7654]";
+const statuses = ["DRAFT", "PENDING_REVIEW", "LIVE", "REJECTED", "EXPIRED", "SOLD_OR_RENTED", "ARCHIVED"];
+const listingTypes = ["SALE", "RENT"];
+const categories = ["RESIDENTIAL", "COMMERCIAL", "LAND"];
+
+type PropertyFilters = { search: string; status: string; listingType: string; category: string; sort: string; page: number };
 
 function formatLabel(value: string) {
   return value.toLowerCase().split("_").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
 }
 
-export default function AdminPropertiesList({ properties }: { properties: Property[] }) {
+export default function AdminPropertiesList({ properties, totalCount, allPropertyCount, filters }: { properties: Property[]; totalCount: number; allPropertyCount: number; filters: PropertyFilters }) {
   const { language } = useSiteLanguage();
   const isArabic = language === "ar";
   const locale = isArabic ? "ar-SA" : "en-US";
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("all");
-  const [listingType, setListingType] = useState("all");
-  const [category, setCategory] = useState("all");
-  const [sort, setSort] = useState("newest");
-  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState(filters.search);
+  const [status, setStatus] = useState(filters.status);
+  const [listingType, setListingType] = useState(filters.listingType);
+  const [category, setCategory] = useState(filters.category);
+  const [sort, setSort] = useState(filters.sort);
+  const [page, setPage] = useState(filters.page);
   const [selected, setSelected] = useState<string[]>([]);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [deletingProperty, setDeletingProperty] = useState<Property | null>(null);
@@ -40,24 +45,41 @@ export default function AdminPropertiesList({ properties }: { properties: Proper
   const [bulkArchiveConfirmation, setBulkArchiveConfirmation] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { toast, showToast, dismissToast } = useToast();
-  const statuses = useMemo(() => [...new Set(properties.map((property) => property.status))].sort(), [properties]);
-  const listingTypes = useMemo(() => [...new Set(properties.map((property) => property.listingType))].sort(), [properties]);
-  const categories = useMemo(() => [...new Set(properties.map((property) => property.category))].sort(), [properties]);
 
-  const filtered = useMemo(() => {
-    const query = search.trim().toLocaleLowerCase();
-    return properties.filter((property) => {
-      const matchesText = !query || [property.title, property.city, property.locality ?? "", property.state, property.slug, property.propertyType ?? ""].join(" ").toLocaleLowerCase().includes(query);
-      return matchesText && (status === "all" || property.status === status) && (listingType === "all" || property.listingType === listingType) && (category === "all" || property.category === category);
-    }).sort((a, b) => sort === "oldest" ? a.createdAt.localeCompare(b.createdAt) : sort === "views" ? b.viewCount - a.viewCount : sort === "price-low" ? a.price - b.price : sort === "price-high" ? b.price - a.price : b.createdAt.localeCompare(a.createdAt));
-  }, [properties, search, status, listingType, category, sort]);
+  useEffect(() => {
+    setSearch(filters.search);
+    setStatus(filters.status);
+    setListingType(filters.listingType);
+    setCategory(filters.category);
+    setSort(filters.sort);
+    setPage(filters.page);
+  }, [filters.search, filters.status, filters.listingType, filters.category, filters.sort, filters.page]);
 
-  const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
-  const pageItems = filtered.slice((page - 1) * pageSize, page * pageSize);
+  useEffect(() => {
+    if (search.trim() === filters.search) return;
+    const timer = window.setTimeout(() => updateQuery({ search }), 300);
+    return () => window.clearTimeout(timer);
+  }, [search, filters.search, searchParams, router, pathname]);
+
+  const pageCount = Math.max(1, Math.ceil(totalCount / pageSize));
+  const pageItems = properties;
   const visibleSelected = pageItems.length > 0 && pageItems.every((property) => selected.includes(property.id));
-  const setFilter = (setter: (value: string) => void) => (value: string) => { setter(value); setPage(1); setSelected([]); };
   const togglePage = () => setSelected(visibleSelected ? selected.filter((id) => !pageItems.some((property) => property.id === id)) : [...new Set([...selected, ...pageItems.map((property) => property.id)])]);
+
+  function updateQuery(values: Partial<PropertyFilters>) {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(values).forEach(([key, value]) => {
+      const isDefault = value === undefined || value === "" || value === "all" || (key === "sort" && value === "newest") || (key === "page" && value === 1);
+      if (isDefault) params.delete(key);
+      else params.set(key, String(value));
+    });
+    if (!("page" in values)) params.delete("page");
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }
 
   function saveProperty(formData: FormData) {
     startTransition(async () => {
@@ -120,21 +142,21 @@ export default function AdminPropertiesList({ properties }: { properties: Proper
     <main dir={isArabic ? "rtl" : "ltr"} className="mx-auto max-w-[1500px] space-y-5 text-[#24231f]">
       <Toast toast={toast} onDismiss={dismissToast} />
       <header className="flex flex-wrap items-end justify-between gap-4">
-        <div><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#8f7654]">{isArabic ? "إدارة المخزون" : "Inventory management"}</p><h1 className="mt-1 font-serif text-3xl">{isArabic ? "العقارات" : "Properties"}</h1><p className="mt-1 text-sm text-neutral-500">{isArabic ? `${filtered.length} من ${properties.length} عقار` : `${filtered.length} of ${properties.length} properties`}</p></div>
+        <div><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#8f7654]">{isArabic ? "إدارة المخزون" : "Inventory management"}</p><h1 className="mt-1 font-serif text-3xl">{isArabic ? "العقارات" : "Properties"}</h1><p className="mt-1 text-sm text-neutral-500">{isArabic ? `${totalCount} من ${allPropertyCount} عقار` : `${totalCount} of ${allPropertyCount} properties`}</p></div>
         <Link href="/admin/properties/new" className="rounded-lg bg-[#292820] px-4 py-2.5 text-sm text-white transition hover:bg-[#454337]">＋ {isArabic ? "إضافة عقار" : "Add property"}</Link>
       </header>
 
       <section className="overflow-hidden rounded-xl border border-[#e3dfd5] bg-[#faf9f5] shadow-sm">
         <div className="flex flex-wrap items-center gap-2.5 border-b border-[#e8e4db] p-4">
-          <input value={search} onChange={(event) => setFilter(setSearch)(event.target.value)} placeholder={isArabic ? "ابحث بالعنوان أو الموقع أو النوع" : "Search title, location or type"} aria-label="Search properties" className={`${fieldClass} min-w-52 flex-1`} />
-          <select aria-label="Filter by status" value={status} onChange={(event) => setFilter(setStatus)(event.target.value)} className={fieldClass}><option value="all">{isArabic ? "كل الحالات" : "All statuses"}</option>{statuses.map((value) => <option key={value} value={value}>{formatLabel(value)}</option>)}</select>
-          <select aria-label="Filter by listing type" value={listingType} onChange={(event) => setFilter(setListingType)(event.target.value)} className={fieldClass}><option value="all">{isArabic ? "كل الأسواق" : "All markets"}</option>{listingTypes.map((value) => <option key={value} value={value}>{formatLabel(value)}</option>)}</select>
-          <select aria-label="Filter by category" value={category} onChange={(event) => setFilter(setCategory)(event.target.value)} className={fieldClass}><option value="all">{isArabic ? "كل الفئات" : "All categories"}</option>{categories.map((value) => <option key={value} value={value}>{formatLabel(value)}</option>)}</select>
-          <select aria-label="Sort properties" value={sort} onChange={(event) => { setSort(event.target.value); setPage(1); }} className={fieldClass}><option value="newest">{isArabic ? "الأحدث أولاً" : "Newest first"}</option><option value="oldest">{isArabic ? "الأقدم أولاً" : "Oldest first"}</option><option value="views">{isArabic ? "الأكثر مشاهدة" : "Most viewed"}</option><option value="price-low">{isArabic ? "السعر: الأقل" : "Price: low to high"}</option><option value="price-high">{isArabic ? "السعر: الأعلى" : "Price: high to low"}</option></select>
+          <input value={search} onChange={(event) => { setSearch(event.target.value); setSelected([]); }} placeholder={isArabic ? "ابحث بالعنوان أو الموقع أو النوع" : "Search title, location or type"} aria-label="Search properties" className={`${fieldClass} min-w-52 flex-1`} />
+          <select aria-label="Filter by status" value={status} onChange={(event) => { setStatus(event.target.value); setSelected([]); updateQuery({ status: event.target.value }); }} className={fieldClass}><option value="all">{isArabic ? "كل الحالات" : "All statuses"}</option>{statuses.map((value) => <option key={value} value={value}>{formatLabel(value)}</option>)}</select>
+          <select aria-label="Filter by listing type" value={listingType} onChange={(event) => { setListingType(event.target.value); setSelected([]); updateQuery({ listingType: event.target.value }); }} className={fieldClass}><option value="all">{isArabic ? "كل الأسواق" : "All markets"}</option>{listingTypes.map((value) => <option key={value} value={value}>{formatLabel(value)}</option>)}</select>
+          <select aria-label="Filter by category" value={category} onChange={(event) => { setCategory(event.target.value); setSelected([]); updateQuery({ category: event.target.value }); }} className={fieldClass}><option value="all">{isArabic ? "كل الفئات" : "All categories"}</option>{categories.map((value) => <option key={value} value={value}>{formatLabel(value)}</option>)}</select>
+          <select aria-label="Sort properties" value={sort} onChange={(event) => { setSort(event.target.value); setSelected([]); updateQuery({ sort: event.target.value }); }} className={fieldClass}><option value="newest">{isArabic ? "الأحدث أولاً" : "Newest first"}</option><option value="oldest">{isArabic ? "الأقدم أولاً" : "Oldest first"}</option><option value="views">{isArabic ? "الأكثر مشاهدة" : "Most viewed"}</option><option value="price-low">{isArabic ? "السعر: الأقل" : "Price: low to high"}</option><option value="price-high">{isArabic ? "السعر: الأعلى" : "Price: high to low"}</option></select>
           {selected.length > 0 && <button type="button" onClick={() => setBulkArchiveConfirmation(true)} className="h-10 rounded-lg border border-red-200 px-3 text-sm text-red-700 hover:bg-red-50">{isArabic ? `أرشفة (${selected.length})` : `Archive (${selected.length})`}</button>}
         </div>
 
-        {properties.length === 0 ? <p className="px-5 py-16 text-center text-sm text-neutral-500">{isArabic ? "لا توجد عقارات بعد. أضف عقاراً للبدء." : "No properties yet. Add a property to get started."}</p> : filtered.length === 0 ? <p className="px-5 py-16 text-center text-sm text-neutral-500">{isArabic ? "لا توجد نتائج مطابقة." : "No properties match your search."}</p> : <>
+        {allPropertyCount === 0 ? <p className="px-5 py-16 text-center text-sm text-neutral-500">{isArabic ? "لا توجد عقارات بعد. أضف عقاراً للبدء." : "No properties yet. Add a property to get started."}</p> : properties.length === 0 ? <p className="px-5 py-16 text-center text-sm text-neutral-500">{isArabic ? "لا توجد نتائج مطابقة." : "No properties match your search."}</p> : <>
           <div className="overflow-x-auto"><table className="w-full min-w-[980px] table-fixed text-sm">
             <colgroup><col className="w-[4%]" /><col className="w-[21%]" /><col className="w-[8%]" /><col className="w-[8%]" /><col className="w-[9%]" /><col className="w-[7%]" /><col className="w-[9%]" /><col className="w-[11%]" /><col className="w-[5%]" /><col className="w-[18%]" /></colgroup>
             <thead className="bg-[#f4f1ea] text-xs text-neutral-500"><tr>
@@ -151,11 +173,11 @@ export default function AdminPropertiesList({ properties }: { properties: Proper
               <td className="px-3 py-3 text-end tabular-nums">{property.price.toLocaleString(locale)}</td>
               <td className="overflow-hidden px-3 py-3 text-end text-xs text-neutral-600"><span className="block truncate">{[property.bedrooms ? `${property.bedrooms} ${isArabic ? "غرف" : "bd"}` : null, property.bathrooms ? `${property.bathrooms} ${isArabic ? "حمام" : "ba"}` : null, property.areaSqm ? `${property.areaSqm.toLocaleString()} m²` : property.areaSqft ? `${property.areaSqft.toLocaleString()} ft²` : null].filter(Boolean).join(" · ") || "—"}</span>{property.projectedYield && <span className="mt-1 block truncate text-emerald-800">{property.projectedYield} yield</span>}</td>
               <td className="px-3 py-3 text-end tabular-nums">{property.viewCount.toLocaleString(locale)}</td>
-              <td className="px-3 py-3 text-end"><div className="flex flex-wrap items-center justify-end gap-1.5"><Link href={`/properties/${property.slug}`} aria-label={`${isArabic ? "عرض" : "View"} ${property.title}`} title={isArabic ? "عرض العقار" : "View property"} className="rounded-md border border-[#e3dfd5] px-2 py-1.5 text-xs hover:bg-[#f4f1ea]">{isArabic ? "عرض" : "View"}</Link><button type="button" onClick={() => setEditingProperty(property)} aria-label={`${isArabic ? "تعديل" : "Edit"} ${property.title}`} title={isArabic ? "تعديل العقار" : "Edit property"} className="inline-flex items-center gap-1 rounded-md border border-[#d8d3c8] px-2 py-1.5 text-xs hover:bg-[#f4f1ea]"><Pencil className="h-3 w-3" />{isArabic ? "تعديل" : "Edit"}</button>{property.status !== "ARCHIVED" && <RemovePropertyButton onClick={() => setDeletingProperty(property)} label={isArabic ? "إزالة" : "Remove"} />}</div></td>
+              {/* <td className="px-3 py-3 text-end"><div className="flex flex-wrap items-center justify-end gap-1.5"><Link href={`/properties/${property.slug}`} aria-label={`${isArabic ? "عرض" : "View"} ${property.title}`} title={isArabic ? "عرض العقار" : "View property"} className="rounded-md border border-[#e3dfd5] px-2 py-1.5 text-xs hover:bg-[#f4f1ea]">{isArabic ? "عرض" : "View"}</Link><button type="button" onClick={() => setEditingProperty(property)} aria-label={`${isArabic ? "تعديل" : "Edit"} ${property.title}`} title={isArabic ? "تعديل العقار" : "Edit property"} className="inline-flex items-center gap-1 rounded-md border border-[#d8d3c8] px-2 py-1.5 text-xs hover:bg-[#f4f1ea]"><Pencil className="h-3 w-3" />{isArabic ? "تعديل" : "Edit"}</button>{property.status !== "ARCHIVED" && <RemovePropertyButton onClick={() => setDeletingProperty(property)} label={isArabic ? "إزالة" : "Remove"} />}</div></td> */}
               <td className="px-3 py-3 text-end"><div className="flex flex-wrap items-center justify-end gap-1.5"><Link href={`/properties/${property.slug}`} aria-label={`${isArabic ? "عرض" : "View"} ${property.title}`} title={isArabic ? "عرض العقار" : "View property"} className="grid h-8 w-8 shrink-0 place-items-center rounded-md border border-[#e3dfd5] text-neutral-600 hover:bg-[#f4f1ea] hover:text-[#24231f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#8f7654]"><Eye aria-hidden="true" className="h-4 w-4" /></Link><button type="button" onClick={() => setEditingProperty(property)} aria-label={`${isArabic ? "تعديل" : "Edit"} ${property.title}`} title={isArabic ? "تعديل العقار" : "Edit property"} className="grid h-8 w-8 shrink-0 place-items-center rounded-md border border-[#d8d3c8] text-neutral-600 hover:bg-[#f4f1ea] hover:text-[#24231f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#8f7654]"><Pencil aria-hidden="true" className="h-4 w-4" /></button>{property.status !== "ARCHIVED" && <RemovePropertyButton onClick={() => setDeletingProperty(property)} label={isArabic ? "إزالة" : "Remove"} />}</div></td>
             </tr>)}</tbody>
           </table></div>
-          <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e8e4db] px-4 py-3 text-xs text-neutral-500"><span>{isArabic ? `عرض ${filtered.length ? (page - 1) * pageSize + 1 : 0}–${Math.min(page * pageSize, filtered.length)} من ${filtered.length}` : `Showing ${filtered.length ? (page - 1) * pageSize + 1 : 0}–${Math.min(page * pageSize, filtered.length)} of ${filtered.length}`}</span><div className="flex items-center gap-1"><button type="button" disabled={page <= 1} onClick={() => setPage((current) => current - 1)} className="h-8 rounded-md border border-[#e3dfd5] px-3 disabled:opacity-40">{isArabic ? "السابق" : "Previous"}</button><span className="px-2">{page} / {pageCount}</span><button type="button" disabled={page >= pageCount} onClick={() => setPage((current) => current + 1)} className="h-8 rounded-md border border-[#e3dfd5] px-3 disabled:opacity-40">{isArabic ? "التالي" : "Next"}</button></div></footer>
+          <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e8e4db] px-4 py-3 text-xs text-neutral-500"><span>{isArabic ? `عرض ${(page - 1) * pageSize + 1}–${Math.min(page * pageSize, totalCount)} من ${totalCount}` : `Showing ${(page - 1) * pageSize + 1}–${Math.min(page * pageSize, totalCount)} of ${totalCount}`}</span><div className="flex items-center gap-1"><button type="button" disabled={page <= 1} onClick={() => updateQuery({ page: page - 1 })} className="h-8 rounded-md border border-[#e3dfd5] px-3 disabled:opacity-40">{isArabic ? "السابق" : "Previous"}</button><span className="px-2">{page} / {pageCount}</span><button type="button" disabled={page >= pageCount} onClick={() => updateQuery({ page: page + 1 })} className="h-8 rounded-md border border-[#e3dfd5] px-3 disabled:opacity-40">{isArabic ? "التالي" : "Next"}</button></div></footer>
         </>}
       </section>
 

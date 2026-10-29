@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { logoutAction } from "@/actions/auth";
 import { useSiteLanguage } from "@/components/providers/LanguageContext";
 import { Toast, useToast } from "@/components/feedback/Toast";
-import { Banknote, Building2, ChartNoAxesColumn, ClipboardList, LayoutDashboard, type LucideIcon } from "lucide-react";
+import { Banknote, Building2, ChartNoAxesColumn, ClipboardList, Contact, LayoutDashboard, type LucideIcon } from "lucide-react";
 import AdminPropertiesTable from "./admin-properties-table";
 import RequestSection from "./request-section";
 
@@ -62,15 +63,17 @@ export default function AdminDashboard({ email, totalProperties, liveProperties,
   const { language } = useSiteLanguage();
   const isArabic = language === "ar";
   const { toast, showToast, dismissToast } = useToast();
+  const pathname = usePathname();
+  const linkClass = (active: boolean) => `flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${active ? "bg-[#eee8dc] text-[#24231f]" : "text-neutral-600 hover:bg-[#f2efe8]"}`;
 
   useEffect(() => {
     if (listingCreated) showToast(isArabic ? "تم إنشاء العقار بنجاح." : "Property created successfully.");
   }, [listingCreated]);
 
   return (
-    <main dir={isArabic ? "rtl" : "ltr"} className="min-h-screen bg-[#f3f1eb] text-[#24231f] md:grid md:grid-cols-[220px_minmax(0,1fr)]">
+    <main dir={isArabic ? "rtl" : "ltr"} className="min-h-screen bg-[#f3f1eb] text-[#24231f] md:grid md:h-[calc(100dvh-5rem)] md:min-h-0 md:grid-cols-[220px_minmax(0,1fr)] md:overflow-hidden">
       <Toast toast={toast} onDismiss={dismissToast} />
-      <aside className="flex flex-col border-r border-[#e3dfd5] bg-[#faf9f5] p-4 md:min-h-screen">
+      <aside className="flex flex-col border-r border-[#e3dfd5] bg-[#faf9f5] p-4 md:h-full md:min-h-0 md:overflow-y-auto">
         <Link href="/admin" className="mb-8 flex items-center gap-3 px-2 py-3 font-serif text-xl">
           <Building2 className="h-6 w-6 text-[#8f7654]" /> NAJM {isArabic ? "الإدارة" : "Admin"}
         </Link>
@@ -78,6 +81,7 @@ export default function AdminDashboard({ email, totalProperties, liveProperties,
           <a href="#dashboard" className="flex items-center gap-3 rounded-md bg-[#eee8dc] px-3 py-2.5"><LayoutDashboard className="h-4 w-4" />{isArabic ? "لوحة التحكم" : "Dashboard"}</a>
           <Link href="/admin/properties" className="flex items-center gap-3 rounded-md px-3 py-2.5 text-neutral-600 hover:bg-[#f2efe8]"><Building2 className="h-4 w-4" />{isArabic ? "العقارات" : "Properties"}</Link>
           <Link href="/admin/review" className="flex items-center gap-3 rounded-md px-3 py-2.5 text-neutral-600 hover:bg-[#f2efe8]"><ClipboardList className="h-4 w-4" />{isArabic ? "الطلبات" : "Requests"}</Link>
+          <Link href="/admin/contact" aria-current={pathname === "/admin/contact" ? "page" : undefined} className={linkClass(pathname === "/admin/contact")}><Contact className="h-4 w-4" />{isArabic ? "بيانات التواصل" : "Contact info"}</Link>
           {/* <a href="#analytics" className="flex items-center gap-3 rounded-md px-3 py-2.5 text-neutral-600 hover:bg-[#f2efe8]"><ChartNoAxesColumn className="h-4 w-4" />{isArabic ? "التحليلات" : "Analytics"}</a> */}
         </nav>
         <div className="mt-auto border-t border-[#e3dfd5] pt-4">
@@ -87,7 +91,7 @@ export default function AdminDashboard({ email, totalProperties, liveProperties,
         </div>
       </aside>
 
-      <div className="min-w-0 space-y-5 p-4 sm:p-6 lg:p-8">
+      <div data-lenis-prevent onWheel={(event) => event.stopPropagation()} className="min-w-0 space-y-5 overflow-y-auto overscroll-contain p-4 sm:p-6 md:h-full md:min-h-0 lg:p-8">
         <header id="dashboard" className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="font-serif text-3xl">{isArabic ? "لوحة التحكم" : "Dashboard"}</h1>
@@ -99,16 +103,16 @@ export default function AdminDashboard({ email, totalProperties, liveProperties,
           </div>
         </header>
 
-        <section id="analytics" className="grid grid-cols-3 gap-3 xl:grid-cols-4">
+        <section id="analytics" className="grid grid-cols-1 gap-3 sm:grid-cols-2 2xl:grid-cols-4">
           <Stat label={isArabic ? "إجمالي العقارات" : "Total properties"} value={totalProperties} icon={Building2} tone="bg-[#71816b]" />
           <Stat label={isArabic ? "العقارات النشطة" : "Live properties"} value={liveProperties} icon={ChartNoAxesColumn} tone="bg-[#b89b72]" />
           <Stat label={isArabic ? "طلبات الاستفسار" : "Inquiry requests"} value={enquiries} icon={ClipboardList} tone="bg-[#a76f5a]" />
           <Stat label={isArabic ? "إجمالي قيمة العقارات النشطة" : "Total live property value"} value={totalPropertyValue} icon={Banknote} tone="bg-[#71816b]" />
         </section>
 
-        <section className="flex gap-3">
-          <AdminPropertiesTable properties={properties} />
-          <RequestSection />
+        <section className="grid min-w-0 grid-cols-1 gap-4 min-[1600px]:grid-cols-[minmax(980px,2fr)_minmax(320px,1fr)]">
+          <div className="min-w-0"><AdminPropertiesTable properties={properties} /></div>
+          <div className="min-w-0 [&>section]:w-full"><RequestSection /></div>
         </section>
       </div>
     </main>

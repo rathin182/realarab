@@ -10,11 +10,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { language } = useSiteLanguage();
   const pathname = usePathname();
   const isArabic = language === "ar";
+  const isViewportSection = pathname.startsWith("/admin/properties") || pathname === "/admin/contact";
   const linkClass = (active: boolean) => `flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${active ? "bg-[#eee8dc] text-[#24231f]" : "text-neutral-600 hover:bg-[#f2efe8]"}`;
 
   return (
-    <div dir={isArabic ? "rtl" : "ltr"} className="min-h-screen bg-[#f3f1eb] text-[#24231f] md:grid md:grid-cols-[220px_minmax(0,1fr)]">
-      <aside className="flex flex-col border-r border-[#e3dfd5] bg-[#faf9f5] p-4 md:min-h-screen">
+    <div dir={isArabic ? "rtl" : "ltr"} className={`min-h-screen bg-[#f3f1eb] text-[#24231f] md:grid md:grid-cols-[220px_minmax(0,1fr)] ${isViewportSection ? "md:h-[calc(100dvh-5rem)] md:min-h-0 md:overflow-hidden" : ""}`}>
+      <aside className={`flex flex-col border-r border-[#e3dfd5] bg-[#faf9f5] p-4 ${isViewportSection ? "md:h-full md:min-h-0 md:overflow-y-auto" : "md:min-h-screen"}`}>
         <Link href="/admin" className="mb-8 flex items-center gap-3 px-2 py-3 font-serif text-xl"><Building2 className="h-6 w-6 text-[#8f7654]" /> NAJAM {isArabic ? "الإدارة" : "Admin"}</Link>
         <nav aria-label={isArabic ? "أقسام الإدارة" : "Admin sections"} className="space-y-1 text-sm">
           <Link href="/admin" aria-current={pathname === "/admin" ? "page" : undefined} className={linkClass(pathname === "/admin")}><LayoutDashboard className="h-4 w-4" />{isArabic ? "لوحة التحكم" : "Dashboard"}</Link>
@@ -25,7 +26,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
         <div className="mt-auto border-t border-[#e3dfd5] pt-4"><form action={logoutAction}><button className="w-full rounded-md border border-[#e3dfd5] px-3 py-2 text-start text-sm text-neutral-600">{isArabic ? "تسجيل الخروج" : "Log out"}</button></form></div>
       </aside>
-      <div className="min-w-0 p-4 sm:p-6 lg:p-8">{children}</div>
+      <div data-lenis-prevent={isViewportSection ? "" : undefined} onWheel={isViewportSection ? (event) => event.stopPropagation() : undefined} className={`min-w-0 p-4 sm:p-6 lg:p-8 ${isViewportSection ? "md:h-full md:min-h-0 md:overflow-y-auto md:overscroll-contain" : ""}`}>{children}</div>
     </div>
   );
 }

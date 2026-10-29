@@ -61,7 +61,7 @@ export const ModelName = {
   Report: 'Report',
   AuditLog: 'AuditLog',
   AgentApplication: 'AgentApplication',
-  ContactSettings: 'ContactSettings'
+  ContactCard: 'ContactCard'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -262,29 +262,22 @@ export const AgentApplicationScalarFieldEnum = {
 export type AgentApplicationScalarFieldEnum = (typeof AgentApplicationScalarFieldEnum)[keyof typeof AgentApplicationScalarFieldEnum]
 
 
-export const ContactSettingsScalarFieldEnum = {
+export const ContactCardScalarFieldEnum = {
   id: 'id',
-  falRegistrationNumber: 'falRegistrationNumber',
-  riyadhLabel: 'riyadhLabel',
-  riyadhTitle: 'riyadhTitle',
-  riyadhAddress: 'riyadhAddress',
-  riyadhPhonePrimary: 'riyadhPhonePrimary',
-  riyadhPhoneSecondary: 'riyadhPhoneSecondary',
-  riyadhEmail: 'riyadhEmail',
-  riyadhVisitingHours: 'riyadhVisitingHours',
-  internationalLabel: 'internationalLabel',
-  internationalBadge: 'internationalBadge',
-  internationalTitle: 'internationalTitle',
-  internationalAddress: 'internationalAddress',
-  internationalPhonePrimary: 'internationalPhonePrimary',
-  internationalPhoneSecondary: 'internationalPhoneSecondary',
-  internationalEmail: 'internationalEmail',
-  internationalVisitingHours: 'internationalVisitingHours',
+  sortOrder: 'sortOrder',
+  label: 'label',
+  badge: 'badge',
+  title: 'title',
+  address: 'address',
+  phonePrimary: 'phonePrimary',
+  phoneSecondary: 'phoneSecondary',
+  email: 'email',
+  visitingHours: 'visitingHours',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type ContactSettingsScalarFieldEnum = (typeof ContactSettingsScalarFieldEnum)[keyof typeof ContactSettingsScalarFieldEnum]
+export type ContactCardScalarFieldEnum = (typeof ContactCardScalarFieldEnum)[keyof typeof ContactCardScalarFieldEnum]
 
 
 export const SortOrder = {
