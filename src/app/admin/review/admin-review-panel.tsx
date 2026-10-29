@@ -4,8 +4,14 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Cormorant_Garamond } from "next/font/google";
 import { Phone, Mail, Clock, ChevronDown } from "lucide-react";
-import { updateEnquiryStatus, updateMandateStatus } from "@/actions/admin";
 import { useSiteLanguage } from "@/components/providers/LanguageContext";
+import {
+  resolveReport,
+  reviewAgentApplication,
+  reviewListing,
+  updateEnquiryStatus, updateMandateStatus,
+  updateMandateStatusFormAction,
+} from "@/actions/admin";
 
 const serif = Cormorant_Garamond({
   subsets: ["latin"],
@@ -43,19 +49,13 @@ type AcquisitionMandate = {
 type AdminReviewPanelProps = {
   enquiries: PropertyRequest[];
   mandates: AcquisitionMandate[];
-  // Still accepted so the parent page compiles. Remove these from the
-  // parent, then delete these three lines.
   applications?: unknown;
   listings?: unknown;
   reports?: unknown;
 };
 
-// How many requests to render at a time; more load as the admin scrolls.
 const PAGE_SIZE = 10;
-
-// Soft off-white used instead of pure white. Change it in one place.
 const CARD_BG = "bg-[#FBFAF7]";
-// Slightly darker tone for chips and the message box inside a card.
 const INNER_BG = "bg-[#F3F1EB]";
 
 const statusBadge: Record<string, string> = {
@@ -67,7 +67,6 @@ const statusBadge: Record<string, string> = {
   NOT_INTERESTED: "bg-neutral-200 text-neutral-700",
 };
 
-// Left accent bar colour for each status (matches the badge colours)
 const statusAccent: Record<string, string> = {
   NEW: "bg-[#A98950]",
   CONTACTED: "bg-blue-500",
@@ -90,8 +89,6 @@ const formatDate = (date: string, isArabic: boolean) =>
     dateStyle: "medium",
     timeStyle: "short",
   });
-
-// Progressive loading: render PAGE_SIZE items, load more as the sentinel nears the viewport.
 function useProgressive(total: number) {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
@@ -113,8 +110,6 @@ function useProgressive(total: number) {
 
     observer.observe(node);
     return () => observer.disconnect();
-    // visibleCount is a dependency so the observer re-arms after each batch
-    // and keeps loading if the sentinel is still on screen.
   }, [hasMore, visibleCount, total]);
 
   return { visibleCount, hasMore, sentinelRef };
@@ -212,57 +207,57 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
 
   const labels = isArabic
     ? {
-        propertyRequests: "طلبات العقارات من الموقع",
-        mandateRequests: "تفويضات الاستحواذ المسجلة",
-        propertyTab: "طلبات العقارات",
-        mandatesTab: "تفويضات الاستحواذ",
-        noRequests: "لا توجد طلبات عقارات بعد.",
-        noMandates: "لا توجد تفويضات استحواذ بعد.",
-        save: "حفظ",
-        enquiryStatuses: {
-          NEW: "جديد",
-          CONTACTED: "تم التواصل",
-          VISIT_SCHEDULED: "تمت جدولة زيارة",
-          CLOSED: "مغلق",
-          NOT_INTERESTED: "غير مهتم",
-        } as Record<string, string>,
-        mandateStatuses: {
-          NEW: "جديد",
-          CONTACTED: "تم التواصل",
-          IN_PROGRESS: "قيد المتابعة",
-          CLOSED: "مغلق",
-          NOT_INTERESTED: "غير مهتم",
-        } as Record<string, string>,
-        new: "جديد",
-        total: "الإجمالي",
-        tabs: "أنواع الطلبات",
-      }
+      propertyRequests: "طلبات العقارات من الموقع",
+      mandateRequests: "تفويضات الاستحواذ المسجلة",
+      propertyTab: "طلبات العقارات",
+      mandatesTab: "تفويضات الاستحواذ",
+      noRequests: "لا توجد طلبات عقارات بعد.",
+      noMandates: "لا توجد تفويضات استحواذ بعد.",
+      save: "حفظ",
+      enquiryStatuses: {
+        NEW: "جديد",
+        CONTACTED: "تم التواصل",
+        VISIT_SCHEDULED: "تمت جدولة زيارة",
+        CLOSED: "مغلق",
+        NOT_INTERESTED: "غير مهتم",
+      } as Record<string, string>,
+      mandateStatuses: {
+        NEW: "جديد",
+        CONTACTED: "تم التواصل",
+        IN_PROGRESS: "قيد المتابعة",
+        CLOSED: "مغلق",
+        NOT_INTERESTED: "غير مهتم",
+      } as Record<string, string>,
+      new: "جديد",
+      total: "الإجمالي",
+      tabs: "أنواع الطلبات",
+    }
     : {
-        propertyRequests: "Property requests from the website",
-        mandateRequests: "Registered acquisition mandates",
-        propertyTab: "Property requests",
-        mandatesTab: "Acquisition mandates",
-        noRequests: "No property requests yet.",
-        noMandates: "No acquisition mandates yet.",
-        save: "Save",
-        enquiryStatuses: {
-          NEW: "New",
-          CONTACTED: "Contacted",
-          VISIT_SCHEDULED: "Visit scheduled",
-          CLOSED: "Closed",
-          NOT_INTERESTED: "Not interested",
-        } as Record<string, string>,
-        mandateStatuses: {
-          NEW: "New",
-          CONTACTED: "Contacted",
-          IN_PROGRESS: "In progress",
-          CLOSED: "Closed",
-          NOT_INTERESTED: "Not interested",
-        } as Record<string, string>,
-        new: "New",
-        total: "Total",
-        tabs: "Request types",
-      };
+      propertyRequests: "Property requests from the website",
+      mandateRequests: "Registered acquisition mandates",
+      propertyTab: "Property requests",
+      mandatesTab: "Acquisition mandates",
+      noRequests: "No property requests yet.",
+      noMandates: "No acquisition mandates yet.",
+      save: "Save",
+      enquiryStatuses: {
+        NEW: "New",
+        CONTACTED: "Contacted",
+        VISIT_SCHEDULED: "Visit scheduled",
+        CLOSED: "Closed",
+        NOT_INTERESTED: "Not interested",
+      } as Record<string, string>,
+      mandateStatuses: {
+        NEW: "New",
+        CONTACTED: "Contacted",
+        IN_PROGRESS: "In progress",
+        CLOSED: "Closed",
+        NOT_INTERESTED: "Not interested",
+      } as Record<string, string>,
+      new: "New",
+      total: "Total",
+      tabs: "Request types",
+    };
 
   const isProperty = tab === "property";
   const newCount = isProperty ? propertyNew : mandateNew;
@@ -301,7 +296,6 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
           </div>
         </div>
 
-        {/* Sticky request tabs: sit directly below the navbar while scrolling. */}
         <div
           role="tablist"
           aria-label={labels.tabs}
@@ -319,17 +313,15 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
               role="tab"
               aria-selected={tab === item.key}
               onClick={() => setTab(item.key)}
-              className={`-mb-px flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-colors ${
-                tab === item.key
-                  ? "border-[#0C3826] text-[#0C3826]"
-                  : "border-transparent text-neutral-500 hover:text-neutral-800"
-              }`}
+              className={`-mb-px flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-colors ${tab === item.key
+                ? "border-[#0C3826] text-[#0C3826]"
+                : "border-transparent text-neutral-500 hover:text-neutral-800"
+                }`}
             >
               {item.label}
               <span
-                className={`rounded-full px-2 py-0.5 text-xs ${
-                  item.fresh > 0 ? "bg-amber-100 text-amber-800" : "bg-neutral-100 text-neutral-600"
-                }`}
+                className={`rounded-full px-2 py-0.5 text-xs ${item.fresh > 0 ? "bg-amber-100 text-amber-800" : "bg-neutral-100 text-neutral-600"
+                  }`}
               >
                 {item.fresh > 0 ? `${item.fresh} ${labels.new.toLowerCase()}` : item.total}
               </span>
@@ -373,9 +365,8 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
                         )}
 
                         <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                            statusBadge[enquiry.status] ?? "bg-neutral-100 text-neutral-700"
-                          }`}
+                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusBadge[enquiry.status] ?? "bg-neutral-100 text-neutral-700"
+                            }`}
                         >
                           {labels.enquiryStatuses[enquiry.status] ?? enquiry.status}
                         </span>
@@ -461,7 +452,7 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
                 {mandates.slice(0, mandateScroll.visibleCount).map((mandate) => (
                   <form
                     key={mandate.id}
-                    action={updateMandateStatus}
+                    action={updateMandateStatusFormAction}
                     className={`relative grid grid-cols-1 gap-5 overflow-hidden rounded-2xl ${CARD_BG} p-5 ps-7 sm:p-6 sm:ps-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start`}
                   >
                     <span
@@ -475,9 +466,8 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
                           {mandate.name}
                         </span>
                         <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                            statusBadge[mandate.status] ?? "bg-neutral-100 text-neutral-700"
-                          }`}
+                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusBadge[mandate.status] ?? "bg-neutral-100 text-neutral-700"
+                            }`}
                         >
                           {labels.mandateStatuses[mandate.status] ?? mandate.status}
                         </span>

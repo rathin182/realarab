@@ -51,7 +51,8 @@ export default function ContactPage() {
       cancelled = true;
     };
   }, []);
-
+    const hasManyContactCards = contactCards.length > 2;
+    
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 

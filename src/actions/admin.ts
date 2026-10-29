@@ -4,10 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/permissions";
 import { redirect } from "next/navigation";
-import {
-  CONTACT_SETTINGS_ID,
-  type ContactSettingsValues,
-} from "@/lib/contact-settings";
+
 
 export async function reviewAgentApplication(formData: FormData) {
     const session = await requireAdmin();
@@ -614,4 +611,9 @@ export async function updateMandateStatus(formData: FormData) {
   revalidatePath("/admin/review");
 
   return { ok: true };
+}
+export async function updateMandateStatusFormAction(
+  formData: FormData,
+): Promise<void> {
+  await updateMandateStatus(formData);
 }
