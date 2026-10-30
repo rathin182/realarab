@@ -1,32 +1,29 @@
 import { Property } from "@/types";
+import { Prisma } from "@/generated/prisma/client";
+
+export const listingCardSelect = {  
+  slug: true, title: true, titleAr: true, description: true, status: true, listingType: true, isOffPlan: true, 
+  category: true, propertyType: true, price: true, bedrooms: true, bathrooms: true, furnished: true, 
+  areaSqm: true, areaSqft: true, locality: true, latitude: true, longitude: true, city: true, locationAr: true, 
+  tier: true, badge: true, projectedYield: true, reraNumber: true, flags: true, amenities: true, 
+  keyFeatures: true,
+  media: {
+    where: { kind: "IMAGE", status: "READY" },
+    select: { kind: true, storageKey: true, externalUrl: true, isCover: true, position: true },
+    orderBy: [{ isCover: "desc" }, { position: "asc" }],
+    take: 1,
+  },
+} satisfies Prisma.ListingSelect;
 
 export interface ListingForProperty {
-  slug: string;
-  title: string;
-  titleAr: string | null;
-  description: string;
-  listingType: "SALE" | "RENT";
-  isOffPlan?: boolean;
-  category: "RESIDENTIAL" | "COMMERCIAL" | "LAND";
-  propertyType: string | null;
-  price: bigint | number;
-  bedrooms: number | null;
-  bathrooms: number | null;
-  furnished: boolean;
-  areaSqm: number | null;
-  areaSqft: number | null;
-  locality: string | null;
-  latitude: number | null;
-  longitude: number | null;
-  city: string;
-  locationAr: string | null;
-  tier: string | null;
-  badge: string | null;
-  projectedYield: string | null;
-  reraNumber: string | null;
-  flags: string[];
-  amenities: string[];
-  keyFeatures: string[];
+  slug: string; title: string; titleAr: string | null; description: string;
+  listingType: "SALE" | "RENT"; isOffPlan?: boolean; category: "RESIDENTIAL" | "COMMERCIAL" | "LAND";
+  propertyType: string | null; price: bigint | number; bedrooms: number | null;
+  bathrooms: number | null; furnished: boolean; areaSqm: number | null;
+  areaSqft: number | null; locality: string | null; latitude: number | null;
+  longitude: number | null; city: string; locationAr: string | null;
+  tier: string | null; badge: string | null; projectedYield: string | null;
+  reraNumber: string | null; flags: string[]; amenities: string[]; keyFeatures: string[];
   media: { kind: "IMAGE" | "VIDEO_LINK" | "VIDEO_UPLOAD"; storageKey: string | null; externalUrl: string | null; isCover: boolean; position: number }[];
 }
 
@@ -40,11 +37,7 @@ export function listingToProperty(listing: ListingForProperty): Property {
     const src = media.storageKey ?? media.externalUrl;
     return src ? [{ kind: media.kind, src }] : [];
   });
-  const transaction = listing.category === "COMMERCIAL"
-    ? "commercial"
-    : listing.listingType === "RENT"
-      ? "rent"
-      : "buy";
+  const transaction = listing.category === "COMMERCIAL" ? "commercial" : listing.listingType === "RENT" ? "rent" : "buy";
 
   return {
     id: listing.slug,

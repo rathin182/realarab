@@ -1,20 +1,28 @@
 import { Metadata } from 'next';
+import { cache } from 'react';
+import { after } from 'next/server';
 import { notFound } from 'next/navigation';
 import { PROPERTIES } from '../../../data/websiteContent';
 import { PropertyDetailClient } from '../../../components/property/PropertyDetailClient';
 import { prisma } from '@/lib/prisma';
-import { listingToProperty } from '@/lib/listing-property';
+import { listingCardSelect, listingToProperty } from '@/lib/listing-property';
 
 export const dynamicParams = true;
 
-async function getDatabaseListing(slug: string) {
+const getDatabaseListing = cache(async (slug: string) => {
   const listing = await prisma.listing.findUnique({
     where: { slug },
-    include: { media: { orderBy: { position: 'asc' } } },
+    select: {
+      ...listingCardSelect,
+      media: {
+        select: { kind: true, storageKey: true, externalUrl: true, isCover: true, position: true },
+        orderBy: { position: 'asc' },
+      },
+    },
   });
 
   return listing?.status === 'LIVE' ? listing : null;
-}
+});
 
 export function generateStaticParams() {
   return PROPERTIES.map((property) => ({
@@ -69,10 +77,11 @@ export default async function PropertyPage({
   }
 
   if (listing) {
-    await prisma.listing.update({
-      where: { id: listing.id },
+    after(() => prisma.listing.update({
+      where: { slug: id },
       data: { viewCount: { increment: 1 } },
-    });
+      select: { id: true },
+    }));
   }
 
   return <PropertyDetailClient property={property} />;

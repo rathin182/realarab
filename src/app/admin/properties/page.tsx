@@ -66,7 +66,19 @@ export default async function AdminPropertiesPage({ searchParams }: { searchPara
     orderBy,
     skip: (page - 1) * pageSize,
     take: pageSize,
-    include: { media: { where: { kind: 'IMAGE', status: 'READY' }, orderBy: [{ isCover: 'desc' }, { position: 'asc' }], take: 1 } },
+    select: {
+      id: true, slug: true, title: true, city: true, locality: true, state: true,
+      price: true, listingType: true, category: true, propertyType: true, status: true,
+      featured: true, bedrooms: true, bathrooms: true, furnished: true, areaSqm: true,
+      areaSqft: true, isOffPlan: true, projectedYield: true,
+      viewCount: true, createdAt: true,
+      media: {
+        where: { kind: 'IMAGE', status: 'READY' },
+        select: { storageKey: true, externalUrl: true },
+        orderBy: [{ isCover: 'desc' }, { position: 'asc' }],
+        take: 1,
+      },
+    },
   });
 
   return <AdminLayout><AdminPropertiesList totalCount={filteredCount} allPropertyCount={allPropertyCount} filters={{ search, status, listingType, category, sort, page }} properties={properties.map((property) => ({
