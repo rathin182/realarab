@@ -1,33 +1,48 @@
+
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@/generated/prisma/client";
 
-const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+const globalForPrisma = globalThis as unknown as {
+  prisma?: PrismaClient;
+};
 
-function createPrismaClient() {
-    const databaseUrl = process.env.DATABASE_URL;
+let productionPrisma: PrismaClient | undefined;
 
-    if (!databaseUrl) {
-        throw new Error("DATABASE_URL must be set to use Prisma.");
-    }
+function createPrismaClient(): PrismaClient {
+  const databaseUrl = process.env.DATABASE_URL;
 
-    return new PrismaClient({
-        adapter: new PrismaPg({ connectionString: databaseUrl }),
-    });
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL must be set to use Prisma.");
+  }
+
+  return new PrismaClient({
+    adapter: new PrismaPg({
+      connectionString: databaseUrl,
+    }),
+  });
 }
 
-// Delay client creation until a database operation is actually used. Next.js
-// imports route modules while collecting build data, when no DB connection is
-// needed and deployment environment variables may not be available.
+function getPrismaClient(): PrismaClient {
+  // Reuse the global client during development and hot reload.
+  if (process.env.NODE_ENV !== "production") {
+    globalForPrisma.prisma ??= createPrismaClient();
+    return globalForPrisma.prisma;
+  }
+
+  // Reuse one client per production server module instance.
+  productionPrisma ??= createPrismaClient();
+
+  return productionPrisma;
+}
+
+// Lazy initialization: the client is created only when first accessed.
 export const prisma = new Proxy({} as PrismaClient, {
-    get(_target, property) {
-        const client = globalForPrisma.prisma ?? createPrismaClient();
+  get(_target, property) {
+    const client = getPrismaClient();
+    const value = Reflect.get(client, property, client);
 
-        if (process.env.NODE_ENV !== "production") {
-            globalForPrisma.prisma = client;
-        }
-
-        const value = Reflect.get(client, property, client);
-        return typeof value === "function" ? value.bind(client) : value;
-    },
+    return typeof value === "function"
+      ? value.bind(client)
+      : value;
+  },
 });
-

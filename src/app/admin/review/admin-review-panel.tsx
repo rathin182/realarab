@@ -1,15 +1,14 @@
+
 "use client";
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import type { Dispatch, RefObject, SetStateAction } from "react";
 import { Cormorant_Garamond } from "next/font/google";
 import { Phone, Mail, Clock, ChevronDown } from "lucide-react";
 import { useSiteLanguage } from "@/components/providers/LanguageContext";
 import {
-  resolveReport,
-  reviewAgentApplication,
-  reviewListing,
-  updateEnquiryStatus, updateMandateStatus,
+  updateEnquiryStatus,
   updateMandateStatusFormAction,
 } from "@/actions/admin";
 
@@ -46,12 +45,20 @@ type AcquisitionMandate = {
   createdAt: string;
 };
 
+type RequestCursor = {
+  id: string;
+  createdAt: string;
+};
+
 type AdminReviewPanelProps = {
   enquiries: PropertyRequest[];
   mandates: AcquisitionMandate[];
-  applications?: unknown;
-  listings?: unknown;
-  reports?: unknown;
+  totalEnquiries: number;
+  newEnquiries: number;
+  totalMandates: number;
+  newMandates: number;
+  enquiriesHasMore: boolean;
+  mandatesHasMore: boolean;
 };
 
 const PAGE_SIZE = 10;
@@ -89,30 +96,167 @@ const formatDate = (date: string, isArabic: boolean) =>
     dateStyle: "medium",
     timeStyle: "short",
   });
-function useProgressive(total: number) {
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
+function useProgressive<T extends { id: string; createdAt: string }>({
+  type,
+  items,
+  setItems,
+  initialHasMore,
+}: {
+  type: "property" | "mandates";
+  items: T[];
+  setItems: Dispatch<SetStateAction<T[]>>;
+  initialHasMore: boolean;
+}) {
+  const [hasMore, setHasMore] = useState(initialHasMore);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const [cursor, setCursor] = useState<RequestCursor | null>(() => {
+    const lastItem = items[items.length - 1];
+
+    return lastItem
+      ? {
+          id: lastItem.id,
+          createdAt: lastItem.createdAt,
+        }
+      : null;
+  });
+
   const sentinelRef = useRef<HTMLDivElement | null>(null);
-  const hasMore = visibleCount < total;
+  const loadingRef = useRef(false);
 
   useEffect(() => {
-    if (!hasMore) return;
+    if (!hasMore || !cursor) return;
+
     const node = sentinelRef.current;
     if (!node) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) {
-          setVisibleCount((count) => Math.min(count + PAGE_SIZE, total));
+      async (entries) => {
+        if (!entries[0]?.isIntersecting || loadingRef.current) {
+          return;
+        }
+
+        loadingRef.current = true;
+        setLoading(true);
+        setError(false);
+
+        try {
+          const params = new URLSearchParams({
+            type,
+            cursorId: cursor.id,
+            cursorDate: cursor.createdAt,
+          });
+
+          const response = await fetch(
+            `/api/admin/requests?${params.toString()}`,
+            {
+              method: "GET",
+              cache: "no-store",
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to load more requests.");
+          }
+
+          const data = await response.json();
+
+          if (!Array.isArray(data.items)) {
+            throw new Error("Invalid pagination response.");
+          }
+
+          setItems((previous) => {
+            const existingIds = new Set(previous.map((item) => item.id));
+            const newItems = data.items.filter(
+              (item: T) => !existingIds.has(item.id)
+            );
+
+            return [...previous, ...newItems];
+          });
+
+          setCursor(data.nextCursor ?? null);
+          setHasMore(Boolean(data.hasMore));
+        } catch (err) {
+          console.error("Request pagination error:", err);
+          setError(true);
+        } finally {
+          loadingRef.current = false;
+          setLoading(false);
         }
       },
-      { rootMargin: "300px 0px" },
+      {
+        rootMargin: "300px 0px",
+      }
     );
 
     observer.observe(node);
-    return () => observer.disconnect();
-  }, [hasMore, visibleCount, total]);
 
-  return { visibleCount, hasMore, sentinelRef };
+    return () => observer.disconnect();
+  }, [type, cursor, hasMore, setItems]);
+
+  const retry = () => {
+    setError(false);
+
+    // Re-observe the sentinel after a failed request.
+    const node = sentinelRef.current;
+    if (!node || !hasMore || !cursor) return;
+
+    const params = new URLSearchParams({
+      type,
+      cursorId: cursor.id,
+      cursorDate: cursor.createdAt,
+    });
+
+    if (loadingRef.current) return;
+
+    loadingRef.current = true;
+    setLoading(true);
+
+    fetch(`/api/admin/requests?${params.toString()}`, {
+      cache: "no-store",
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("Failed to load more requests.");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        if (!Array.isArray(data.items)) {
+          throw new Error("Invalid pagination response.");
+        }
+
+        setItems((previous) => {
+          const existingIds = new Set(previous.map((item) => item.id));
+          return [
+            ...previous,
+            ...data.items.filter((item: T) => !existingIds.has(item.id)),
+          ];
+        });
+
+        setCursor(data.nextCursor ?? null);
+        setHasMore(Boolean(data.hasMore));
+      })
+      .catch((err) => {
+        console.error("Request pagination retry error:", err);
+        setError(true);
+      })
+      .finally(() => {
+        loadingRef.current = false;
+        setLoading(false);
+      });
+  };
+
+  return {
+    hasMore,
+    loading,
+    error,
+    retry,
+    sentinelRef,
+  };
 }
 
 function StatusActions({
@@ -131,6 +275,7 @@ function StatusActions({
   return (
     <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto lg:items-center">
       <input type="hidden" name="id" value={id} />
+
       <div className="relative min-w-0 flex-1 sm:min-w-[190px] lg:flex-none">
         <select
           key={`${id}-${status}`}
@@ -145,6 +290,7 @@ function StatusActions({
             </option>
           ))}
         </select>
+
         <ChevronDown className="pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
       </div>
 
@@ -160,17 +306,43 @@ function StatusActions({
 
 function LoadMore({
   hasMore,
+  loading,
+  error,
+  retry,
   sentinelRef,
   shown,
   total,
   isArabic,
 }: {
   hasMore: boolean;
-  sentinelRef: React.RefObject<HTMLDivElement | null>;
+  loading: boolean;
+  error: boolean;
+  retry: () => void;
+  sentinelRef: RefObject<HTMLDivElement | null>;
   shown: number;
   total: number;
   isArabic: boolean;
 }) {
+  if (error) {
+    return (
+      <div className="flex flex-col items-center gap-3 py-5 text-sm text-red-600">
+        <p>
+          {isArabic
+            ? "تعذر تحميل الطلبات."
+            : "Unable to load more requests."}
+        </p>
+
+        <button
+          type="button"
+          onClick={retry}
+          className="rounded-lg border border-neutral-300 px-4 py-2 font-medium text-neutral-700 transition hover:bg-neutral-100"
+        >
+          {isArabic ? "إعادة المحاولة" : "Retry"}
+        </button>
+      </div>
+    );
+  }
+
   if (hasMore) {
     return (
       <div
@@ -179,89 +351,122 @@ function LoadMore({
         role="status"
         aria-live="polite"
       >
-        <span className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-300 border-t-[#0C3826]" />
-        {isArabic ? `عرض ${shown} من ${total}` : `Showing ${shown} of ${total}`}
+        {loading && (
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-300 border-t-[#0C3826]" />
+        )}
+
+        {isArabic
+          ? `عرض ${shown} من ${total}`
+          : `Showing ${shown} of ${total}`}
       </div>
     );
   }
+
   if (total > PAGE_SIZE) {
     return (
       <p className="py-4 text-center text-sm text-neutral-500">
-        {isArabic ? `تم عرض جميع الطلبات (${total})` : `All ${total} requests loaded`}
+        {isArabic
+          ? `تم عرض جميع الطلبات (${total})`
+          : `All ${total} requests loaded`}
       </p>
     );
   }
+
   return null;
 }
 
-export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPanelProps) {
+export default function AdminReviewPanel({
+  enquiries: initialEnquiries,
+  mandates: initialMandates,
+  totalEnquiries,
+  newEnquiries,
+  totalMandates,
+  newMandates,
+  enquiriesHasMore,
+  mandatesHasMore,
+}: AdminReviewPanelProps) {
   const { language } = useSiteLanguage();
   const isArabic = language === "ar";
+
   const [tab, setTab] = useState<"property" | "mandates">("property");
 
-  const propertyScroll = useProgressive(enquiries.length);
-  const mandateScroll = useProgressive(mandates.length);
+  const [enquiries, setEnquiries] = useState(initialEnquiries);
+  const [mandates, setMandates] = useState(initialMandates);
 
-  const propertyNew = enquiries.filter((e) => e.status === "NEW").length;
-  const mandateNew = mandates.filter((m) => m.status === "NEW").length;
+  const propertyScroll = useProgressive({
+    type: "property",
+    items: enquiries,
+    setItems: setEnquiries,
+    initialHasMore: enquiriesHasMore,
+  });
+
+  const mandateScroll = useProgressive({
+    type: "mandates",
+    items: mandates,
+    setItems: setMandates,
+    initialHasMore: mandatesHasMore,
+  });
+
+  const propertyNew = newEnquiries;
+  const mandateNew = newMandates;
 
   const labels = isArabic
     ? {
-      propertyRequests: "طلبات العقارات من الموقع",
-      mandateRequests: "تفويضات الاستحواذ المسجلة",
-      propertyTab: "طلبات العقارات",
-      mandatesTab: "تفويضات الاستحواذ",
-      noRequests: "لا توجد طلبات عقارات بعد.",
-      noMandates: "لا توجد تفويضات استحواذ بعد.",
-      save: "حفظ",
-      enquiryStatuses: {
-        NEW: "جديد",
-        CONTACTED: "تم التواصل",
-        VISIT_SCHEDULED: "تمت جدولة زيارة",
-        CLOSED: "مغلق",
-        NOT_INTERESTED: "غير مهتم",
-      } as Record<string, string>,
-      mandateStatuses: {
-        NEW: "جديد",
-        CONTACTED: "تم التواصل",
-        IN_PROGRESS: "قيد المتابعة",
-        CLOSED: "مغلق",
-        NOT_INTERESTED: "غير مهتم",
-      } as Record<string, string>,
-      new: "جديد",
-      total: "الإجمالي",
-      tabs: "أنواع الطلبات",
-    }
+        propertyRequests: "طلبات العقارات من الموقع",
+        mandateRequests: "تفويضات الاستحواذ المسجلة",
+        propertyTab: "طلبات العقارات",
+        mandatesTab: "تفويضات الاستحواذ",
+        noRequests: "لا توجد طلبات عقارات بعد.",
+        noMandates: "لا توجد تفويضات استحواذ بعد.",
+        save: "حفظ",
+        enquiryStatuses: {
+          NEW: "جديد",
+          CONTACTED: "تم التواصل",
+          VISIT_SCHEDULED: "تمت جدولة زيارة",
+          CLOSED: "مغلق",
+          NOT_INTERESTED: "غير مهتم",
+        } as Record<string, string>,
+        mandateStatuses: {
+          NEW: "جديد",
+          CONTACTED: "تم التواصل",
+          IN_PROGRESS: "قيد المتابعة",
+          CLOSED: "مغلق",
+          NOT_INTERESTED: "غير مهتم",
+        } as Record<string, string>,
+        new: "جديد",
+        total: "الإجمالي",
+        tabs: "أنواع الطلبات",
+      }
     : {
-      propertyRequests: "Property requests from the website",
-      mandateRequests: "Registered acquisition mandates",
-      propertyTab: "Property requests",
-      mandatesTab: "Acquisition mandates",
-      noRequests: "No property requests yet.",
-      noMandates: "No acquisition mandates yet.",
-      save: "Save",
-      enquiryStatuses: {
-        NEW: "New",
-        CONTACTED: "Contacted",
-        VISIT_SCHEDULED: "Visit scheduled",
-        CLOSED: "Closed",
-        NOT_INTERESTED: "Not interested",
-      } as Record<string, string>,
-      mandateStatuses: {
-        NEW: "New",
-        CONTACTED: "Contacted",
-        IN_PROGRESS: "In progress",
-        CLOSED: "Closed",
-        NOT_INTERESTED: "Not interested",
-      } as Record<string, string>,
-      new: "New",
-      total: "Total",
-      tabs: "Request types",
-    };
+        propertyRequests: "Property requests from the website",
+        mandateRequests: "Registered acquisition mandates",
+        propertyTab: "Property requests",
+        mandatesTab: "Acquisition mandates",
+        noRequests: "No property requests yet.",
+        noMandates: "No acquisition mandates yet.",
+        save: "Save",
+        enquiryStatuses: {
+          NEW: "New",
+          CONTACTED: "Contacted",
+          VISIT_SCHEDULED: "Visit scheduled",
+          CLOSED: "Closed",
+          NOT_INTERESTED: "Not interested",
+        } as Record<string, string>,
+        mandateStatuses: {
+          NEW: "New",
+          CONTACTED: "Contacted",
+          IN_PROGRESS: "In progress",
+          CLOSED: "Closed",
+          NOT_INTERESTED: "Not interested",
+        } as Record<string, string>,
+        new: "New",
+        total: "Total",
+        tabs: "Request types",
+      };
 
   const isProperty = tab === "property";
   const newCount = isProperty ? propertyNew : mandateNew;
-  const totalCount = isProperty ? enquiries.length : mandates.length;
+  const totalCount = isProperty ? totalEnquiries : totalMandates;
 
   return (
     <main
@@ -276,22 +481,35 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
             {isProperty ? labels.propertyRequests : labels.mandateRequests}
           </h2>
 
-          {/* Counters (for the active tab) */}
           <div className="flex items-stretch gap-3">
             <div className={`flex items-center gap-3 rounded-2xl ${CARD_BG} px-5 py-3`}>
-              <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-[#A98950]" />
-              <span className={`${serif.className} text-4xl font-bold leading-none text-[#0C3826]`}>
+              <span
+                aria-hidden="true"
+                className="h-2.5 w-2.5 rounded-full bg-[#A98950]"
+              />
+              <span
+                className={`${serif.className} text-4xl font-bold leading-none text-[#0C3826]`}
+              >
                 {newCount}
               </span>
-              <span className="text-sm font-medium text-neutral-500">{labels.new}</span>
+              <span className="text-sm font-medium text-neutral-500">
+                {labels.new}
+              </span>
             </div>
 
             <div className={`flex items-center gap-3 rounded-2xl ${CARD_BG} px-5 py-3`}>
-              <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-neutral-300" />
-              <span className={`${serif.className} text-4xl font-bold leading-none text-[#0C3826]`}>
+              <span
+                aria-hidden="true"
+                className="h-2.5 w-2.5 rounded-full bg-neutral-300"
+              />
+              <span
+                className={`${serif.className} text-4xl font-bold leading-none text-[#0C3826]`}
+              >
                 {totalCount}
               </span>
-              <span className="text-sm font-medium text-neutral-500">{labels.total}</span>
+              <span className="text-sm font-medium text-neutral-500">
+                {labels.total}
+              </span>
             </div>
           </div>
         </div>
@@ -303,8 +521,18 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
         >
           {(
             [
-              { key: "property", label: labels.propertyTab, fresh: propertyNew, total: enquiries.length },
-              { key: "mandates", label: labels.mandatesTab, fresh: mandateNew, total: mandates.length },
+              {
+                key: "property",
+                label: labels.propertyTab,
+                fresh: propertyNew,
+                total: totalEnquiries,
+              },
+              {
+                key: "mandates",
+                label: labels.mandatesTab,
+                fresh: mandateNew,
+                total: totalMandates,
+              },
             ] as const
           ).map((item) => (
             <button
@@ -313,17 +541,24 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
               role="tab"
               aria-selected={tab === item.key}
               onClick={() => setTab(item.key)}
-              className={`-mb-px flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-colors ${tab === item.key
-                ? "border-[#0C3826] text-[#0C3826]"
-                : "border-transparent text-neutral-500 hover:text-neutral-800"
-                }`}
+              className={`-mb-px flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-colors ${
+                tab === item.key
+                  ? "border-[#0C3826] text-[#0C3826]"
+                  : "border-transparent text-neutral-500 hover:text-neutral-800"
+              }`}
             >
               {item.label}
+
               <span
-                className={`rounded-full px-2 py-0.5 text-xs ${item.fresh > 0 ? "bg-amber-100 text-amber-800" : "bg-neutral-100 text-neutral-600"
-                  }`}
+                className={`rounded-full px-2 py-0.5 text-xs ${
+                  item.fresh > 0
+                    ? "bg-amber-100 text-amber-800"
+                    : "bg-neutral-100 text-neutral-600"
+                }`}
               >
-                {item.fresh > 0 ? `${item.fresh} ${labels.new.toLowerCase()}` : item.total}
+                {item.fresh > 0
+                  ? `${item.fresh} ${labels.new.toLowerCase()}`
+                  : item.total}
               </span>
             </button>
           ))}
@@ -332,13 +567,15 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
         {/* PROPERTY REQUESTS */}
         {isProperty &&
           (enquiries.length === 0 ? (
-            <p className={`rounded-2xl ${CARD_BG} p-8 text-center text-base text-neutral-500`}>
+            <p
+              className={`rounded-2xl ${CARD_BG} p-8 text-center text-base text-neutral-500`}
+            >
               {labels.noRequests}
             </p>
           ) : (
             <>
               <div className="space-y-4">
-                {enquiries.slice(0, propertyScroll.visibleCount).map((enquiry) => (
+                {enquiries.map((enquiry) => (
                   <form
                     key={enquiry.id}
                     action={updateEnquiryStatus}
@@ -346,7 +583,9 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
                   >
                     <span
                       aria-hidden="true"
-                      className={`absolute inset-y-0 start-0 w-1.5 ${statusAccent[enquiry.status] ?? "bg-neutral-300"}`}
+                      className={`absolute inset-y-0 start-0 w-1.5 ${
+                        statusAccent[enquiry.status] ?? "bg-neutral-300"
+                      }`}
                     />
 
                     <div className="min-w-0 space-y-4">
@@ -365,15 +604,20 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
                         )}
 
                         <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusBadge[enquiry.status] ?? "bg-neutral-100 text-neutral-700"
-                            }`}
+                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                            statusBadge[enquiry.status] ??
+                            "bg-neutral-100 text-neutral-700"
+                          }`}
                         >
-                          {labels.enquiryStatuses[enquiry.status] ?? enquiry.status}
+                          {labels.enquiryStatuses[enquiry.status] ??
+                            enquiry.status}
                         </span>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-neutral-700">
-                        <span className="text-base font-semibold text-neutral-900">{enquiry.name}</span>
+                        <span className="text-base font-semibold text-neutral-900">
+                          {enquiry.name}
+                        </span>
 
                         {enquiry.phone && (
                           <a
@@ -399,13 +643,21 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
 
                       <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-600">
                         {enquiry.investorType && (
-                          <span className={`rounded-full ${INNER_BG} px-3 py-1`}>{enquiry.investorType}</span>
+                          <span
+                            className={`rounded-full ${INNER_BG} px-3 py-1`}
+                          >
+                            {enquiry.investorType}
+                          </span>
                         )}
+
                         {enquiry.source && (
-                          <span className={`rounded-full ${INNER_BG} px-3 py-1`}>
+                          <span
+                            className={`rounded-full ${INNER_BG} px-3 py-1`}
+                          >
                             {sourceLabel(enquiry.source, isArabic)}
                           </span>
                         )}
+
                         <span className="inline-flex items-center gap-1.5 text-neutral-500">
                           <Clock className="h-3.5 w-3.5" />
                           {formatDate(enquiry.createdAt, isArabic)}
@@ -413,7 +665,9 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
                       </div>
 
                       {enquiry.message && (
-                        <p className={`rounded-xl ${INNER_BG} px-4 py-3 text-sm leading-relaxed text-neutral-700`}>
+                        <p
+                          className={`rounded-xl ${INNER_BG} px-4 py-3 text-sm leading-relaxed text-neutral-700`}
+                        >
                           {enquiry.message}
                         </p>
                       )}
@@ -423,7 +677,9 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
                       id={enquiry.id}
                       status={enquiry.status}
                       statuses={labels.enquiryStatuses}
-                      ariaLabel={`Status for ${enquiry.propertyTitle ?? enquiry.name}`}
+                      ariaLabel={`Status for ${
+                        enquiry.propertyTitle ?? enquiry.name
+                      }`}
                       saveLabel={labels.save}
                     />
                   </form>
@@ -432,9 +688,12 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
 
               <LoadMore
                 hasMore={propertyScroll.hasMore}
+                loading={propertyScroll.loading}
+                error={propertyScroll.error}
+                retry={propertyScroll.retry}
                 sentinelRef={propertyScroll.sentinelRef}
-                shown={Math.min(propertyScroll.visibleCount, enquiries.length)}
-                total={enquiries.length}
+                shown={enquiries.length}
+                total={totalEnquiries}
                 isArabic={isArabic}
               />
             </>
@@ -443,13 +702,15 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
         {/* ACQUISITION MANDATES */}
         {!isProperty &&
           (mandates.length === 0 ? (
-            <p className={`rounded-2xl ${CARD_BG} p-8 text-center text-base text-neutral-500`}>
+            <p
+              className={`rounded-2xl ${CARD_BG} p-8 text-center text-base text-neutral-500`}
+            >
               {labels.noMandates}
             </p>
           ) : (
             <>
               <div className="space-y-4">
-                {mandates.slice(0, mandateScroll.visibleCount).map((mandate) => (
+                {mandates.map((mandate) => (
                   <form
                     key={mandate.id}
                     action={updateMandateStatusFormAction}
@@ -457,7 +718,9 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
                   >
                     <span
                       aria-hidden="true"
-                      className={`absolute inset-y-0 start-0 w-1.5 ${statusAccent[mandate.status] ?? "bg-neutral-300"}`}
+                      className={`absolute inset-y-0 start-0 w-1.5 ${
+                        statusAccent[mandate.status] ?? "bg-neutral-300"
+                      }`}
                     />
 
                     <div className="min-w-0 space-y-4">
@@ -465,11 +728,15 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
                         <span className="break-words text-lg font-semibold leading-snug text-[#0C3826]">
                           {mandate.name}
                         </span>
+
                         <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusBadge[mandate.status] ?? "bg-neutral-100 text-neutral-700"
-                            }`}
+                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                            statusBadge[mandate.status] ??
+                            "bg-neutral-100 text-neutral-700"
+                          }`}
                         >
-                          {labels.mandateStatuses[mandate.status] ?? mandate.status}
+                          {labels.mandateStatuses[mandate.status] ??
+                            mandate.status}
                         </span>
                       </div>
 
@@ -482,6 +749,7 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
                           <Phone className="h-4 w-4 shrink-0 text-neutral-400" />
                           {mandate.phone}
                         </a>
+
                         <a
                           href={`mailto:${mandate.email}`}
                           className="inline-flex items-center gap-2 break-all hover:text-[#0C3826] hover:underline"
@@ -492,18 +760,36 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-600">
-                        <span className={`rounded-full ${INNER_BG} px-3 py-1`}>{mandate.investorType}</span>
+                        <span
+                          className={`rounded-full ${INNER_BG} px-3 py-1`}
+                        >
+                          {mandate.investorType}
+                        </span>
+
                         {mandate.allocationTier && (
-                          <span className={`rounded-full ${INNER_BG} px-3 py-1`}>{mandate.allocationTier}</span>
+                          <span
+                            className={`rounded-full ${INNER_BG} px-3 py-1`}
+                          >
+                            {mandate.allocationTier}
+                          </span>
                         )}
+
                         {mandate.region && (
-                          <span className={`rounded-full ${INNER_BG} px-3 py-1`}>{mandate.region}</span>
+                          <span
+                            className={`rounded-full ${INNER_BG} px-3 py-1`}
+                          >
+                            {mandate.region}
+                          </span>
                         )}
+
                         {mandate.source && (
-                          <span className={`rounded-full ${INNER_BG} px-3 py-1`}>
+                          <span
+                            className={`rounded-full ${INNER_BG} px-3 py-1`}
+                          >
                             {sourceLabel(mandate.source, isArabic)}
                           </span>
                         )}
+
                         <span className="inline-flex items-center gap-1.5 text-neutral-500">
                           <Clock className="h-3.5 w-3.5" />
                           {formatDate(mandate.createdAt, isArabic)}
@@ -532,9 +818,12 @@ export default function AdminReviewPanel({ enquiries, mandates }: AdminReviewPan
 
               <LoadMore
                 hasMore={mandateScroll.hasMore}
+                loading={mandateScroll.loading}
+                error={mandateScroll.error}
+                retry={mandateScroll.retry}
                 sentinelRef={mandateScroll.sentinelRef}
-                shown={Math.min(mandateScroll.visibleCount, mandates.length)}
-                total={mandates.length}
+                shown={mandates.length}
+                total={totalMandates}
                 isArabic={isArabic}
               />
             </>

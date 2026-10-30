@@ -4,81 +4,110 @@ import { prisma } from "@/lib/prisma";
 import AdminReviewPanel from "./admin-review-panel";
 import AdminLayout from "../admin-layout";
 
+const PAGE_SIZE = 15;
+
 export default async function ReviewPage() {
   await requireAdmin();
 
   const [
-    applications,
-    listings,
-    reports,
     enquiries,
     mandates,
+    totalEnquiries,
+    newEnquiries,
+    totalMandates,
+    newMandates,
   ] = await Promise.all([
-    prisma.agentApplication.findMany({
-      where: { status: "PENDING" },
-      orderBy: { createdAt: "asc" },
-      include: { user: { select: { name: true, email: true } } },
-    }),
-    prisma.listing.findMany({
-      where: { status: "PENDING_REVIEW" },
-      orderBy: { createdAt: "asc" },
-      include: { owner: { select: { email: true, role: true } } },
-    }),
-    prisma.report.findMany({
-      where: { status: "OPEN" },
-      orderBy: { createdAt: "asc" },
-      include: {
-        listing: { select: { title: true, slug: true, status: true } },
-        reporter: { select: { email: true } },
+    prisma.enquiry.findMany({
+      orderBy: [
+        { createdAt: "desc" },
+        { id: "desc" },
+      ],
+      take: PAGE_SIZE,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        message: true,
+        investorType: true,
+        status: true,
+        source: true,
+        createdAt: true,
+        propertyTitle: true,
+        propertySlug: true,
+        listing: {
+          select: {
+            title: true,
+            slug: true,
+          },
+        },
       },
     }),
-    prisma.enquiry.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 100,
-      include: { listing: { select: { title: true, slug: true } } },
-    }),
+
     prisma.acquisitionMandate.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 100,
+      orderBy: [
+        { createdAt: "desc" },
+        { id: "desc" },
+      ],
+      take: PAGE_SIZE,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        investorType: true,
+        allocationTier: true,
+        region: true,
+        message: true,
+        source: true,
+        status: true,
+        createdAt: true,
+      },
+    }),
+
+    prisma.enquiry.count(),
+
+    prisma.enquiry.count({
+      where: { status: "NEW" },
+    }),
+
+    prisma.acquisitionMandate.count(),
+
+    prisma.acquisitionMandate.count({
+      where: { status: "NEW" },
     }),
   ]);
+
+  const serializedEnquiries = enquiries.map((enquiry) => ({
+    id: enquiry.id,
+    name: enquiry.name,
+    email: enquiry.email,
+    phone: enquiry.phone,
+    message: enquiry.message,
+    investorType: enquiry.investorType,
+    status: enquiry.status,
+    source: enquiry.source,
+    createdAt: enquiry.createdAt.toISOString(),
+    propertyTitle: enquiry.listing?.title ?? enquiry.propertyTitle,
+    propertySlug: enquiry.listing?.slug ?? enquiry.propertySlug,
+  }));
+
+  const serializedMandates = mandates.map((mandate) => ({
+    ...mandate,
+    createdAt: mandate.createdAt.toISOString(),
+  }));
 
   return (
     <AdminLayout>
       <AdminReviewPanel
-        applications={applications}
-        mandates={mandates.map((mandate) => ({
-          ...mandate,
-          createdAt: mandate.createdAt.toISOString(),
-          updatedAt: mandate.updatedAt.toISOString(),
-        }))}
-        enquiries={enquiries.map((enquiry) => ({
-          id: enquiry.id,
-          name: enquiry.name,
-          email: enquiry.email,
-          phone: enquiry.phone,
-          message: enquiry.message,
-          investorType: enquiry.investorType,
-          status: enquiry.status,
-          source: enquiry.source,
-          createdAt: enquiry.createdAt.toISOString(),
-          propertyTitle: enquiry.listing?.title ?? enquiry.propertyTitle,
-          propertySlug: enquiry.listing?.slug ?? enquiry.propertySlug,
-        }))}
-        listings={listings.map((listing) => ({
-          ...listing,
-          price: Number(listing.price),
-        }))}
-        reports={reports.map((report) => ({
-          ...report,
-          createdAt: report.createdAt.toISOString(),
-          details:
-            report.details == null
-              ? null
-              : typeof report.details === "string"
-                ? report.details
-                : JSON.stringify(report.details),
-        }))}
+        enquiries={serializedEnquiries}
+        mandates={serializedMandates}
+        totalEnquiries={totalEnquiries}
+        newEnquiries={newEnquiries}
+        totalMandates={totalMandates}
+        newMandates={newMandates}
+        enquiriesHasMore={totalEnquiries > enquiries.length}
+        mandatesHasMore={totalMandates > mandates.length}
       />
     </AdminLayout>
   );
