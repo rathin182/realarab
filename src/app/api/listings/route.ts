@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { listingToProperty } from "@/lib/listing-property";
+import { listingCardSelect, listingToProperty } from "@/lib/listing-property";
 import { Prisma } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     const listings = await prisma.listing.findMany({
       where: { status: "LIVE" },
       orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
-      include: { media: { orderBy: { position: "asc" } } },
+      select: listingCardSelect,
     });
     return Response.json(listings.map(listingToProperty));
   }
@@ -101,18 +101,28 @@ export async function GET(request: Request) {
           ? [{ title: "asc" }, { id: "asc" }]
           : [{ publishedAt: "desc" }, { createdAt: "desc" }, { id: "asc" }];
 
-  const [listings, total, cityOptions, typeOptions] = await Promise.all([
+  const [listings, total, options] = await Promise.all([
     prisma.listing.findMany({
       where,
       orderBy,
       skip: (page - 1) * pageSize,
       take: pageSize,
-      include: { media: { orderBy: { position: "asc" } } },
+      select: listingCardSelect,
     }),
     prisma.listing.count({ where }),
-    prisma.listing.findMany({ where: { status: "LIVE" }, select: { city: true }, distinct: ["city"], orderBy: { city: "asc" } }),
-    prisma.listing.findMany({ where: { status: "LIVE", propertyType: { not: null } }, select: { propertyType: true }, distinct: ["propertyType"], orderBy: { propertyType: "asc" } }),
+    prisma.$queryRaw<{ cities: string[]; types: string[] }[]>`
+      SELECT
+        COALESCE(array_agg(DISTINCT city ORDER BY city), ARRAY[]::text[]) AS cities,
+        COALESCE(
+          array_agg(DISTINCT "propertyType" ORDER BY "propertyType")
+            FILTER (WHERE "propertyType" IS NOT NULL),
+          ARRAY[]::text[]
+        ) AS types
+      FROM "Listing"
+      WHERE status = 'LIVE'
+    `,
   ]);
+  const [listingOptions] = options;
 
   return Response.json({
     items: listings.map(listingToProperty),
@@ -120,9 +130,9 @@ export async function GET(request: Request) {
     page,
     pageSize,
     hasMore: page * pageSize < total,
-    cities: cityOptions.map((item) => item.city),
+    cities: listingOptions.cities,
     types: [...new Set([
-      ...typeOptions.flatMap((item) => item.propertyType ? [item.propertyType] : []),
+      ...listingOptions.types,
       "residential", "commercial", "land",
     ])].sort(),
   });

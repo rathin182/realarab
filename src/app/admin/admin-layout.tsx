@@ -16,7 +16,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div dir={isArabic ? "rtl" : "ltr"} className={`min-h-screen bg-[#f3f1eb] text-[#24231f] md:grid md:grid-cols-[220px_minmax(0,1fr)] ${isViewportSection ? "md:h-[calc(100dvh-5rem)] md:min-h-0 md:overflow-hidden" : ""}`}>
       <aside className={`flex flex-col border-r border-[#e3dfd5] bg-[#faf9f5] p-4 ${isViewportSection ? "md:h-full md:min-h-0 md:overflow-y-auto" : "md:min-h-screen"}`}>
-        <Link href="/admin" className="mb-8 flex items-center gap-3 px-2 py-3 font-serif text-xl"><Building2 className="h-6 w-6 text-[#8f7654]" /> NAJAM {isArabic ? "الإدارة" : "Admin"}</Link>
+        <Link href="/admin" className="mb-8 flex items-center gap-3 px-2 py-3 font-serif text-xl"><Building2 className="h-6 w-6 text-[#8f7654]" /> NAJM {isArabic ? "الإدارة" : "Admin"}</Link>
         <nav aria-label={isArabic ? "أقسام الإدارة" : "Admin sections"} className="space-y-1 text-sm">
           <Link href="/admin" aria-current={pathname === "/admin" ? "page" : undefined} className={linkClass(pathname === "/admin")}><LayoutDashboard className="h-4 w-4" />{isArabic ? "لوحة التحكم" : "Dashboard"}</Link>
           <Link href="/admin/properties" aria-current={pathname.startsWith("/admin/properties") ? "page" : undefined} className={linkClass(pathname.startsWith("/admin/properties"))}><Building2 className="h-4 w-4" />{isArabic ? "العقارات" : "Properties"}</Link>
