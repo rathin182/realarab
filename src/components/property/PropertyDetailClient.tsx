@@ -295,7 +295,7 @@ export const PropertyDetailClient: React.FC<PropertyDetailClientProps> = ({ prop
               <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-neutral-400 mb-4">
                 {isAr ? 'المواصفات الهندسية الأساسية' : '01. Spatial & Architectural Metrics'}
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 bg-neutral-50 border border-neutral-200">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 p-6 bg-neutral-50 border border-neutral-200">
                 <div className="space-y-1">
                   <div className="flex items-center gap-1.5 text-neutral-500 text-xs font-mono uppercase">
                     <Maximize className="w-3.5 h-3.5" />
@@ -327,6 +327,11 @@ export const PropertyDetailClient: React.FC<PropertyDetailClientProps> = ({ prop
                   </div>
                   <div className="font-serif text-2xl text-[#0C3826]">{property.projectedYield}</div>
                 </div>
+
+                {property.furnished !== undefined && <div className="space-y-1">
+                  <div className="text-neutral-500 text-xs font-mono uppercase">{isAr ? 'التأثيث' : 'Furnishing'}</div>
+                  <div className="font-serif text-2xl text-[#0C3826]">{property.furnished ? (isAr ? 'مفروش' : 'Furnished') : (isAr ? 'غير مفروش' : 'Unfurnished')}</div>
+                </div>}
               </div>
             </div>
 

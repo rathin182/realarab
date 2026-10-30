@@ -1429,6 +1429,7 @@ export const ListingScalarFieldEnum = {
   featured: 'featured',
   bedrooms: 'bedrooms',
   bathrooms: 'bathrooms',
+  furnished: 'furnished',
   floors: 'floors',
   yearBuilt: 'yearBuilt',
   areaSqft: 'areaSqft',

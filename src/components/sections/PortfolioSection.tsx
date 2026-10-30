@@ -1,9 +1,8 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Currency, Language, PortfolioTier, Property, TransactionFilter } from '../../types';
-import { formatPrice } from '../../lib/currency';
-import { ChevronDown, ArrowUpRight, MapPin, Maximize, Check } from 'lucide-react';
-import { motion } from 'motion/react';
+import { ChevronDown, ArrowUpRight, Check } from 'lucide-react';
+import { PropertyCard } from '../property/PropertyCard';
 
 interface PortfolioSectionProps {
   currency: Currency;
@@ -256,72 +255,13 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
 
         {/* Property Grid */}
         {isLoading ? <p className="py-12 text-center text-sm text-neutral-500">Loading properties...</p> : <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-10">
-          {visibleProperties.map((property) => (
-            <motion.div
-              key={property.id}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="group flex h-full flex-col"
-            >
-              {/* Image */}
-              <Link
-                href={`/properties/${property.id}`}
-                className="relative block aspect-[4/3] overflow-hidden rounded-2xl bg-neutral-100"
-              >
-                <img
-                  src={property.image}
-                  alt={property.title}
-                  referrerPolicy="no-referrer"
-                  className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                />
-                <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
-                  <span className="rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-medium capitalize text-neutral-900 shadow-sm backdrop-blur">
-                    {property.transaction}
-                  </span>
-                  <span className="rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-medium capitalize text-neutral-900 shadow-sm backdrop-blur">
-                    {property.type}
-                  </span>
-                </div>
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                <span className="absolute bottom-3 right-3 flex h-9 w-9 translate-y-2 items-center justify-center rounded-full bg-white text-neutral-900 opacity-0 shadow-md transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                  <ArrowUpRight className="h-4 w-4" />
-                </span>
-              </Link>
-
-              {/* Body */}
-              <div className="flex flex-1 flex-col px-1 pt-4">
-                <p className="text-lg tabular-nums tracking-tight text-neutral-900">
-                  {property.priceSAR > 0 ? formatPrice(property.priceSAR, currency) : (isAr ? 'حسب الطلب' : 'Price on request')}
-                </p>
-                <Link href={`/properties/${property.id}`}>
-                  <h4 className="mt-1 line-clamp-1 text-sm text-neutral-800 group-hover:underline group-hover:underline-offset-4">
-                    {isAr ? property.titleAr : property.title}
-                  </h4>
-                </Link>
-                <p className="mt-1 flex items-center gap-1.5 text-xs text-neutral-500">
-                  <MapPin className="h-3.5 w-3.5 shrink-0" />
-                  <span className="line-clamp-1">{isAr ? property.locationAr : property.location}</span>
-                </p>
-                <div className="min-h-3 flex-1" aria-hidden="true" />
-                <div className="flex items-end justify-between gap-3 border-t border-neutral-100 pt-3 text-xs text-neutral-600">
-                  <p className="flex flex-wrap items-center gap-x-2">
-                    {property.bedrooms > 0 && <span>{property.bedrooms} {isAr ? 'غرف' : 'bd'}</span>}
-                    {property.bathrooms > 0 && <span className="before:mr-2 before:text-neutral-300 before:content-['•']">{property.bathrooms} {isAr ? 'حمام' : 'ba'}</span>}
-                    {property.sizeSqm > 0 && <span className="before:mr-2 before:text-neutral-300 before:content-['•']"><Maximize className="mr-1 inline h-3 w-3" />{property.sizeSqm} m²</span>}
-                  </p>
-                  <span className="shrink-0 text-[10px] text-neutral-400">{property.city}</span>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+          {visibleProperties.map((property) => <PropertyCard key={property.id} property={property} currency={currency} language={language} animated />)}
         </div>}
         {filteredProperties.length > 0 && (
           <div className="mt-12 flex justify-center">
             <Link
               href="/properties"
-              className="group inline-flex min-h-12 items-center gap-5 border border-[#0C3826]/20 bg-white px-6 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#0C3826] transition-colors hover:border-[#0C3826] hover:bg-[#0C3826] hover:text-white"
+              className="group inline-flex min-h-12 items-center gap-5 border border-[#0C3826]/20 bg-white px-6 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#0C3826] transition-colors hover:border-[#0C3826] hover:bg-[#0C3826] hover:text-white rounded-full"
             >
               <span>{isAr ? 'عرض جميع العقارات' : 'View all properties'}</span>
               <span className="font-mono text-[9px] opacity-60">{filteredProperties.length.toString().padStart(2, '0')}</span>

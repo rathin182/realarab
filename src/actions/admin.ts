@@ -222,6 +222,7 @@ export async function createAdminListing(formData: FormData) {
       areaSqm: formData.get("areaSqm") ? areaSqm : null,
       bedrooms: propertyType !== "LAND" && formData.get("bedrooms") ? bedrooms : null,
       bathrooms: propertyType !== "LAND" && formData.get("bathrooms") ? bathrooms : null,
+      furnished: formData.get("furnished") === "true",
       floors: formData.get("floors") ? floors : null,
       yearBuilt: formData.get("yearBuilt") ? yearBuilt : null,
       zoning: String(formData.get("zoning") ?? "").trim() || null,
@@ -339,6 +340,7 @@ export async function updateAdminListing(formData: FormData) {
   const status = String(formData.get("status") ?? "");
   const bedroomsValue = String(formData.get("bedrooms") ?? "").trim();
   const bathroomsValue = String(formData.get("bathrooms") ?? "").trim();
+  const furnished = formData.get("furnished") === "true";
   const areaSqmValue = String(formData.get("areaSqm") ?? "").trim();
   const bedrooms = bedroomsValue ? Number(bedroomsValue) : null;
   const bathrooms = bathroomsValue ? Number(bathroomsValue) : null;
@@ -377,6 +379,7 @@ export async function updateAdminListing(formData: FormData) {
         status: status as "DRAFT" | "PENDING_REVIEW" | "LIVE" | "REJECTED" | "EXPIRED" | "SOLD_OR_RENTED" | "ARCHIVED",
         bedrooms,
         bathrooms,
+        furnished,
         areaSqm,
         ...(status === "LIVE" && !listing.publishedAt ? { publishedAt: new Date() } : {}),
       },

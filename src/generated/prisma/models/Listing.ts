@@ -70,6 +70,7 @@ export type ListingMinAggregateOutputType = {
   featured: boolean | null
   bedrooms: number | null
   bathrooms: number | null
+  furnished: boolean | null
   floors: number | null
   yearBuilt: number | null
   areaSqft: number | null
@@ -117,6 +118,7 @@ export type ListingMaxAggregateOutputType = {
   featured: boolean | null
   bedrooms: number | null
   bathrooms: number | null
+  furnished: boolean | null
   floors: number | null
   yearBuilt: number | null
   areaSqft: number | null
@@ -164,6 +166,7 @@ export type ListingCountAggregateOutputType = {
   featured: number
   bedrooms: number
   bathrooms: number
+  furnished: number
   floors: number
   yearBuilt: number
   areaSqft: number
@@ -246,6 +249,7 @@ export type ListingMinAggregateInputType = {
   featured?: true
   bedrooms?: true
   bathrooms?: true
+  furnished?: true
   floors?: true
   yearBuilt?: true
   areaSqft?: true
@@ -293,6 +297,7 @@ export type ListingMaxAggregateInputType = {
   featured?: true
   bedrooms?: true
   bathrooms?: true
+  furnished?: true
   floors?: true
   yearBuilt?: true
   areaSqft?: true
@@ -340,6 +345,7 @@ export type ListingCountAggregateInputType = {
   featured?: true
   bedrooms?: true
   bathrooms?: true
+  furnished?: true
   floors?: true
   yearBuilt?: true
   areaSqft?: true
@@ -477,6 +483,7 @@ export type ListingGroupByOutputType = {
   featured: boolean
   bedrooms: number | null
   bathrooms: number | null
+  furnished: boolean
   floors: number | null
   yearBuilt: number | null
   areaSqft: number | null
@@ -550,6 +557,7 @@ export type ListingWhereInput = {
   featured?: Prisma.BoolFilter<"Listing"> | boolean
   bedrooms?: Prisma.IntNullableFilter<"Listing"> | number | null
   bathrooms?: Prisma.IntNullableFilter<"Listing"> | number | null
+  furnished?: Prisma.BoolFilter<"Listing"> | boolean
   floors?: Prisma.IntNullableFilter<"Listing"> | number | null
   yearBuilt?: Prisma.IntNullableFilter<"Listing"> | number | null
   areaSqft?: Prisma.IntNullableFilter<"Listing"> | number | null
@@ -605,6 +613,7 @@ export type ListingOrderByWithRelationInput = {
   featured?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrderInput | Prisma.SortOrder
   bathrooms?: Prisma.SortOrderInput | Prisma.SortOrder
+  furnished?: Prisma.SortOrder
   floors?: Prisma.SortOrderInput | Prisma.SortOrder
   yearBuilt?: Prisma.SortOrderInput | Prisma.SortOrder
   areaSqft?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -663,6 +672,7 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
   featured?: Prisma.BoolFilter<"Listing"> | boolean
   bedrooms?: Prisma.IntNullableFilter<"Listing"> | number | null
   bathrooms?: Prisma.IntNullableFilter<"Listing"> | number | null
+  furnished?: Prisma.BoolFilter<"Listing"> | boolean
   floors?: Prisma.IntNullableFilter<"Listing"> | number | null
   yearBuilt?: Prisma.IntNullableFilter<"Listing"> | number | null
   areaSqft?: Prisma.IntNullableFilter<"Listing"> | number | null
@@ -718,6 +728,7 @@ export type ListingOrderByWithAggregationInput = {
   featured?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrderInput | Prisma.SortOrder
   bathrooms?: Prisma.SortOrderInput | Prisma.SortOrder
+  furnished?: Prisma.SortOrder
   floors?: Prisma.SortOrderInput | Prisma.SortOrder
   yearBuilt?: Prisma.SortOrderInput | Prisma.SortOrder
   areaSqft?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -776,6 +787,7 @@ export type ListingScalarWhereWithAggregatesInput = {
   featured?: Prisma.BoolWithAggregatesFilter<"Listing"> | boolean
   bedrooms?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null
   bathrooms?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null
+  furnished?: Prisma.BoolWithAggregatesFilter<"Listing"> | boolean
   floors?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null
   yearBuilt?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null
   areaSqft?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null
@@ -825,6 +837,7 @@ export type ListingCreateInput = {
   featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  furnished?: boolean
   floors?: number | null
   yearBuilt?: number | null
   areaSqft?: number | null
@@ -880,6 +893,7 @@ export type ListingUncheckedCreateInput = {
   featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  furnished?: boolean
   floors?: number | null
   yearBuilt?: number | null
   areaSqft?: number | null
@@ -933,6 +947,7 @@ export type ListingUpdateInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -988,6 +1003,7 @@ export type ListingUncheckedUpdateInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1042,6 +1058,7 @@ export type ListingCreateManyInput = {
   featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  furnished?: boolean
   floors?: number | null
   yearBuilt?: number | null
   areaSqft?: number | null
@@ -1091,6 +1108,7 @@ export type ListingUpdateManyMutationInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1141,6 +1159,7 @@ export type ListingUncheckedUpdateManyInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1209,6 +1228,7 @@ export type ListingCountOrderByAggregateInput = {
   featured?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
+  furnished?: Prisma.SortOrder
   floors?: Prisma.SortOrder
   yearBuilt?: Prisma.SortOrder
   areaSqft?: Prisma.SortOrder
@@ -1274,6 +1294,7 @@ export type ListingMaxOrderByAggregateInput = {
   featured?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
+  furnished?: Prisma.SortOrder
   floors?: Prisma.SortOrder
   yearBuilt?: Prisma.SortOrder
   areaSqft?: Prisma.SortOrder
@@ -1321,6 +1342,7 @@ export type ListingMinOrderByAggregateInput = {
   featured?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
+  furnished?: Prisma.SortOrder
   floors?: Prisma.SortOrder
   yearBuilt?: Prisma.SortOrder
   areaSqft?: Prisma.SortOrder
@@ -1559,6 +1581,7 @@ export type ListingCreateWithoutOwnerInput = {
   featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  furnished?: boolean
   floors?: number | null
   yearBuilt?: number | null
   areaSqft?: number | null
@@ -1612,6 +1635,7 @@ export type ListingUncheckedCreateWithoutOwnerInput = {
   featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  furnished?: boolean
   floors?: number | null
   yearBuilt?: number | null
   areaSqft?: number | null
@@ -1695,6 +1719,7 @@ export type ListingScalarWhereInput = {
   featured?: Prisma.BoolFilter<"Listing"> | boolean
   bedrooms?: Prisma.IntNullableFilter<"Listing"> | number | null
   bathrooms?: Prisma.IntNullableFilter<"Listing"> | number | null
+  furnished?: Prisma.BoolFilter<"Listing"> | boolean
   floors?: Prisma.IntNullableFilter<"Listing"> | number | null
   yearBuilt?: Prisma.IntNullableFilter<"Listing"> | number | null
   areaSqft?: Prisma.IntNullableFilter<"Listing"> | number | null
@@ -1744,6 +1769,7 @@ export type ListingCreateWithoutMediaInput = {
   featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  furnished?: boolean
   floors?: number | null
   yearBuilt?: number | null
   areaSqft?: number | null
@@ -1798,6 +1824,7 @@ export type ListingUncheckedCreateWithoutMediaInput = {
   featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  furnished?: boolean
   floors?: number | null
   yearBuilt?: number | null
   areaSqft?: number | null
@@ -1866,6 +1893,7 @@ export type ListingUpdateWithoutMediaInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1920,6 +1948,7 @@ export type ListingUncheckedUpdateWithoutMediaInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1972,6 +2001,7 @@ export type ListingCreateWithoutEnquiriesInput = {
   featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  furnished?: boolean
   floors?: number | null
   yearBuilt?: number | null
   areaSqft?: number | null
@@ -2026,6 +2056,7 @@ export type ListingUncheckedCreateWithoutEnquiriesInput = {
   featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  furnished?: boolean
   floors?: number | null
   yearBuilt?: number | null
   areaSqft?: number | null
@@ -2094,6 +2125,7 @@ export type ListingUpdateWithoutEnquiriesInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2148,6 +2180,7 @@ export type ListingUncheckedUpdateWithoutEnquiriesInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2200,6 +2233,7 @@ export type ListingCreateWithoutSavesInput = {
   featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  furnished?: boolean
   floors?: number | null
   yearBuilt?: number | null
   areaSqft?: number | null
@@ -2254,6 +2288,7 @@ export type ListingUncheckedCreateWithoutSavesInput = {
   featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  furnished?: boolean
   floors?: number | null
   yearBuilt?: number | null
   areaSqft?: number | null
@@ -2322,6 +2357,7 @@ export type ListingUpdateWithoutSavesInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2376,6 +2412,7 @@ export type ListingUncheckedUpdateWithoutSavesInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2428,6 +2465,7 @@ export type ListingCreateWithoutReportsInput = {
   featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  furnished?: boolean
   floors?: number | null
   yearBuilt?: number | null
   areaSqft?: number | null
@@ -2482,6 +2520,7 @@ export type ListingUncheckedCreateWithoutReportsInput = {
   featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  furnished?: boolean
   floors?: number | null
   yearBuilt?: number | null
   areaSqft?: number | null
@@ -2550,6 +2589,7 @@ export type ListingUpdateWithoutReportsInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2604,6 +2644,7 @@ export type ListingUncheckedUpdateWithoutReportsInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2656,6 +2697,7 @@ export type ListingCreateManyOwnerInput = {
   featured?: boolean
   bedrooms?: number | null
   bathrooms?: number | null
+  furnished?: boolean
   floors?: number | null
   yearBuilt?: number | null
   areaSqft?: number | null
@@ -2705,6 +2747,7 @@ export type ListingUpdateWithoutOwnerInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2758,6 +2801,7 @@ export type ListingUncheckedUpdateWithoutOwnerInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2811,6 +2855,7 @@ export type ListingUncheckedUpdateManyWithoutOwnerInput = {
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  furnished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   floors?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   yearBuilt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   areaSqft?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2919,6 +2964,7 @@ export type ListingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   featured?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
+  furnished?: boolean
   floors?: boolean
   yearBuilt?: boolean
   areaSqft?: boolean
@@ -2975,6 +3021,7 @@ export type ListingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   featured?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
+  furnished?: boolean
   floors?: boolean
   yearBuilt?: boolean
   areaSqft?: boolean
@@ -3026,6 +3073,7 @@ export type ListingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   featured?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
+  furnished?: boolean
   floors?: boolean
   yearBuilt?: boolean
   areaSqft?: boolean
@@ -3077,6 +3125,7 @@ export type ListingSelectScalar = {
   featured?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
+  furnished?: boolean
   floors?: boolean
   yearBuilt?: boolean
   areaSqft?: boolean
@@ -3113,7 +3162,7 @@ export type ListingSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "slug" | "title" | "description" | "listingType" | "category" | "propertyType" | "price" | "priceNegotiable" | "featured" | "bedrooms" | "bathrooms" | "floors" | "yearBuilt" | "areaSqft" | "addressLine" | "locality" | "city" | "state" | "pincode" | "latitude" | "longitude" | "reraNumber" | "areaSqm" | "availableFrom" | "availabilityNotes" | "zoning" | "frontageMeters" | "depthMeters" | "propertyUse" | "tier" | "isOffPlan" | "badge" | "flags" | "amenities" | "keyFeatures" | "projectedYield" | "titleAr" | "locationAr" | "status" | "rejectionReason" | "publishedAt" | "expiresAt" | "viewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
+export type ListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "slug" | "title" | "description" | "listingType" | "category" | "propertyType" | "price" | "priceNegotiable" | "featured" | "bedrooms" | "bathrooms" | "furnished" | "floors" | "yearBuilt" | "areaSqft" | "addressLine" | "locality" | "city" | "state" | "pincode" | "latitude" | "longitude" | "reraNumber" | "areaSqm" | "availableFrom" | "availabilityNotes" | "zoning" | "frontageMeters" | "depthMeters" | "propertyUse" | "tier" | "isOffPlan" | "badge" | "flags" | "amenities" | "keyFeatures" | "projectedYield" | "titleAr" | "locationAr" | "status" | "rejectionReason" | "publishedAt" | "expiresAt" | "viewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
 export type ListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   media?: boolean | Prisma.Listing$mediaArgs<ExtArgs>
@@ -3152,6 +3201,7 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     featured: boolean
     bedrooms: number | null
     bathrooms: number | null
+    furnished: boolean
     floors: number | null
     yearBuilt: number | null
     areaSqft: number | null
@@ -3627,6 +3677,7 @@ export interface ListingFieldRefs {
   readonly featured: Prisma.FieldRef<"Listing", 'Boolean'>
   readonly bedrooms: Prisma.FieldRef<"Listing", 'Int'>
   readonly bathrooms: Prisma.FieldRef<"Listing", 'Int'>
+  readonly furnished: Prisma.FieldRef<"Listing", 'Boolean'>
   readonly floors: Prisma.FieldRef<"Listing", 'Int'>
   readonly yearBuilt: Prisma.FieldRef<"Listing", 'Int'>
   readonly areaSqft: Prisma.FieldRef<"Listing", 'Int'>

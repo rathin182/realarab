@@ -84,6 +84,7 @@ export default async function AdminPropertiesPage({ searchParams }: { searchPara
     featured: property.featured,
     bedrooms: property.bedrooms,
     bathrooms: property.bathrooms,
+    furnished: property.furnished,
     areaSqm: property.areaSqm,
     areaSqft: property.areaSqft,
     isOffPlan: property.isOffPlan,

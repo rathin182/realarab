@@ -24,6 +24,7 @@ export interface Property {
   sizeSqm: number;
   bedrooms: number;
   bathrooms: number;
+  furnished?: boolean;
   badge: string;
   badgeAr?: string;
   description: string;

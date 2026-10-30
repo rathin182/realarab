@@ -4,6 +4,7 @@ import { Currency, Property, TransactionFilter } from './types';
 import { useSiteLanguage } from './components/providers/LanguageContext';
 import { Footer } from './components/layout/Footer';
 import { HeroSection } from './components/sections/HeroSection';
+import { FeaturedPropertiesSection } from './components/sections/FeaturedPropertiesSection';
 import { PortfolioSection } from './components/sections/PortfolioSection';
 import { Vision2030Section } from './components/sections/Vision2030Section';
 import { FinancialAtelierSection } from './components/sections/FinancialAtelierSection';
@@ -59,6 +60,8 @@ export default function App() {
               ?.scrollIntoView({ behavior: 'smooth' });
           }}
         />
+
+        <FeaturedPropertiesSection currency={currency} language={language} />
 
         {/* Featured Projects & Portfolio */}
         <PortfolioSection

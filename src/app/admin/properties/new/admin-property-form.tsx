@@ -203,6 +203,7 @@ export default function AdminPropertyForm() {
   const [propertyType, setPropertyType] = useState("");
   const [listingStatus, setListingStatus] = useState("DRAFT");
   const [isOffPlan, setIsOffPlan] = useState(false);
+  const [isFurnished, setIsFurnished] = useState(false);
   const [propertyTypeError, setPropertyTypeError] = useState(false);
   const isLandType = ["LAND", "INDUSTRIAL_LAND", "MIXED_USE_LAND"].includes(propertyType);
 
@@ -364,6 +365,155 @@ export default function AdminPropertyForm() {
                 <input name="bathrooms" type="number" min="0" step="1" placeholder="3" className={fieldClass} />
               </label>
             </>}
+            
+<div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:col-span-2">
+
+  {/* FURNISHING STATUS */}
+  <fieldset className="min-w-0 rounded-xl border border-[#e5e0d5] bg-white p-4 sm:p-5">
+    <legend className="px-1 text-sm font-semibold text-[#172b20]">
+      {isArabic ? "حالة التأثيث" : "Furnishing Status"}
+    </legend>
+
+    <p className="mb-4 mt-1 text-xs text-neutral-500">
+      {isArabic
+        ? "حدد حالة تأثيث العقار"
+        : "Select the furnishing condition of the property"}
+    </p>
+
+    <input
+      type="hidden"
+      name="furnished"
+      value={isFurnished ? "true" : "false"}
+    />
+
+    <div className="grid grid-cols-2 gap-3">
+      {(
+        [
+          [true, isArabic ? "مفروش" : "Furnished"],
+          [false, isArabic ? "غير مفروش" : "Unfurnished"],
+        ] as const
+      ).map(([furnished, label]) => {
+        const selected = isFurnished === furnished;
+
+        return (
+          <button
+            key={String(furnished)}
+            type="button"
+            aria-pressed={selected}
+            onClick={() => setIsFurnished(furnished)}
+            className={`relative flex min-h-[76px] items-center justify-between gap-2 rounded-lg border px-3 py-3 text-left transition-all duration-200 ${
+              selected
+                ? "border-[#234532] bg-[#234532]/[0.05] text-[#234532] ring-1 ring-[#234532]/10"
+                : "border-[#e5e0d5] bg-[#faf9f6] text-neutral-600 hover:border-[#234532]/40 hover:bg-[#f4f1ea]"
+            }`}
+          >
+            <span className="text-sm font-medium">
+              {label}
+            </span>
+
+            <span
+              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors ${
+                selected
+                  ? "border-[#234532] bg-[#234532] text-white"
+                  : "border-neutral-300 bg-white"
+              }`}
+            >
+              {selected && (
+                <svg
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  className="h-3 w-3"
+                >
+                  <path
+                    d="M3.5 8L6.5 11L12.5 5"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              )}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  </fieldset>
+
+  {/* PROPERTY READINESS */}
+  <fieldset className="min-w-0 rounded-xl border border-[#e5e0d5] bg-white p-4 sm:p-5">
+    <legend className="px-1 text-sm font-semibold text-[#172b20]">
+      {isArabic ? "حالة العقار" : "Property Readiness"}
+    </legend>
+
+    <p className="mb-4 mt-1 text-xs text-neutral-500">
+      {isArabic
+        ? "حدد ما إذا كان العقار جاهزاً أم تحت الإنشاء"
+        : "Choose whether the property is ready or under development"}
+    </p>
+
+    <input
+      type="hidden"
+      name="isOffPlan"
+      value={isOffPlan ? "true" : "false"}
+    />
+
+    <div className="grid grid-cols-2 gap-3">
+      {(
+        [
+          [false, isArabic ? "جاهز" : "Ready"],
+          [true, isArabic ? "على الخارطة" : "Off-plan"],
+        ] as const
+      ).map(([offPlan, label]) => {
+        const selected = isOffPlan === offPlan;
+
+        return (
+          <button
+            key={String(offPlan)}
+            type="button"
+            aria-pressed={selected}
+            onClick={() => setIsOffPlan(offPlan)}
+            className={`relative flex min-h-[76px] items-center justify-between gap-2 rounded-lg border px-3 py-3 text-left transition-all duration-200 ${
+              selected
+                ? "border-[#234532] bg-[#234532]/[0.05] text-[#234532] ring-1 ring-[#234532]/10"
+                : "border-[#e5e0d5] bg-[#faf9f6] text-neutral-600 hover:border-[#234532]/40 hover:bg-[#f4f1ea]"
+            }`}
+          >
+            <span className="text-sm font-medium">
+              {label}
+            </span>
+
+            <span
+              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors ${
+                selected
+                  ? "border-[#234532] bg-[#234532] text-white"
+                  : "border-neutral-300 bg-white"
+              }`}
+            >
+              {selected && (
+                <svg
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  className="h-3 w-3"
+                >
+                  <path
+                    d="M3.5 8L6.5 11L12.5 5"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              )}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  </fieldset>
+
+</div>
+
             {isLandType && <>
               <label className="block text-sm font-medium">{isArabic ? "التصنيف التنظيمي" : "Zoning"}
                 <input name="zoning" placeholder={isArabic ? "سكني، تجاري، متعدد الاستخدامات" : "Residential, commercial, mixed-use"} className={fieldClass} />
@@ -386,17 +536,7 @@ export default function AdminPropertyForm() {
             {propertyCategory === "COMMERCIAL" && <label className="block text-sm font-medium sm:col-span-2">{isArabic ? "الاستخدام التجاري" : "Commercial use"}
               <input name="propertyUse" placeholder={isArabic ? "مكاتب، تجزئة، ضيافة، مستودعات" : "Office, retail, hospitality, warehouse"} className={fieldClass} />
             </label>}
-            <fieldset className="sm:col-span-2">
-              <legend className="text-sm font-medium">{isArabic ? "حالة العقار" : "Property readiness"}</legend>
-              <input type="hidden" name="isOffPlan" value={isOffPlan ? "true" : "false"} />
-              <div className="mt-2 grid max-w-xl grid-cols-2 gap-3">
-                {([[false, isArabic ? "جاهز" : "Ready"], [true, isArabic ? "على الخارطة" : "Off-plan"]] as const).map(([offPlan, label]) => (
-                  <button key={label} type="button" aria-pressed={isOffPlan === offPlan} onClick={() => setIsOffPlan(offPlan)} className={`min-h-11 rounded-md border px-4 text-sm transition-colors ${isOffPlan === offPlan ? "border-[#234532] bg-[#234532] font-medium text-white" : "border-[#d8d3c8] bg-white hover:bg-[#f4f1ea]"}`}>
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </fieldset>
+            
             <ChipInput name="keyFeatures" label={isArabic ? "الميزات الرئيسية" : "Key features"} placeholder={isArabic ? "أدخل ميزة أو أكثر" : "Enter one or more features"} note={isArabic ? "افصل كل ميزة بفاصلة؛ تُحفظ كل ميزة كعنصر منفصل." : "Separate each feature with a comma. Each feature is saved as its own item."} isArabic={isArabic} />
           </div>
         </section>

@@ -1,0 +1,1 @@
+ALTER TABLE "Listing" ADD COLUMN "furnished" BOOLEAN NOT NULL DEFAULT false;

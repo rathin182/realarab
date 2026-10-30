@@ -90,7 +90,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ language, onSearch }) 
           <form ref={dropdownRef} onSubmit={submitSearch} className="mt-12 grid w-full grid-cols-1 gap-2 rounded-3xl border border-white/55 bg-white/20 p-3 text-[#20231F] shadow-[0_18px_55px_-24px_rgba(0,0,0,0.55)] backdrop-blur-md sm:grid-cols-2 lg:mt-20 lg:grid-cols-[repeat(3,minmax(0,1fr))_auto] lg:items-center lg:gap-2 lg:rounded-full lg:p-2">
             <div className="relative">
             <button type="button" aria-haspopup="listbox" aria-expanded={openDropdown === 'location'} onClick={() => setOpenDropdown(openDropdown === 'location' ? null : 'location')} className="flex min-h-14 w-full items-center gap-3 rounded-full px-4 text-left transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C3826]/30">
-              <MapPin className="h-4 w-4 shrink-0 text-[#ffffff]" />
+              <MapPin className="h-4 w-4 shrink-0 text-[#EEEEEE]" />
               <span className="min-w-0 flex-1">
                 <span className="block text-[10px] text-[#EEEEEE]">{isAr ? 'الموقع' : 'Location'}</span>
                 <span className="block truncate text-sm font-light text-white">{city || (isAr ? 'جميع المدن' : 'All locations')}</span>
@@ -104,12 +104,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ language, onSearch }) 
 
             <div className="relative">
             <button type="button" aria-haspopup="listbox" aria-expanded={openDropdown === 'property'} onClick={() => setOpenDropdown(openDropdown === 'property' ? null : 'property')} className="flex min-h-14 w-full items-center gap-3 rounded-full px-4 text-left transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C3826]/30">
-              <BedDouble className="h-4 w-4 shrink-0 text-[#0C3826]" />
+              <BedDouble className="h-4 w-4 shrink-0 text-[#ffffff]" />
               <span className="min-w-0 flex-1">
-                <span className="block text-[10px] font-medium text-[#26352D]">{isAr ? 'نوع العقار' : 'Property Type'}</span>
-                <span className="block truncate text-sm font-medium text-[#20231F]">{propertyType || (isAr ? 'جميع الأنواع' : 'All types')}</span>
+                <span className="block text-[10px] font-medium text-[#EEEEEE]">{isAr ? 'نوع العقار' : 'Property Type'}</span>
+                <span className="block truncate text-sm font-light text-white">{propertyType || (isAr ? 'جميع الأنواع' : 'All types')}</span>
               </span>
-              <ChevronDown className={`h-4 w-4 shrink-0 text-[#34443A] transition-transform ${openDropdown === 'property' ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`h-4 w-4 shrink-0 text-[#EEEEEE] transition-transform ${openDropdown === 'property' ? 'rotate-180' : ''}`} />
             </button>
             {openDropdown === 'property' && <div role="listbox" aria-label={isAr ? 'نوع العقار' : 'Property Type'} className="absolute inset-x-1 top-[calc(100%+0.65rem)] z-50 max-h-64 overflow-y-auto rounded-2xl border border-white/70 bg-[#F7F6F1]/95 p-1.5 shadow-[0_20px_50px_-18px_rgba(0,0,0,0.55)] backdrop-blur-xl">
               {[{ id: '', label: isAr ? 'جميع الأنواع' : 'All types' }, ...propertyTypes.map((item) => ({ id: item, label: item }))].map((option, index) => <button key={option.id || 'all'} type="button" role="option" aria-selected={propertyType === option.id} onClick={() => { setPropertyType(option.id); setOpenDropdown(null); }} className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-colors ${propertyType === option.id ? 'bg-[#0C3826]/10 text-[#0C3826]' : 'text-[#29352E] hover:bg-white/80'}`}><span className="w-6 font-mono text-[9px] text-[#A98950]">{String(index + 1).padStart(2, '0')}</span><span className="flex-1">{option.label}</span>{propertyType === option.id && <Check className="h-4 w-4" />}</button>)}
@@ -119,10 +119,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ language, onSearch }) 
             <div className="relative min-w-0">
               <button type="button" aria-haspopup="dialog" aria-expanded={openDropdown === 'price'} onClick={() => { setRangeDraft({ min: minPrice, max: maxPrice }); setOpenPriceBound(null); setOpenDropdown(openDropdown === 'price' ? null : 'price'); }} className="flex min-h-14 w-full items-center justify-between gap-3 rounded-full px-4 text-left transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C3826]/30">
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[10px] font-medium text-[#26352D]">{isAr ? 'نطاق السعر' : 'Price Range'}</span>
-                  <span className="block truncate text-sm font-medium text-[#20231F]">{minPrice || maxPrice ? `${minPrice ? Number(minPrice).toLocaleString() : (isAr ? 'أي حد أدنى' : 'Any')} – ${maxPrice ? Number(maxPrice).toLocaleString() : (isAr ? 'أي حد أقصى' : 'Any')}` : (isAr ? 'أي سعر' : 'Any price')}</span>
+                  <span className="block text-[10px] font-light text-[#EEEEEE]">{isAr ? 'نطاق السعر' : 'Price Range'}</span>
+                  <span className="block truncate text-sm font-light text-white">{minPrice || maxPrice ? `${minPrice ? Number(minPrice).toLocaleString() : (isAr ? 'أي حد أدنى' : 'Any')} – ${maxPrice ? Number(maxPrice).toLocaleString() : (isAr ? 'أي حد أقصى' : 'Any')}` : (isAr ? 'أي سعر' : 'Any price')}</span>
                 </span>
-                <ChevronDown className={`h-4 w-4 text-[#34443A] transition-transform ${openDropdown === 'price' ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`h-4 w-4 text-[#EEEEEE] transition-transform ${openDropdown === 'price' ? 'rotate-180' : ''}`} />
               </button>
               {openDropdown === 'price' && <div role="dialog" aria-label={isAr ? 'نطاق السعر' : 'Price range'} className="absolute right-0 top-[calc(100%+0.7rem)] z-50 w-[min(22rem,calc(100vw-3rem))] rounded-xl border border-neutral-200 bg-white p-4 text-neutral-800 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.35)]">
                   <div className="grid grid-cols-2 gap-3">
@@ -148,7 +148,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ language, onSearch }) 
               </div>}
             </div>
 
-            <button type="submit" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-neutral-950 px-7 text-sm font-medium text-white transition-colors hover:bg-[#0C3826]">
+            <button type="submit" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-white px-7 text-sm font-medium text-black transition-colors hover:bg-[#e0dede] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C3826]/30 ">
               <Search className="h-4 w-4" />
               <span>{isAr ? 'بحث' : 'Search'}</span>
             </button>

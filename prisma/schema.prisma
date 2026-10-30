@@ -154,6 +154,7 @@ model Listing {
   featured         Boolean          @default(false)
   bedrooms         Int?
   bathrooms        Int?
+  furnished        Boolean          @default(false)
   floors           Int?
   yearBuilt        Int?
   areaSqft         Int?

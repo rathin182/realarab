@@ -12,6 +12,7 @@ export interface ListingForProperty {
   price: bigint | number;
   bedrooms: number | null;
   bathrooms: number | null;
+  furnished: boolean;
   areaSqm: number | null;
   areaSqft: number | null;
   locality: string | null;
@@ -62,6 +63,7 @@ export function listingToProperty(listing: ListingForProperty): Property {
     sizeSqm: listing.areaSqm ?? (listing.areaSqft ? Math.round(listing.areaSqft * 0.092903) : 0),
     bedrooms: listing.bedrooms ?? 0,
     bathrooms: listing.bathrooms ?? 0,
+    furnished: listing.furnished,
     badge: listing.badge ?? listing.category,
     description: listing.description,
     descriptionAr: listing.description,

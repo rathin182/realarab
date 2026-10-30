@@ -12,7 +12,7 @@ import { RemovePropertyButton } from "./remove-property-button";
 type Property = {
   id: string; slug: string; title: string; city: string; locality: string | null; state: string;
   price: number; listingType: string; category: string; propertyType: string | null; status: string;
-  featured: boolean; bedrooms: number | null; bathrooms: number | null; areaSqm: number | null; areaSqft: number | null;
+  featured: boolean; bedrooms: number | null; bathrooms: number | null; furnished: boolean; areaSqm: number | null; areaSqft: number | null;
   isOffPlan: boolean; projectedYield: string | null; viewCount: number; createdAt: string; image: string | null;
 };
 
@@ -197,6 +197,7 @@ export default function AdminPropertiesList({ properties, totalCount, allPropert
             <label className="space-y-1.5 text-xs font-medium text-neutral-600">{isArabic ? "الحالة" : "Status"}<select name="status" defaultValue={editingProperty.status} className={`${fieldClass} w-full`}>{["DRAFT", "PENDING_REVIEW", "LIVE", "REJECTED", "EXPIRED", "SOLD_OR_RENTED", "ARCHIVED"].map((value) => <option key={value} value={value}>{formatLabel(value)}</option>)}</select></label>
             <label className="space-y-1.5 text-xs font-medium text-neutral-600">{isArabic ? "غرف النوم" : "Bedrooms"}<input name="bedrooms" type="number" min="0" step="1" defaultValue={editingProperty.bedrooms ?? ""} className={`${fieldClass} w-full`} /></label>
             <label className="space-y-1.5 text-xs font-medium text-neutral-600">{isArabic ? "الحمامات" : "Bathrooms"}<input name="bathrooms" type="number" min="0" step="1" defaultValue={editingProperty.bathrooms ?? ""} className={`${fieldClass} w-full`} /></label>
+            <label className="space-y-1.5 text-xs font-medium text-neutral-600">{isArabic ? "حالة التأثيث" : "Furnishing"}<select name="furnished" defaultValue={editingProperty.furnished ? "true" : "false"} className={`${fieldClass} w-full`}><option value="false">{isArabic ? "غير مفروش" : "Unfurnished"}</option><option value="true">{isArabic ? "مفروش" : "Furnished"}</option></select></label>
             <label className="space-y-1.5 text-xs font-medium text-neutral-600">{isArabic ? "المساحة (م²)" : "Area (m²)"}<input name="areaSqm" type="number" min="0" step="1" defaultValue={editingProperty.areaSqm ?? ""} className={`${fieldClass} w-full`} /></label>
           </div>
           <div className="flex shrink-0 justify-end gap-2 border-t border-[#e8e4db] px-5 py-4"><button type="button" disabled={isPending} onClick={() => setEditingProperty(null)} className="rounded-md border border-[#d8d3c8] bg-white px-4 py-2 text-sm">{isArabic ? "إلغاء" : "Cancel"}</button><button type="submit" disabled={isPending} className="rounded-md bg-[#292820] px-4 py-2 text-sm text-white disabled:opacity-60">{isPending ? (isArabic ? "جارٍ الحفظ..." : "Saving...") : (isArabic ? "حفظ التغييرات" : "Save changes")}</button></div>
