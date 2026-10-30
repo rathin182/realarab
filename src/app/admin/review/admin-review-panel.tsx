@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -7,10 +6,7 @@ import type { Dispatch, RefObject, SetStateAction } from "react";
 import { Cormorant_Garamond } from "next/font/google";
 import { Phone, Mail, Clock, ChevronDown } from "lucide-react";
 import { useSiteLanguage } from "@/components/providers/LanguageContext";
-import {
-  updateEnquiryStatus,
-  updateMandateStatusFormAction,
-} from "@/actions/admin";
+import { updateEnquiryStatus, updateMandateStatus } from "@/actions/admin";
 
 const serif = Cormorant_Garamond({
   subsets: ["latin"],
@@ -393,6 +389,43 @@ export default function AdminReviewPanel({
   const [enquiries, setEnquiries] = useState(initialEnquiries);
   const [mandates, setMandates] = useState(initialMandates);
 
+  // The lists live in local state (seeded once from server props), so a
+  // revalidatePath() after the server action never reaches them. Update the
+  // local copy ourselves once the server confirms the change.
+  async function handleEnquiryStatus(formData: FormData) {
+    const id = String(formData.get("id") ?? "");
+    const status = String(formData.get("status") ?? "");
+    if (!id || !status) return;
+
+    try {
+      await updateEnquiryStatus(formData);
+      setEnquiries((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, status } : item)),
+      );
+    } catch (err) {
+      console.error("Failed to update enquiry status:", err);
+    }
+  }
+
+  async function handleMandateStatus(formData: FormData) {
+    const id = String(formData.get("id") ?? "");
+    const status = String(formData.get("status") ?? "");
+    if (!id || !status) return;
+
+    try {
+      const result = await updateMandateStatus(formData);
+      if (result?.ok) {
+        setMandates((prev) =>
+          prev.map((item) => (item.id === id ? { ...item, status } : item)),
+        );
+      } else {
+        console.error("Mandate status update failed:", result?.message);
+      }
+    } catch (err) {
+      console.error("Failed to update mandate status:", err);
+    }
+  }
+
   const propertyScroll = useProgressive({
     type: "property",
     items: enquiries,
@@ -578,7 +611,7 @@ export default function AdminReviewPanel({
                 {enquiries.map((enquiry) => (
                   <form
                     key={enquiry.id}
-                    action={updateEnquiryStatus}
+                    action={handleEnquiryStatus}
                     className={`relative grid grid-cols-1 gap-5 overflow-hidden rounded-2xl ${CARD_BG} p-5 ps-7 sm:p-6 sm:ps-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start`}
                   >
                     <span
@@ -713,7 +746,7 @@ export default function AdminReviewPanel({
                 {mandates.map((mandate) => (
                   <form
                     key={mandate.id}
-                    action={updateMandateStatusFormAction}
+                    action={handleMandateStatus}
                     className={`relative grid grid-cols-1 gap-5 overflow-hidden rounded-2xl ${CARD_BG} p-5 ps-7 sm:p-6 sm:ps-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start`}
                   >
                     <span
